@@ -1,5 +1,10 @@
 <html>
 <body>
-<h2>Hello World!</h2>
+	<div 	jop_id='id'
+			jop_rendered={}
+			class="{}"
+			>
+		jop_bean={}
+	</div>
 </body>
 </html>

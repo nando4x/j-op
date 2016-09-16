@@ -4,4 +4,14 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+	<servlet>
+		<servlet-name>Jop Servlet</servlet-name>
+		<servlet-class>com.nandox.jop.core.dispatcher.ServletDispatcher</servlet-class>
+		<bean-config>bean-config.xml/.prop</bean-config>
+		<page-config>pagexml/.prop</page-config>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jop Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
 </web-app>
