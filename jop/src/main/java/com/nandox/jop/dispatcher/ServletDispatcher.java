@@ -24,20 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  * @revisor   Fernando Costantino
  */
 
-public class ServletDispatcher extends HttpServlet {
+public class ServletDispatcher extends AbstractServletDispatcher {
 	private static final long serialVersionUID = 1L;
-
-	private Dispatcher dsp;
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.dsp = new Dispatcher();
-		dsp.initFromServlet(config);
-	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
