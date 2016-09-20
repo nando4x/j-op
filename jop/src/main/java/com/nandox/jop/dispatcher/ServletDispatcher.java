@@ -40,7 +40,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		byte buff[] = new byte[(int)f.length()]; 
 		i.read(buff);
 		i.close();
-		String out = this.dsp.enginePage(new String(buff));
+		String out = this.proccessPage(new String(buff));
 		resp.setContentLength(out.length());
 		resp.setContentType("text/html");
 		resp.getWriter().println(out);
