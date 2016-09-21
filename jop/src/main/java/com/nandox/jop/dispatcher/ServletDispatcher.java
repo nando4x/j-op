@@ -32,7 +32,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// read page file in buffer
+		// read requested page file in buffer
 		String pth = req.getServletPath()+req.getPathInfo();
 		String contextPath = this.getServletContext().getRealPath(File.separator);
 		File f = new File(contextPath+File.separator+pth);
@@ -40,7 +40,9 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		byte buff[] = new byte[(int)f.length()]; 
 		i.read(buff);
 		i.close();
+		// Process page content
 		String out = this.proccessPage(new String(buff));
+		// Send out processed content
 		resp.setContentLength(out.length());
 		resp.setContentType("text/html");
 		resp.getWriter().println(out);
