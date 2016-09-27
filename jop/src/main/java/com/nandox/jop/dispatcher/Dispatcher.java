@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import com.nandox.jop.processor.PageApp;
 /**
  * Descrizione classe
  * 
@@ -40,7 +41,8 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	
-	protected String enginePage(String pageContent) {
+	protected String processPage(String pageContent) {
+		PageApp page = new PageApp(pageContent);
 		return "";
 	}
 	private void initEnv(ServletContext ctx, HashMap params) {

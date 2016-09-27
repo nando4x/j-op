@@ -39,7 +39,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 		dsp.initFromServlet(config);
 	}
 
-	protected String proccessPage(String contentPage) {
-		return this.dsp.enginePage(contentPage);
+	protected String processPage(String contentPage) {
+		return this.dsp.processPage(contentPage);
 	}
 }
