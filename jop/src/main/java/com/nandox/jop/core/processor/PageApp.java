@@ -36,7 +36,10 @@ public class PageApp {
 	//
 	//
 	private void parse() throws DomException {
-		// search every jop block into dom and create it
+		// Search every jop block into dom and create it
+			// check for double jop id
+			// check syntax error
+		// Scan block for own child and attach them  
 	}
 	
 }
