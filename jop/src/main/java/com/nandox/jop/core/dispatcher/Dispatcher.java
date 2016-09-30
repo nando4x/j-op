@@ -41,7 +41,7 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	
-	protected String processPage(String pageContent) {
+	protected String processPage(String pageContent) throws Exception {
 		PageApp page = new PageApp(pageContent);
 		return "";
 	}

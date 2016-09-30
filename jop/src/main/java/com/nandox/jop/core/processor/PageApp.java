@@ -36,7 +36,7 @@ public class PageApp {
 	//
 	//
 	private void parse() throws DomException {
-		// search every jop block
+		// search every jop block into dom and create it
 	}
 	
 }

@@ -41,7 +41,10 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		i.read(buff);
 		i.close();
 		// Process page content
-		String out = this.processPage(new String(buff));
+		String out = "";
+		try {
+			out = this.processPage(new String(buff));
+		} catch (Exception e) {}
 		// Send out processed content
 		resp.setContentLength(out.length());
 		resp.setContentType("text/html");
