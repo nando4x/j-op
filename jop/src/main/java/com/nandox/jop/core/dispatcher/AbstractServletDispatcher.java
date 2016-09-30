@@ -1,4 +1,4 @@
-package com.nandox.jop.dispatcher;
+package com.nandox.jop.core.dispatcher;
 
 import java.io.IOException;
 import java.io.File;

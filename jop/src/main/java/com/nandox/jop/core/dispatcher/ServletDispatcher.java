@@ -1,4 +1,4 @@
-package com.nandox.jop.dispatcher;
+package com.nandox.jop.core.dispatcher;
 
 import java.io.IOException;
 import java.io.File;
@@ -41,7 +41,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		i.read(buff);
 		i.close();
 		// Process page content
-		String out = this.proccessPage(new String(buff));
+		String out = this.processPage(new String(buff));
 		// Send out processed content
 		resp.setContentLength(out.length());
 		resp.setContentType("text/html");

@@ -1,4 +1,6 @@
-package com.nandox.jop.processor;
+package com.nandox.jop.core.processor;
+
+import java.util.List;
 import org.jsoup.nodes.Element;
 
 /**
@@ -15,5 +17,6 @@ import org.jsoup.nodes.Element;
  * @revisor   Fernando Costantino
  */
 public class PageBlock {
-
+	private Element domEl;
+	private List child;
 }

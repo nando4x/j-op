@@ -1,4 +1,4 @@
-package com.nandox.jop.dispatcher;
+package com.nandox.jop.core.dispatcher;
 
 import java.util.HashMap;
 import javax.servlet.Servlet;
@@ -8,7 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import com.nandox.jop.processor.PageApp;
+import com.nandox.jop.core.processor.PageApp;
 /**
  * Descrizione classe
  * 
