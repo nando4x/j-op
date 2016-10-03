@@ -49,7 +49,7 @@ public class Dispatcher {
 		// manage parameters
 		
 		// add runtime service servlet
-		ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);
-		s.addMapping(DSP_SERVICE_SERVLET_URL);
+		//ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);
+		//s.addMapping(DSP_SERVICE_SERVLET_URL);
 	}
 }

@@ -1,9 +1,13 @@
 package com.nandox.jop.core.processor;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 /**
  * Descrizione classe
  * 
@@ -18,8 +22,9 @@ import org.jsoup.nodes.Document;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
+	protected static final String DOMPARSER_JOP_SELECTOR = "["+PageBlock.JOP_ATTR_ID+"]";
 	private Document dom;
-	private HashMap blocks;
+	private Map<String,PageBlock> blocks;
 	
 	/**
 	 * Constructor: parse page content into DOM
@@ -30,6 +35,7 @@ public class PageApp {
 	 */	
 	public PageApp(String ContentPage) throws DomException {
 		this.dom = Jsoup.parse(ContentPage);
+		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 	}
 	//
@@ -37,9 +43,37 @@ public class PageApp {
 	//
 	private void parse() throws DomException {
 		// Search every jop block into dom and create it
+        Iterator<Element> elems = this.dom.select(DOMPARSER_JOP_SELECTOR).iterator();
+    	while ( elems.hasNext() ) {
+    		Element el = elems.next();
+    		String id = el.attr(PageBlock.JOP_ATTR_ID);
 			// check for double jop id
-			// check syntax error
-		// Scan block for own child and attach them  
+    		if ( this.blocks.containsKey(id) ) {
+    			throw new DomException();
+    		} else {
+    			// create block and check syntax error
+    			this.blocks.put(id, new PageBlock(el));
+    		}
+    	}
+		// Scan blocks for own child and attach them
+    	PageBlock b[] = this.blocks.values().toArray(new PageBlock[0]);
+    	for ( int ix=0; ix<b.length; ix++ ) {
+    		ArrayList<PageBlock> child = new ArrayList<PageBlock>();
+    		elems = b[ix].domEl.select(DOMPARSER_JOP_SELECTOR).iterator();
+    		while ( elems.hasNext() ) {
+        		Element el = elems.next();
+        		Element p = el.parent(); 
+    			while ( p != null ) {
+    				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
+    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(b[ix].id) )
+    						child.add(this.blocks.get(el.attr(PageBlock.JOP_ATTR_ID)));
+    					break;
+    				}
+    				p = p.parent();
+    			}
+    		}
+    		b[ix].child = child;
+    	}
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.nandox.jop.core.dispatcher;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import javax.servlet.ServletConfig;
@@ -36,20 +37,26 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		String pth = req.getServletPath()+req.getPathInfo();
 		String contextPath = this.getServletContext().getRealPath(File.separator);
 		File f = new File(contextPath+File.separator+pth);
-		InputStream i = this.getServletContext().getResourceAsStream(pth);
-		byte buff[] = new byte[(int)f.length()]; 
-		i.read(buff);
-		i.close();
-		// Process page content
-		String out = "";
-		try {
-			out = this.processPage(new String(buff));
-		} catch (Exception e) {}
-		// Send out processed content
-		resp.setContentLength(out.length());
-		resp.setContentType("text/html");
-		resp.getWriter().println(out);
-		resp.getWriter().close();
+		if ( f.canRead() ) {
+			InputStream i = this.getServletContext().getResourceAsStream(pth);
+			byte buff[] = new byte[(int)f.length()]; 
+			i.read(buff);
+			i.close();
+			// Process page content
+			String out = new String(buff);
+			try {
+				out = this.processPage(out);
+			} catch (Exception e) {
+				// TODO: manage exception
+			}
+			// Send out processed content
+			resp.setContentLength(out.length());
+			resp.setContentType("text/html");
+			resp.getWriter().println(out);
+			resp.getWriter().close();
+		} else {
+			throw new FileNotFoundException(); 
+		}
 	}
 
 	/* (non-Javadoc)

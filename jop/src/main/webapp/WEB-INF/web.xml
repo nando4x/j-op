@@ -14,6 +14,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Jop Servlet</servlet-name>
-		<url-pattern>*.faces</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 </web-app>
