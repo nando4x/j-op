@@ -1,5 +1,6 @@
 package com.nandox.jop.core.processor;
 
+import java.util.Iterator;
 import java.util.List;
 import org.jsoup.nodes.Element;
 
@@ -48,6 +49,21 @@ public class PageBlock {
 	//
 	//
 	private void parse() {
-		
+		Iterator<Element> elems = this.domEl.getAllElements().iterator();
+		while (elems.hasNext() ) {
+			Element el = elems.next();
+			if ( !el.attr(JOP_ATTR_ID).isEmpty() ) {
+        		Element p = el.parent(); 
+    			while ( p != null ) {
+    				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
+    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
+    						// get bean
+    						break;
+    					}
+    				}
+    				p = p.parent();
+    			}
+			}
+		}
 	}
 }

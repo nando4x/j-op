@@ -19,6 +19,7 @@
 			asasassjop_bean={}
 		</div>
 		<div>
+			jop_bean={}
 			<div 	jop_id='id3'
 					jop_rendered={}
 					class="{}"
