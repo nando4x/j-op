@@ -18,12 +18,15 @@ import org.jsoup.nodes.Element;
  * @revisor   Fernando Costantino
  */
 public class PageBlock {
-	/** Identification attribute: jop_id*/
+	/** Identification attribute: jop_id */
 	public static final String JOP_ATTR_ID = "jop_id";
+	/** Identification bean: jop_bean */
+	public static final String JOP_BEAN = "jop_bean";
 	
 	protected Element domEl;
 	protected String id;
 	protected List<PageBlock> child;
+	protected List<PageBean> beans;
 	private Element clone;
 	
 	/**
@@ -48,7 +51,7 @@ public class PageBlock {
 	//
 	//
 	//
-	private void parse() {
+	private void parse() throws DomException {
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
@@ -58,12 +61,24 @@ public class PageBlock {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean
+    						this.parseBean(el);
     						break;
     					}
     				}
     				p = p.parent();
     			}
 			}
+		}
+	}
+	//
+	//
+	//
+	private void parseBean(Element elem) throws DomException {
+		String txt = elem.ownText();
+		int inx_st = 0;
+		inx_st = txt.indexOf(JOP_BEAN+"=",inx_st);
+		while ( inx_st >= 0 ) {
+			
 		}
 	}
 }

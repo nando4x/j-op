@@ -49,7 +49,7 @@ public class PageApp {
     		String id = el.attr(PageBlock.JOP_ATTR_ID);
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
-    			throw new DomException();
+    			throw new DomException(ErrorsDefine.DOUBLE_JOP_ID);
     		} else {
     			// create block and check syntax error
     			this.blocks.put(id, new PageBlock(el));

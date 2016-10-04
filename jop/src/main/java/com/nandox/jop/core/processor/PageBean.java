@@ -5,15 +5,17 @@ package com.nandox.jop.core.processor;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    DomException.java
+ * @module    PageBean.java
  * 
- * @date      30 set 2016 - 30 set 2016
+ * @date      04 ott 2016 - 04 ott 2016
  * 
  * @author    Fernando Costantino
  * 
  * @revisor   Fernando Costantino
  */
-public class DomException extends Exception {
+
+public class PageBean {
+	protected String beanId;
 
 	/**
 	 * Costruttore
@@ -22,8 +24,8 @@ public class DomException extends Exception {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public DomException(String message) {
-		super(message);
+	
+	public PageBean(String beanId) {
+		this.beanId = beanId;
 	}
-
 }
