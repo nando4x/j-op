@@ -2,6 +2,7 @@ package com.nandox.jop.core.processor;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import org.jsoup.nodes.Element;
 
 /**
@@ -36,7 +37,7 @@ public class PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageBlock(Element DomElement) {
+	public PageBlock(Element DomElement) throws DomException {
 		this.domEl = DomElement;
 		this.clone = DomElement.clone();
 		this.id = this.domEl.attr(JOP_ATTR_ID);
@@ -61,7 +62,7 @@ public class PageBlock {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean
-    						this.parseBean(el);
+    						this.parseBean(el.ownText());
     						break;
     					}
     				}
@@ -73,12 +74,25 @@ public class PageBlock {
 	//
 	//
 	//
-	private void parseBean(Element elem) throws DomException {
-		String txt = elem.ownText();
+	private List<String> parseBean(String txt) throws DomException {
+		List<String> lst = new ArrayList<String>();
 		int inx_st = 0;
-		inx_st = txt.indexOf(JOP_BEAN+"=",inx_st);
+		// Search every bean
+		inx_st = txt.indexOf(JOP_BEAN,inx_st);
 		while ( inx_st >= 0 ) {
-			
+			// search and check end bean
+			int inx_end = txt.indexOf("}",inx_st);
+			if ( inx_end > inx_st ) {
+				String bean = txt.substring(inx_st, inx_end);
+				// check syntax
+				if ( bean.indexOf(JOP_BEAN) == 0 && bean.indexOf("=") > 0 && bean.indexOf("{") > 0 ) {
+					lst.add(bean);
+				} else
+					throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+			} else 
+				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+			inx_st = txt.indexOf(JOP_BEAN,inx_end);
 		}
+		return lst;
 	}
 }

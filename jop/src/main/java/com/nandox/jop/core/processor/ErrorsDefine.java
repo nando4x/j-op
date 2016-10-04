@@ -16,5 +16,7 @@ package com.nandox.jop.core.processor;
 
 public class ErrorsDefine {
 	/** */
-	static final public String DOUBLE_JOP_ID = "";  
+	static final public String JOP_ID_DOUBLE = "";  
+	/** */
+	static final public String JOP_BEAN_SYNTAX = "";  
 }
