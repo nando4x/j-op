@@ -2,8 +2,11 @@ package com.nandox.jop.core.processor;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 
 /**
  * Descrizione classe
@@ -21,6 +24,8 @@ import org.jsoup.nodes.Element;
 public class PageBlock {
 	/** Identification attribute: jop_id */
 	public static final String JOP_ATTR_ID = "jop_id";
+	/** Identification attribute: jop_id */
+	public static final String JOP_RENDERED_ID = "jop_rendered";
 	/** Identification bean: jop_bean */
 	public static final String JOP_BEAN = "jop_bean";
 	
@@ -28,8 +33,10 @@ public class PageBlock {
 	protected String id;
 	protected List<PageBlock> child;
 	protected List<PageBean> beans;
+	protected List<BlockAttribute> attrs;
 	private Element clone;
 	
+	private String[] attr_list = {JOP_RENDERED_ID,"class"};
 	/**
 	 * Constructor: parse DOM element
 	 * @date      30 set 2016 - 30 set 2016
@@ -41,7 +48,11 @@ public class PageBlock {
 		this.domEl = DomElement;
 		this.clone = DomElement.clone();
 		this.id = this.domEl.attr(JOP_ATTR_ID);
-		this.parse();
+		this.beans = new ArrayList<PageBean>();
+		this.attrs = new ArrayList<BlockAttribute>();
+		Iterator<String> i = this.parse().iterator();
+		while ( i.hasNext() )
+			this.beans.add(new PageBean(i.next()));
 	}
 	/**
 	 * @return the id
@@ -52,8 +63,10 @@ public class PageBlock {
 	//
 	//
 	//
-	private void parse() throws DomException {
+	private Set<String> parse() throws DomException {
+		// scan for bean
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
+		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( !el.attr(JOP_ATTR_ID).isEmpty() ) {
@@ -62,7 +75,7 @@ public class PageBlock {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean
-    						this.parseBean(el.ownText());
+    						lst.addAll(this.parseBean(el.ownText()));
     						break;
     					}
     				}
@@ -70,12 +83,20 @@ public class PageBlock {
     			}
 			}
 		}
+		// get attributes
+		for ( int ix=0; ix<attr_list.length; ix++ ) {
+			String a = this.domEl.attr(attr_list[ix]);
+			if ( !a.isEmpty() ) {
+				this.attrs.add(new BlockAttribute(attr_list[ix]));
+			}
+		}
+		return lst;
 	}
 	//
 	//
 	//
-	private List<String> parseBean(String txt) throws DomException {
-		List<String> lst = new ArrayList<String>();
+	private Set<String> parseBean(String txt) throws DomException {
+		Set<String> lst = new HashSet<String>();
 		int inx_st = 0;
 		// Search every bean
 		inx_st = txt.indexOf(JOP_BEAN,inx_st);

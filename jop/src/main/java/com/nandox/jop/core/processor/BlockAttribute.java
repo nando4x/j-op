@@ -9,13 +9,15 @@ package com.nandox.jop.core.processor;
  *
  */
 public class BlockAttribute {
-	
+	/** */
 	protected String name;
-
+	/** */
+	protected PageBean bean;
 	/**
 	 * 
 	 */
-	public BlockAttribute() {
+	public BlockAttribute(String Name) {
+		this.name = Name;
 	}
 	
 	

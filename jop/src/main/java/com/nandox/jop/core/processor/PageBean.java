@@ -15,6 +15,7 @@ package com.nandox.jop.core.processor;
  */
 
 public class PageBean {
+	/** */
 	protected String beanId;
 
 	/**
