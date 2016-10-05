@@ -48,6 +48,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 				out = this.processPage(out);
 			} catch (Exception e) {
 				// TODO: manage exception
+				throw new ServletException(e);
 			}
 			// Send out processed content
 			resp.setContentLength(out.length());

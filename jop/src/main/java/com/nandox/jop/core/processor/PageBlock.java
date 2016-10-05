@@ -90,7 +90,14 @@ public class PageBlock {
 		for ( int ix=0; ix<attr_list.length; ix++ ) {
 			String a = this.domEl.attr(attr_list[ix]);
 			if ( !a.isEmpty() ) {
-				this.attrs.add(new BlockAttribute(attr_list[ix]));
+				if ( a.trim().indexOf("{") >= 0 ) {
+					if ( a.indexOf("}") > 0 ) {
+						this.attrs.add(new BlockAttribute(attr_list[ix],a));
+					} else
+						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				} else if (attr_list[ix].toLowerCase().startsWith("jop_") ) {
+					throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				}
 			}
 		}
 		return lst;

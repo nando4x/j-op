@@ -16,8 +16,9 @@ public class BlockAttribute {
 	/**
 	 * 
 	 */
-	public BlockAttribute(String Name) {
+	public BlockAttribute(String Name, String BeanId) {
 		this.name = Name;
+		this.bean = new PageBean(BeanId);
 	}
 	
 	

@@ -23,7 +23,7 @@ public class DomException extends Exception {
 	 * @exception
 	 */
 	public DomException(String message) {
-		super(message);
+		super("error"+message);
 	}
 
 }
