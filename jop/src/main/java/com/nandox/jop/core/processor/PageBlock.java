@@ -69,7 +69,7 @@ public class PageBlock {
 		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
-			if ( !el.attr(JOP_ATTR_ID).isEmpty() ) {
+			if ( el.attr(JOP_ATTR_ID).isEmpty() ) {
         		Element p = el.parent(); 
     			while ( p != null ) {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
@@ -81,6 +81,9 @@ public class PageBlock {
     				}
     				p = p.parent();
     			}
+			} else if ( el.attr(JOP_ATTR_ID).equals(this.id) ) {
+				// get own direct bean
+				lst.addAll(this.parseBean(el.ownText()));
 			}
 		}
 		// get attributes
@@ -104,7 +107,7 @@ public class PageBlock {
 			// search and check end bean
 			int inx_end = txt.indexOf("}",inx_st);
 			if ( inx_end > inx_st ) {
-				String bean = txt.substring(inx_st, inx_end);
+				String bean = txt.substring(inx_st, inx_end+1);
 				// check syntax
 				if ( bean.indexOf(JOP_BEAN) == 0 && bean.indexOf("=") > 0 && bean.indexOf("{") > 0 ) {
 					lst.add(bean);
