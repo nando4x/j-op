@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import com.nandox.jop.core.ErrorsDefine;
 /**
  * Descrizione classe
  * 
@@ -49,7 +51,7 @@ public class PageApp {
     		String id = el.attr(PageBlock.JOP_ATTR_ID);
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
-    			throw new DomException(ErrorsDefine.JOP_ID_DOUBLE);
+    			throw new DomException(ErrorsDefine.FormatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
     			// create block and check syntax error
     			this.blocks.put(id, new PageBlock(el));

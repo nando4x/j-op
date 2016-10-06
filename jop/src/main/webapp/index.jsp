@@ -1,7 +1,7 @@
 <html>
 <body>
-	<div 	jop_id='id'
-			jop_rendered={
+	<div 	jop_id='id1'
+			jop_rendered={}
 			class="{}"
 			>
 		jop_bean={0}

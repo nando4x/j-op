@@ -1,14 +1,8 @@
 package com.nandox.jop.core.dispatcher;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.InputStream;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Descrizione classe
@@ -33,13 +27,22 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
+	public void init(ServletConfig Config) throws ServletException {
+		super.init(Config);
 		this.dsp = new Dispatcher();
-		dsp.initFromServlet(config);
+		dsp.initFromServlet(Config);
 	}
 
-	protected String processPage(String contentPage) throws Exception {
-		return this.dsp.processPage(contentPage);
+	/**
+	 * Complete process of page to interpreter and render it
+	 * @param	  ContentPage:	html content of the page
+	 * @date      19 set 2016 - 19 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception DomException - for dom systax error
+	 * @return	  rendered html
+	 */
+	protected String processPage(String ContentPage) throws Exception {
+		return this.dsp.processPage(ContentPage);
 	}
 }

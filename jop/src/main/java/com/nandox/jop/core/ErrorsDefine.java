@@ -1,5 +1,6 @@
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core;
 
+import org.jsoup.nodes.Element;
 /**
  * Descrizione classe
  * 
@@ -16,7 +17,13 @@ package com.nandox.jop.core.processor;
 
 public class ErrorsDefine {
 	/** */
+	static final public String JOP_PAGE_NOTFOUND = "Required page don't exist";  
+	/** */
 	static final public String JOP_ID_DOUBLE = "";  
 	/** */
 	static final public String JOP_BEAN_SYNTAX = "";  
+
+	public static String FormatDOM(String Msg, Element Elem) {
+		return Msg+"\r\n\t\t*********************************************************\n\r"+Elem.outerHtml();
+	}
 }

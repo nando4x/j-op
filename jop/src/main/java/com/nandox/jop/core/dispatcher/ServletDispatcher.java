@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.nandox.jop.core.ErrorsDefine;
 
 /**
  * Descrizione classe
@@ -56,7 +54,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 			resp.getWriter().println(out);
 			resp.getWriter().close();
 		} else {
-			throw new FileNotFoundException(); 
+			throw new FileNotFoundException(ErrorsDefine.JOP_PAGE_NOTFOUND); 
 		}
 	}
 
