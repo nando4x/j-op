@@ -29,4 +29,14 @@ public class PageBean {
 	public PageBean(String beanId) {
 		this.beanId = beanId;
 	}
+	//
+	//
+	//
+	private void checkSysntax() {
+		int inx_st = this.beanId.indexOf("{");
+		int inx_end = this.beanId.indexOf("}");
+		if ( inx_st >=0 && inx_end > inx_st ) {
+			
+		}
+	}
 }
