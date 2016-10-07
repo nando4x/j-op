@@ -28,6 +28,7 @@ public class PageBean {
 	
 	public PageBean(WebAppContext Context, String beanId) {
 		this.beanId = beanId;
+		this.checkSysntax(Context);
 	}
 	//
 	//

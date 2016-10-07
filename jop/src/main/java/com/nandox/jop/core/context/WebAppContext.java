@@ -19,9 +19,19 @@ public class WebAppContext {
 
 	private ApplicationContext springCtx;
 
+	/**
+	 * Descrizione
+	 * @param 	  BeanName
+	 * @param 	  Method
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 */
 	public boolean IsValidBean(String BeanName, String Method) {
 		try {
-			this.springCtx.getType(BeanName);
+			Class cl = this.springCtx.getType(BeanName);
+			cl.getMethod(Method);
 			return true;
 		} catch (Exception e) {return false;} 
 	}

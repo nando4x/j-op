@@ -4,7 +4,7 @@
 			jop_rendered={}
 			class="{}"
 			>
-		jop_bean={0}
+		jop_bean={helloWorld.getMessage}
 	</div>
 	<div 	jop_id='id1'
 			jop_rendered={}
@@ -16,7 +16,7 @@
 				class="{}"
 				onclick={}
 				>
-			asasassjop_bean={2}
+			asasassjop_bean={helloWorld.getMessage}
 		</div>
 		<div>
 			jop_bean={11}
@@ -29,7 +29,7 @@
 						jop_rendered={}
 						class="{}"
 						>
-					jop_bean={4}
+					jop_bean={helloWorld.getMessage}
 				</div>
 			</div>
 		</div>
