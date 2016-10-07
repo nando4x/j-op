@@ -41,6 +41,7 @@ public class PageBean {
 			if ( inx_dot > 0 ) {
 				String name = this.beanId.substring(inx_st+1, inx_dot).trim();
 				String method = this.beanId.substring(inx_dot+1, inx_end).trim();
+				Context.IsValidBean(name, method);
 			}
 		}
 		// error delimiter

@@ -51,7 +51,7 @@ public class PageBlock {
 		this.id = this.domEl.attr(JOP_ATTR_ID);
 		this.beans = new ArrayList<PageBean>();
 		this.attrs = new ArrayList<BlockAttribute>();
-		Iterator<String> i = this.parse().iterator();
+		Iterator<String> i = this.parse(Context).iterator();
 		while ( i.hasNext() )
 			this.beans.add(new PageBean(Context,i.next()));
 	}
@@ -64,7 +64,7 @@ public class PageBlock {
 	//
 	//
 	//
-	private Set<String> parse() throws DomException {
+	private Set<String> parse(WebAppContext Context) throws DomException {
 		// scan for bean
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
 		Set<String> lst = new HashSet<String>();

@@ -19,6 +19,12 @@ public class WebAppContext {
 
 	private ApplicationContext springCtx;
 
+	public boolean IsValidBean(String BeanName, String Method) {
+		try {
+			this.springCtx.getType(BeanName);
+			return true;
+		} catch (Exception e) {return false;} 
+	}
 	/**
 	 * @return the springCtx
 	 */
