@@ -1,12 +1,18 @@
-
-/**
- * 
- */
 package com.nandox.jop.core.processor;
 
+import com.nandox.jop.core.context.WebAppContext;
 /**
- * @author ee38938
- *
+ * Descrizione classe
+ * 
+ * @project   Jop (Java One Page)
+ * 
+ * @module    BlockAttribute.java
+ * 
+ * @date      04 ott 2016 - 04 ott 2016
+ * 
+ * @author    Fernando Costantino
+ * 
+ * @revisor   Fernando Costantino
  */
 public class BlockAttribute {
 	/** */
@@ -16,9 +22,9 @@ public class BlockAttribute {
 	/**
 	 * 
 	 */
-	public BlockAttribute(String Name, String BeanId) {
+	public BlockAttribute(WebAppContext Context, String Name, String BeanId) {
 		this.name = Name;
-		this.bean = new PageBean(BeanId);
+		this.bean = new PageBean(Context,BeanId);
 	}
 	
 	

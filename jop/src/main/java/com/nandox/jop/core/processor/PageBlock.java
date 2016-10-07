@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
-
+import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
@@ -45,7 +45,7 @@ public class PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageBlock(Element DomElement) throws DomException {
+	public PageBlock(WebAppContext Context, Element DomElement) throws DomException {
 		this.domEl = DomElement;
 		this.clone = DomElement.clone();
 		this.id = this.domEl.attr(JOP_ATTR_ID);
@@ -53,7 +53,7 @@ public class PageBlock {
 		this.attrs = new ArrayList<BlockAttribute>();
 		Iterator<String> i = this.parse().iterator();
 		while ( i.hasNext() )
-			this.beans.add(new PageBean(i.next()));
+			this.beans.add(new PageBean(Context,i.next()));
 	}
 	/**
 	 * @return the id
@@ -93,7 +93,7 @@ public class PageBlock {
 			if ( !a.isEmpty() ) {
 				if ( a.trim().indexOf("{") >= 0 ) {
 					if ( a.indexOf("}") > 0 ) {
-						this.attrs.add(new BlockAttribute(attr_list[ix],a));
+						this.attrs.add(new BlockAttribute(Context,attr_list[ix],a));
 					} else
 						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 				} else if (attr_list[ix].toLowerCase().startsWith("jop_") ) {

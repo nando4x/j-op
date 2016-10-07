@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.ErrorsDefine;
+import com.nandox.jop.core.context.WebAppContext;
 /**
  * Descrizione classe
  * 
@@ -27,7 +28,7 @@ public class PageApp {
 	protected static final String DOMPARSER_JOP_SELECTOR = "["+PageBlock.JOP_ATTR_ID+"]";
 	private Document dom;
 	private Map<String,PageBlock> blocks;
-	
+	private WebAppContext appCtx;
 	/**
 	 * Constructor: parse page content into DOM
 	 * @date      30 set 2016 - 30 set 2016
@@ -35,7 +36,8 @@ public class PageApp {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageApp(String ContentPage) throws DomException {
+	public PageApp(WebAppContext Context, String ContentPage) throws DomException {
+		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
@@ -54,7 +56,7 @@ public class PageApp {
     			throw new DomException(ErrorsDefine.FormatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
     			// create block and check syntax error
-    			this.blocks.put(id, new PageBlock(el));
+    			this.blocks.put(id, new PageBlock(this.appCtx,el));
     		}
     	}
 		// Scan blocks for own child and attach them
