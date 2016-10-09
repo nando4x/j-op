@@ -22,6 +22,8 @@ public class ErrorsDefine {
 	static final public String JOP_ID_DOUBLE = "";  
 	/** */
 	static final public String JOP_BEAN_SYNTAX = "";  
+	/** */
+	static final public String JOP_BEAN_NOTFOUND = "";  
 
 	public static String FormatDOM(String Msg, Element Elem) {
 		return Msg+"\r\n\t\t*********************************************************\r\n"+Elem.outerHtml();
