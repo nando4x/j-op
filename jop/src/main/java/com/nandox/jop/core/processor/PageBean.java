@@ -18,8 +18,8 @@ import com.nandox.jop.core.ErrorsDefine;
  * @revisor   Fernando Costantino
  */
 public class PageBean {
-	/** */
-	protected String beanId;
+
+	private String beanId;
 	private BeanInvoker invoker;
 
 	/**
