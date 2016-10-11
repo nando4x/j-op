@@ -31,6 +31,8 @@ public class PageApp {
 	private WebAppContext appCtx;
 	/**
 	 * Constructor: parse page content into DOM
+	 * @param	  Context	Application context
+	 * @param	  ContentPage	html content page
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -42,7 +44,7 @@ public class PageApp {
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 	}
-	//
+	// Parsing page content to search and build every block 
 	//
 	//
 	private void parse() throws DomException {

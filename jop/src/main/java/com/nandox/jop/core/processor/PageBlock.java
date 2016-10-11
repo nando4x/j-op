@@ -33,13 +33,15 @@ public class PageBlock {
 	protected Element domEl;
 	protected String id;
 	protected List<PageBlock> child;
-	protected List<PageBean> beans;
-	protected List<BlockAttribute> attrs;
+	private List<PageBean> beans;
+	private List<BlockAttribute> attrs;
 	private Element clone;
 	
 	private String[] attr_list = {JOP_RENDERED_ID,"class"};
 	/**
 	 * Constructor: parse DOM element
+	 * @param	  Context	Application context
+	 * @param	  DomElement	HTML element of the block
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -61,7 +63,24 @@ public class PageBlock {
 	public String getId() {
 		return id;
 	}
-	//
+	public void Render(WebAppContext Context) {
+		Iterator<PageBlock> cl = this.child.iterator();
+		while ( cl.hasNext() ) {
+			PageBlock c = cl.next();
+			c.Render(Context);
+			Element w = this.clone.getElementsByAttributeValue(JOP_ATTR_ID, c.id).first();
+			w = w.wrap("<div>");
+			w.html(c.clone.outerHtml());
+			w.unwrap();
+		}
+		Iterator<PageBean> bs = this.beans.iterator();
+		while ( bs.hasNext() ) {
+			PageBean b = bs.next();
+			String v = b.Fire(Context);
+			this.clone.html(this.clone.html().replaceAll(b.getBeanId(), v));
+		}
+	}
+	// Parsing Dom Element to search and build beans and attributes
 	//
 	//
 	private Set<String> parse(WebAppContext Context) throws DomException {

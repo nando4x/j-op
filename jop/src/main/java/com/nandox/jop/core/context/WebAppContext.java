@@ -32,9 +32,9 @@ public class WebAppContext {
 		this.beans = new HashMap<String,BeanInvoker>();
 	}
 	/**
-	 * Descrizione
-	 * @param 	  BeanName
-	 * @param 	  Method
+	 * Get or create bean invoker by bean name and method name
+	 * @param 	  BeanName	bean name 
+	 * @param 	  Method	bean method
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -54,6 +54,18 @@ public class WebAppContext {
 				return bi;
 			}
 		} catch (Exception e) { throw new BeanException(); }
+	}
+	/**
+	 * 
+	 * @param 	  BeanName	bean name 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  Bean instance
+	 * @exception
+	 */
+	public Object GetBeanInstance(String BeanName) {
+		return this.springCtx.getBean(BeanName);
 	}
 	/**
 	 * @param springCtx the springCtx to set

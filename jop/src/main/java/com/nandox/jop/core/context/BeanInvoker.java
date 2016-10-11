@@ -2,7 +2,7 @@ package com.nandox.jop.core.context;
 
 import java.lang.reflect.Method;
 /**
- * Descrizione classe
+ * Single Bean Invoker to invoke a specific method of a bean  
  * 
  * @project   Jop (Java One Page)
  * 
@@ -21,6 +21,8 @@ public class BeanInvoker {
 	private Method beanMethod;
 	/**
 	 * Costruttore
+	 * @param	  Clazz class of bean
+	 * @param	  Method bean's method fired
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -32,7 +34,24 @@ public class BeanInvoker {
 		this.beanMethod = Method;
 	}
 	/**
-	 * Descrizione
+	 * Fire bean method on specific instance.<br>
+	 * The method will return an object convertible to string
+	 * @param	  BeanInstance instance of bean to invoke
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  result of method in string format  
+	 */
+	public String Invoke(Object BeanInstance) {
+		Object ret = null;
+		try {
+			ret = this.beanMethod.invoke(BeanInstance);
+		} catch (Exception e) {}
+		return ret.toString();
+	}
+	/**
+	 * Return this bean hash code
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -43,7 +62,9 @@ public class BeanInvoker {
 		return ComputeHash(this.beanClass, this.beanMethod);
 	}
 	/**
-	 * Descrizione
+	 * Utils to compute and return a bean hash code by class and method
+	 * @param	  Clazz class of bean
+	 * @param	  Method bean's method fired
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
