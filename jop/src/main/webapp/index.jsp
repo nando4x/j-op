@@ -10,7 +10,7 @@
 			jop_rendered={}
 			class="{}"
 			>
-		jop_bean={1}
+		jop_bean={helloWorld.getMessage}
 		<div 	jop_id='id2'
 				jop_rendered={}
 				class="{}"
@@ -19,12 +19,12 @@
 			asasassjop_bean={helloWorld.getMessage}
 		</div>
 		<div>
-			jop_bean={11}
+			jop_bean={helloWorld.getMessage}
 			<div 	jop_id='id3'
 					jop_rendered={}
 					class="{}"
 					>
-				jop_bean={3}
+				jop_bean={helloWorld.getMessage}
 				<div 	jop_id='id4'
 						jop_rendered={}
 						class="{}"

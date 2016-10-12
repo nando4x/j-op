@@ -24,7 +24,7 @@ public class BlockAttribute {
 	 */
 	public BlockAttribute(WebAppContext Context, String Name, String BeanId) throws DomException {
 		this.name = Name;
-		this.bean = new PageBean(Context,BeanId);
+		//this.bean = new PageBean(Context,BeanId);
 	}
 	
 	

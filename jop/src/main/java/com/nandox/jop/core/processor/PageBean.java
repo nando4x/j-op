@@ -77,6 +77,7 @@ public class PageBean {
 				String method = this.beanId.substring(inx_dot+1, inx_end).trim();
 				try {
 				this.invoker = Context.GetBeanInvoker(name, method);
+				// TODO: check i return type have toString()
 				} catch (BeanException e) { new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 			} else // error dot
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);

@@ -87,7 +87,7 @@ public class PageBlock {
 		while ( bs.hasNext() ) {
 			PageBean b = bs.next();
 			String v = b.Fire(Context);
-			this.clone.html(this.clone.html().replaceAll(b.getBeanId(), v));
+			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 		}
 	}
 	// Parsing Dom Element to search and build beans and attributes
