@@ -33,6 +33,7 @@ public class PageBlock {
 	protected Element domEl;
 	protected String id;
 	protected List<PageBlock> child;
+	protected boolean isChild;
 	private List<PageBean> beans;
 	private List<BlockAttribute> attrs;
 	private Element clone;
@@ -63,6 +64,16 @@ public class PageBlock {
 	public String getId() {
 		return id;
 	}
+	/**
+	 * Rendering block.<br>
+	 * First rendering child in depth and when child is finish or not present forself invoke the  
+	 * @param	  Context	Application context
+	 * @param	  DomElement	HTML element of the block
+	 * @date      30 set 2016 - 30 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 */	
 	public void Render(WebAppContext Context) {
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
@@ -84,7 +95,7 @@ public class PageBlock {
 	//
 	//
 	private Set<String> parse(WebAppContext Context) throws DomException {
-		// scan for bean
+		// scan for bean: first child and them own
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
 		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
@@ -94,7 +105,7 @@ public class PageBlock {
     			while ( p != null ) {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
-    						// get bean
+    						// get bean id to join the same
     						lst.addAll(this.parseBean(el.ownText()));
     						break;
     					}
