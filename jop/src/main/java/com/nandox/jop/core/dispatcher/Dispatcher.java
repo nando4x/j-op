@@ -66,7 +66,7 @@ public class Dispatcher {
 	 */
 	protected String processPage(String pageContent) throws Exception {
 		PageApp page = new PageApp(this.appCtx,pageContent);
-		return "";
+		return page.Render(appCtx);
 	}
 	//
 	//

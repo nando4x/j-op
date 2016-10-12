@@ -44,6 +44,15 @@ public class PageApp {
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 	}
+	public String Render(WebAppContext Context) {
+		Iterator<PageBlock> i = this.blocks.values().iterator();
+		while ( i.hasNext() ) {
+			PageBlock pb = i.next();
+			if ( !pb.isChild )
+				pb.Render(Context);
+		}
+		return this.dom.html();
+	}
 	// Parsing page content to search and build every block 
 	//
 	//
@@ -71,8 +80,10 @@ public class PageApp {
         		Element p = el.parent(); 
     			while ( p != null ) {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(b[ix].id) )
+    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(b[ix].id) ) {
     						child.add(this.blocks.get(el.attr(PageBlock.JOP_ATTR_ID)));
+    						this.blocks.get(el.attr(PageBlock.JOP_ATTR_ID)).isChild = true;
+    					}
     					break;
     				}
     				p = p.parent();
