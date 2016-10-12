@@ -33,6 +33,7 @@ public class PageBlock {
 	protected Element domEl;
 	protected String id;
 	protected List<PageBlock> child;
+	protected boolean isChild;
 	private List<PageBean> beans;
 	private List<BlockAttribute> attrs;
 	private Element clone;
@@ -84,7 +85,7 @@ public class PageBlock {
 	//
 	//
 	private Set<String> parse(WebAppContext Context) throws DomException {
-		// scan for bean
+		// scan for bean: first child and them own
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
 		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
@@ -94,7 +95,7 @@ public class PageBlock {
     			while ( p != null ) {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
-    						// get bean
+    						// get bean id to join the same
     						lst.addAll(this.parseBean(el.ownText()));
     						break;
     					}
