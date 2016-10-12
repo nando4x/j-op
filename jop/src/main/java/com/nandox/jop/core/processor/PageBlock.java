@@ -68,7 +68,6 @@ public class PageBlock {
 	 * Rendering block.<br>
 	 * First rendering child in depth and when child is finish or not present forself invoke the  
 	 * @param	  Context	Application context
-	 * @param	  DomElement	HTML element of the block
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
