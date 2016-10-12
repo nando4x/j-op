@@ -45,7 +45,13 @@ public class PageApp {
 		this.parse();
 	}
 	public String Render(WebAppContext Context) {
-		return "";
+		Iterator<PageBlock> i = this.blocks.values().iterator();
+		while ( i.hasNext() ) {
+			PageBlock pb = i.next();
+			if ( !pb.isChild )
+				pb.Render(Context);
+		}
+		return this.dom.html();
 	}
 	// Parsing page content to search and build every block 
 	//
