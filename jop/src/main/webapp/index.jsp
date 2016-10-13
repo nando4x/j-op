@@ -2,7 +2,8 @@
 <body>
 <script type="javascript">
 	var a, b, c;
-	if ( a && b && c ) {
+	if ( (a && b) || c > 2 ) {
+		a = "ssa";
 	}
 </script>
 	<div 	jop_id='id'
