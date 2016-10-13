@@ -1,5 +1,10 @@
 <html>
 <body>
+<script type="javascript">
+	var a, b, c;
+	if ( a && b && c ) {
+	}
+</script>
 	<div 	jop_id='id'
 			jop_rendered={}
 			class="{}"

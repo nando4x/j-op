@@ -46,12 +46,16 @@ public class PageApp {
 	}
 	public String Render(WebAppContext Context) {
 		Iterator<PageBlock> i = this.blocks.values().iterator();
+		Document d = this.dom.clone();
 		while ( i.hasNext() ) {
 			PageBlock pb = i.next();
-			if ( !pb.isChild )
-				pb.Render(Context);
+			if ( !pb.isChild ) {
+				Element w = d.getElementsByAttributeValue(PageBlock.JOP_ATTR_ID, pb.id).first().wrap("<div>");
+				w.html(pb.Render(Context));
+				w.unwrap();
+			}
 		}
-		return this.dom.html();
+		return d.html();
 	}
 	// Parsing page content to search and build every block 
 	//

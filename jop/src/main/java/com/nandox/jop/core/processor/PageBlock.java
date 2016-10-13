@@ -50,7 +50,6 @@ public class PageBlock {
 	 */	
 	public PageBlock(WebAppContext Context, Element DomElement) throws DomException {
 		this.domEl = DomElement;
-		this.clone = DomElement.clone();
 		this.id = this.domEl.attr(JOP_ATTR_ID);
 		this.beans = new ArrayList<PageBean>();
 		this.attrs = new ArrayList<BlockAttribute>();
@@ -66,14 +65,16 @@ public class PageBlock {
 	}
 	/**
 	 * Rendering block.<br>
-	 * First rendering child in depth and when child is finish or not present forself invoke the  
+	 * First rendering child in depth and when child is finish or not present for self invoke the  
 	 * @param	  Context	Application context
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public void Render(WebAppContext Context) {
+	public String Render(WebAppContext Context) {
+		this.clone = this.domEl.clone();
+		// rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
@@ -83,12 +84,14 @@ public class PageBlock {
 			w.html(c.clone.outerHtml());
 			w.unwrap();
 		}
+		// Fire every own bean and insert into html
 		Iterator<PageBean> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
 			PageBean b = bs.next();
 			String v = b.Fire(Context);
 			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 		}
+		return this.clone.outerHtml();
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
