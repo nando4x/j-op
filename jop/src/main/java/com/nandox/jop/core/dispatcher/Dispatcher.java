@@ -71,7 +71,7 @@ public class Dispatcher {
 	//
 	//
 	//
-	private void initEnv(ServletContext ctx, HashMap params) {
+	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
 		this.appCtx = new WebAppContext();
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));
 		// manage parameters

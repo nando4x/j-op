@@ -55,7 +55,7 @@ public class PageBlock {
 		this.attrs = new ArrayList<BlockAttribute>();
 		Iterator<String> i = this.parse(Context).iterator();
 		while ( i.hasNext() )
-			this.beans.add(new PageBean(Context,i.next()));
+			this.beans.add(new SimplePageBean(Context,i.next()));
 	}
 	/**
 	 * @return the id
@@ -88,7 +88,7 @@ public class PageBlock {
 		Iterator<PageBean> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
 			PageBean b = bs.next();
-			String v = b.Fire(Context);
+			String v = (String)b.Fire(Context);
 			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 		}
 		return this.clone.outerHtml();

@@ -34,6 +34,20 @@ public class BeanInvoker {
 		this.beanMethod = Method;
 	}
 	/**
+	 * Check if bean method is compliance to return type.<br>
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  BeanException
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void CheckCompliance (Class ReturnClass) throws BeanException {
+		try {
+			this.beanMethod.getReturnType().asSubclass(ReturnClass);
+		} catch (Exception e) { throw new BeanException(); } 
+	}
+	/**
 	 * Fire bean method on specific instance.<br>
 	 * The method will return an object convertible to string
 	 * @param	  BeanInstance instance of bean to invoke
