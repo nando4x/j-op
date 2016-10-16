@@ -54,7 +54,7 @@ public class WebAppContext {
 		} catch (Exception e) { throw new BeanException(); }
 	}
 	/**
-	 * Searxh and return bean instance by name 
+	 * Search and return bean instance by name 
 	 * @param 	  BeanName	bean name 
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino

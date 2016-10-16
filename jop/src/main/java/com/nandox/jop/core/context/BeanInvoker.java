@@ -37,8 +37,7 @@ public class BeanInvoker {
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	  BeanException if return type unmatch or not extend ReturnClass
+	 * @exception BeanException if return type unmatch or not extend ReturnClass
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void CheckCompliance (Class ReturnClass) throws BeanException {

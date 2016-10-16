@@ -2,7 +2,7 @@ package com.nandox.jop.core.processor;
 
 import com.nandox.jop.core.context.WebAppContext;
 /**
- * Descrizione classe
+ * Attribute of page block
  * 
  * @project   Jop (Java One Page)
  * 
