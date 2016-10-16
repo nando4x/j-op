@@ -12,7 +12,8 @@ import org.jsoup.nodes.Element;
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 /**
- * Descrizione classe
+ * Class of Page application.<br>
+ * One page application is composite by PageBlock, every block can contains PageBean  
  * 
  * @project   Jop (Java One Page)
  * 
@@ -36,7 +37,7 @@ public class PageApp {
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception
+	 * @exception DomException if some syntax error
 	 */	
 	public PageApp(WebAppContext Context, String ContentPage) throws DomException {
 		this.appCtx = Context;
@@ -44,6 +45,15 @@ public class PageApp {
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 	}
+	/**
+	 * Rendering the page: read every bean value and insert it into dom.<br>
+	 * This method render only parent block 
+	 * @param	  Context	Application context
+	 * @date      30 set 2016 - 30 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  HTML of page
+	 */	
 	public String Render(WebAppContext Context) {
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		Document d = this.dom.clone();

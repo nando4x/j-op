@@ -1,10 +1,9 @@
 package com.nandox.jop.core.processor;
 
-import com.nandox.jop.core.context.BeanException;
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Descrizione classe
+ * Simple page bean that return a string format
  * 
  * @project   Jop (Java One Page)
  * 
@@ -17,7 +16,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class SimplePageBean extends PageBean<String> {
+public class SimplePageBean extends PageBeanPrototype<String> {
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageBean#PageBean(WebAppContext,String)

@@ -1,7 +1,7 @@
 package com.nandox.jop.core.context;
 
 /**
- * Descrizione classe
+ * Bean Exception thrown to indicate an error when resolve bean (syntax error, wrong class or method)
  * 
  * @project   Jop (Java One Page)
  * 

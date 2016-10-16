@@ -2,6 +2,19 @@ package com.nandox.jop.core.processor;
 
 import com.nandox.jop.core.context.WebAppContext;
 
+/**
+ * Represent generic page bean
+ * 
+ * @project   Jop (Java One Page)
+ * 
+ * @module    PageBlock.java
+ * 
+ * @date      17 set 2016 - 17 set 2016
+ * 
+ * @author    Fernando Costantino
+ * 
+ * @revisor   Fernando Costantino
+ */
 public interface PageBean {
 
 	/**

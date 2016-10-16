@@ -5,11 +5,11 @@ import com.nandox.jop.core.context.BeanInvoker;
 import com.nandox.jop.core.context.BeanException;
 import com.nandox.jop.core.ErrorsDefine;
 /**
- * Descrizione classe
+ * Abstract implementation for page bean 
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    PageBean.java
+ * @module    PageBeanPrototype.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 
@@ -25,7 +25,6 @@ public abstract class PageBeanPrototype<E extends Object> implements PageBean {
 	private E value;
 
 	/**
-	 * Costruttore
 	 * @param	  Context	Application context
 	 * @param	  BeanId	bean identificator name
 	 * @date      04 ott 2016 - 04 ott 2016
@@ -37,30 +36,18 @@ public abstract class PageBeanPrototype<E extends Object> implements PageBean {
 		this.beanId = BeanId;
 		this.makeInvoker(Context);
 	}
-	/**
-	 * @return the beanId
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageBean#getBeanId
 	 */
 	public String getBeanId() {
 		return beanId;
 	}
-	/**
-	 * Fire bean method on specific context.<br>
-	 * Get bean instance from context and then use own invoker to invoke method
-	 * @param	  Context	Application context
-	 * @date      07 ott 2016 - 07 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	  result of method in type bean format  
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageBean#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	public abstract E Fire(WebAppContext Context);
-	/**
-	 * Reset bean value to null.<br>
-	 * @date      07 ott 2016 - 07 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	    
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageBean#ResetValue
 	 */
 	public void ResetValue () {
 		this.value = null;

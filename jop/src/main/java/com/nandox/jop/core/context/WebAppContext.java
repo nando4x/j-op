@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.lang.reflect.Method;
 import org.springframework.context.ApplicationContext;
 /**
- * Descrizione classe
+ * Application Context to resolve and invoke bean.<br>
+ * The bean is search in spring environment
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    ApplicationContext.java
+ * @module    WebAppContext.java
  * 
  * @date      07 ott 2016 - 07 ott 2016
  * 
@@ -21,24 +22,21 @@ public class WebAppContext {
 	private ApplicationContext springCtx;
 	private HashMap<String,BeanInvoker> beans;
 	/**
-	 * Costruttore
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception
 	 */
-	
 	public WebAppContext() {
 		this.beans = new HashMap<String,BeanInvoker>();
 	}
 	/**
-	 * Get or create bean invoker by bean name and method name
+	 * Get bean invoker (or create new if not exist) by bean name and method name
 	 * @param 	  BeanName	bean name 
 	 * @param 	  Method	bean method
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception
+	 * @exception BeanException if bean not found or if not have method 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public BeanInvoker GetBeanInvoker(String BeanName, String Method) throws BeanException {
@@ -56,19 +54,23 @@ public class WebAppContext {
 		} catch (Exception e) { throw new BeanException(); }
 	}
 	/**
-	 * 
+	 * Searxh and return bean instance by name 
 	 * @param 	  BeanName	bean name 
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @return	  Bean instance
-	 * @exception
+	 * @exception TODO:
 	 */
 	public Object GetBeanInstance(String BeanName) {
 		return this.springCtx.getBean(BeanName);
 	}
 	/**
-	 * @param springCtx the springCtx to set
+	 * Set spring application context where search bean
+	 * @param 	  springCtx spring application context
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
 	 */
 	public void setSpringCtx(ApplicationContext springCtx) {
 		this.springCtx = springCtx;

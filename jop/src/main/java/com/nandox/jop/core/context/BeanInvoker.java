@@ -20,7 +20,6 @@ public class BeanInvoker {
 	private Class beanClass;
 	private Method beanMethod;
 	/**
-	 * Costruttore
 	 * @param	  Clazz class of bean
 	 * @param	  Method bean's method fired
 	 * @date      07 ott 2016 - 07 ott 2016
@@ -39,7 +38,7 @@ public class BeanInvoker {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return	  BeanException
+	 * @return	  BeanException if return type unmatch or not extend ReturnClass
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void CheckCompliance (Class ReturnClass) throws BeanException {
@@ -54,8 +53,7 @@ public class BeanInvoker {
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	  result of method in string format  
+	 * @return	  result of method in string format or null if error  
 	 */
 	public String Invoke(Object BeanInstance) {
 		Object ret = null;
@@ -69,7 +67,6 @@ public class BeanInvoker {
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
 	 * @return	  invoker computed hash code with ComputeHash method  
 	 */
 	public String GetHash() {
@@ -82,7 +79,6 @@ public class BeanInvoker {
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
 	 * @return	  computed invoker hash code with hash code of class and hash code of method  
 	 */
 	@SuppressWarnings("rawtypes")

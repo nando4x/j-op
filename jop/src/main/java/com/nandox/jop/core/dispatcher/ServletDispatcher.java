@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
- * Descrizione classe
+ * Real servlet handler to read page file requested and process its content 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -26,7 +26,7 @@ import com.nandox.jop.core.ErrorsDefine;
 public class ServletDispatcher extends AbstractServletDispatcher {
 	private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
+	/* Read file corrisponding to url requested, and return content processed  
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
@@ -58,7 +58,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 		}
 	}
 
-	/* (non-Javadoc)
+	/* Like get
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override

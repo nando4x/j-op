@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * Descrizione classe
+ * DOM exception thrown in case of syntax error
  * 
  * @project   Jop (Java One Page)
  * 
@@ -17,11 +17,10 @@ public class DomException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Costruttore
+	 * @param	  message specific message of exception 
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception
 	 */
 	public DomException(String message) {
 		super(message);

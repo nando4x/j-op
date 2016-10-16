@@ -5,7 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 /**
- * Descrizione classe
+ * Abstract Servlet Dispatcher to instance dispatcher and process page requested
  * 
  * @project   Jop (Java One Page)
  * 
@@ -39,7 +39,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 * @date      19 set 2016 - 19 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception DomException - for dom systax error
+	 * @exception DomException if dom systax error
 	 * @return	  rendered html
 	 */
 	protected String processPage(String ContentPage) throws Exception {

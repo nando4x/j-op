@@ -10,7 +10,7 @@ import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
- * Descrizione classe
+ * This is basic part of a page 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -135,7 +135,7 @@ public class PageBlock {
 		}
 		return lst;
 	}
-	//
+	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
 	//
 	private Set<String> parseBean(String txt) throws DomException {

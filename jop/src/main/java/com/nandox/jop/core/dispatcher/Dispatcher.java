@@ -9,8 +9,9 @@ import javax.servlet.ServletException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.DomException;
 /**
- * Descrizione classe
+ * Real Dispatcher to process page requested
  * 
  * @project   Jop (Java One Page)
  * 
@@ -29,12 +30,12 @@ public class Dispatcher {
 
 	private WebAppContext appCtx;
 	/**
-	 * Descrizione
+	 * Init used by servlet
+	 * @param	  config servlet configuration
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return
+	 * @exception ServletException @see {@link javax.servlet.Servlet#init(ServletConfig)} 
 	 */
 	protected void initFromServlet(ServletConfig config) throws ServletException {
 		// read parameters and map them
@@ -43,12 +44,12 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	/**
-	 * Descrizione
+	 * Init used by filter
+	 * @param	  config filter configuration
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return
+	 * @exception ServletException @see {@link javax.servlet.Servlet#init(ServletConfig)} 
 	 */
 	protected void initFromFilter(FilterConfig config) throws ServletException {
 		// read parameters and map them
@@ -57,18 +58,18 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	/**
-	 * Descrizione
+	 * Complete process page: parse check and render
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return
+	 * @exception DomException if parsing and check synstax error
+	 * @return	  html rendered
 	 */
-	protected String processPage(String pageContent) throws Exception {
+	protected String processPage(String pageContent) throws DomException {
 		PageApp page = new PageApp(this.appCtx,pageContent);
 		return page.Render(appCtx);
 	}
-	//
+	// Init environment: create application context and attach the spring context
 	//
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
