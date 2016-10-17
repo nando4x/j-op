@@ -3,7 +3,8 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 /**
- * Attribute of page block
+ * Attribute of page block, it create own bean based on class name specified in attribute list (ATTR_LIST).<br>
+ * !!! REMBER TO ADD NEW ATTRIBUTE IN ATTR_LIST !!! 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -52,7 +53,7 @@ public class BlockAttribute {
 	//
 	private void parse(WebAppContext context, String beanId, int listInx) throws DomException {
 		try {
-			this.bean = (PageBean)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).newInstance();
+			this.bean = (PageBean)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).getDeclaredConstructor(WebAppContext.class, String.class).newInstance();
 			return;
 		} catch ( Exception e ) {
 			throw new DomException(e.getMessage());
