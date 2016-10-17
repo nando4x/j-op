@@ -25,8 +25,6 @@ import com.nandox.jop.core.ErrorsDefine;
 public class PageBlock {
 	/** Identification attribute: jop_id */
 	public static final String JOP_ATTR_ID = "jop_id";
-	/** Identification attribute: jop_id */
-	public static final String JOP_RENDERED_ID = "jop_rendered";
 	/** Identification bean: jop_bean */
 	public static final String JOP_BEAN = "jop_bean";
 	
@@ -38,7 +36,6 @@ public class PageBlock {
 	private List<BlockAttribute> attrs;
 	private Element clone;
 	
-	private String[] attr_list = {JOP_RENDERED_ID,"class"};
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -120,15 +117,15 @@ public class PageBlock {
 			}
 		}
 		// get attributes
-		for ( int ix=0; ix<attr_list.length; ix++ ) {
-			String a = this.domEl.attr(attr_list[ix]);
+		for ( int ix=0; ix<BlockAttribute.ATTR_LIST.length; ix++ ) {
+			String a = this.domEl.attr(BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME]);
 			if ( !a.isEmpty() ) {
 				if ( a.trim().indexOf("{") >= 0 ) {
 					if ( a.indexOf("}") > 0 ) {
-						this.attrs.add(new BlockAttribute(Context,attr_list[ix],a));
+						this.attrs.add(new BlockAttribute(Context,BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME],a));
 					} else
 						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-				} else if (attr_list[ix].toLowerCase().startsWith("jop_") ) {
+				} else if (BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].toLowerCase().startsWith("jop_") ) {
 					throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 				}
 			}

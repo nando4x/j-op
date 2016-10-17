@@ -19,6 +19,8 @@ public class ErrorsDefine {
 	/** */
 	static final public String JOP_PAGE_NOTFOUND = "Required page don't exist";  
 	/** */
+	static final public String JOP_ATTR_NOTFOUND = "Attributes wrong or don't exist";  
+	/** */
 	static final public String JOP_ID_DOUBLE = "";  
 	/** */
 	static final public String JOP_BEAN_SYNTAX = "";  
