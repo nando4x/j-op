@@ -10,4 +10,12 @@ public class testbean {
    public String getMessage(){
       return  message;
    }
+   
+   public boolean IsRendering() {
+	   return true;
+   }
+
+   public String getCssClass() {
+	   return "myCssClass";
+   }
 }

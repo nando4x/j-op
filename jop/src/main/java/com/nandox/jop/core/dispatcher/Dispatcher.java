@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageApp;
-import com.nandox.jop.core.processor.DomException;
+import com.nandox.jop.core.processor.ParseException;
 /**
  * Real Dispatcher to process page requested
  * 
@@ -62,10 +62,10 @@ public class Dispatcher {
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception DomException if parsing and check synstax error
+	 * @exception ParseException if parsing and check synstax error
 	 * @return	  html rendered
 	 */
-	protected String processPage(String pageContent) throws DomException {
+	protected String processPage(String pageContent) throws ParseException {
 		PageApp page = new PageApp(this.appCtx,pageContent);
 		return page.Render(appCtx);
 	}

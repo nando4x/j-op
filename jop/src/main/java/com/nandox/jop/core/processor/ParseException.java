@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * DOM exception thrown in case of syntax error
+ * Parse exception thrown in case of syntax error
  * 
  * @project   Jop (Java One Page)
  * 
@@ -13,7 +13,7 @@ package com.nandox.jop.core.processor;
  * 
  * @revisor   Fernando Costantino
  */
-public class DomException extends Exception {
+public class ParseException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -22,9 +22,8 @@ public class DomException extends Exception {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 */
-	public DomException(String message) {
+	public ParseException(String message) {
 		super(message);
-		
 	}
 
 }

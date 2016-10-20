@@ -39,7 +39,7 @@ public class PageApp {
 	 * @revisor   Fernando Costantino
 	 * @exception DomException if some syntax error
 	 */	
-	public PageApp(WebAppContext Context, String ContentPage) throws DomException {
+	public PageApp(WebAppContext Context, String ContentPage) throws ParseException {
 		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
@@ -70,7 +70,7 @@ public class PageApp {
 	// Parsing page content to search and build every block 
 	//
 	//
-	private void parse() throws DomException {
+	private void parse() throws ParseException {
 		// Search every jop block into dom and create it
         Iterator<Element> elems = this.dom.select(DOMPARSER_JOP_SELECTOR).iterator();
     	while ( elems.hasNext() ) {
@@ -78,10 +78,14 @@ public class PageApp {
     		String id = el.attr(PageBlock.JOP_ATTR_ID);
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
-    			throw new DomException(ErrorsDefine.FormatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
+    			throw new ParseException(ErrorsDefine.FormatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
     			// create block and check syntax error
-    			this.blocks.put(id, new PageBlock(this.appCtx,el));
+    			try {
+    				this.blocks.put(id, new PageBlock(this.appCtx,el));
+    			} catch (Exception e) {
+    				throw new ParseException(ErrorsDefine.FormatDOM(e.getMessage(),el));
+    			}
     		}
     	}
 		// Scan blocks for own child and attach them
