@@ -16,14 +16,14 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class BooleanPageBean extends PageBeanPrototype<Boolean> {
+public class BooleanPageBean extends AbstractPageBean<Boolean> {
 
 	public BooleanPageBean(WebAppContext Context, String BeanId) throws DomException {
-		super(Context, BeanId);
+		super(Context, BeanId,Boolean.class);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBeanPrototype#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.AbstractPageBean#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
 	public Boolean Fire(WebAppContext Context) {

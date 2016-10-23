@@ -9,7 +9,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    PageBeanPrototype.java
+ * @module    AbstractPageBean.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 
@@ -17,7 +17,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @revisor   Fernando Costantino
  */
-public abstract class PageBeanPrototype<E extends Object> implements PageBean {
+public abstract class AbstractPageBean<E extends Object> implements PageBean {
 
 	private String beanId;
 	private BeanInvoker invoker;
@@ -32,9 +32,9 @@ public abstract class PageBeanPrototype<E extends Object> implements PageBean {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public PageBeanPrototype(WebAppContext Context, String BeanId) throws DomException {
+	public AbstractPageBean(WebAppContext Context, String BeanId, Class<E> Clazz) throws DomException {
 		this.beanId = BeanId;
-		this.makeInvoker(Context);
+		this.makeInvoker(Context, Clazz);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageBean#getBeanId
@@ -70,7 +70,7 @@ public abstract class PageBeanPrototype<E extends Object> implements PageBean {
 	// Get invoker from applicartion context by class and method
 	// name take from bean identificator
 	//
-	private void makeInvoker(WebAppContext Context) throws DomException {
+	private void makeInvoker(WebAppContext Context, Class<E> clazz) throws DomException {
 		int inx_st = this.beanId.indexOf("{");
 		int inx_end = this.beanId.indexOf("}");
 		if ( inx_st >=0 && inx_end > inx_st ) {
@@ -83,7 +83,7 @@ public abstract class PageBeanPrototype<E extends Object> implements PageBean {
 					this.invoker = Context.GetBeanInvoker(name, method);
 				} catch (BeanException e) { new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 				try {
-					this.invoker.CheckCompliance(this.value.getClass());
+					this.invoker.CheckCompliance(clazz);
 				} catch (BeanException e) { new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 			} else // error dot
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);

@@ -7,7 +7,7 @@
 	}
 </script>
 	<div 	jop_id='id'
-			jop_rendered={}
+			jop_rendered={helloWorld.IsRendering}
 			class="{}"
 			>
 		jop_bean={helloWorld.getMessage}

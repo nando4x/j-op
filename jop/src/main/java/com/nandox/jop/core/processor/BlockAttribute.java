@@ -44,6 +44,7 @@ public class BlockAttribute {
 		for ( int ix=0; ix<ATTR_LIST.length; ix++ ) {
 			if ( Name.toLowerCase().equals(ATTR_LIST[ix][ATTR_NAME].toLowerCase()) ) {
 				this.parse(Context,BeanId,ix);
+				return;
 			}
 		}
 		throw new DomException(ErrorsDefine.JOP_ATTR_NOTFOUND);

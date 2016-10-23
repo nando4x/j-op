@@ -16,13 +16,13 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class SimplePageBean extends PageBeanPrototype<String> {
+public class SimplePageBean extends AbstractPageBean<String> {
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageBean#PageBean(WebAppContext,String)
 	 */
 	public SimplePageBean(WebAppContext Context, String BeanId) throws DomException {
-		super(Context, BeanId);
+		super(Context, BeanId,String.class);
 	}
 
 	/* (non-Javadoc)
