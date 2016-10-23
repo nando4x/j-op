@@ -79,12 +79,20 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 			if ( inx_dot > 0 ) {
 				String name = this.beanName = this.beanId.substring(inx_st+1, inx_dot).trim();
 				String method = this.beanId.substring(inx_dot+1, inx_end).trim();
+				int br;
+				if ( (br = method.indexOf("(")) > 0 ) {
+					if ( method.indexOf(")",br) > 0 )
+						method = method.substring(0,br);
+					else // error brachet
+						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				} else
+					method = "get"+method.substring(0, 1).toUpperCase()+method.substring(1);
 				try {
 					this.invoker = Context.GetBeanInvoker(name, method);
-				} catch (BeanException e) { new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
+				} catch (BeanException e) { throw new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 				try {
 					this.invoker.CheckCompliance(clazz);
-				} catch (BeanException e) { new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
+				} catch (BeanException e) { throw new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 			} else // error dot
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 		} else // error delimiter

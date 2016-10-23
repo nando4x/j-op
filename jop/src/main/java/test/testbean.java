@@ -11,7 +11,7 @@ public class testbean {
       return  message;
    }
    
-   public boolean IsRendering() {
+   public Boolean IsRendering() {
 	   return true;
    }
 

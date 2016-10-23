@@ -7,35 +7,22 @@
 	}
 </script>
 	<div 	jop_id='id'
-			jop_rendered={helloWorld.IsRendering}
-			class="{}"
+			jop_rendered={helloWorld.IsRendering()}
+			class="{helloWorld.CssClass}"
 			>
-		jop_bean={helloWorld.getMessage}
+		jop_bean={helloWorld.Message}
 	</div>
-	<div 	jop_id='id1'
-			jop_rendered={}
-			class="{}"
-			>
-		jop_bean={helloWorld.getMessage}
-		<div 	jop_id='id2'
-				jop_rendered={}
-				class="{}"
-				onclick={}
-				>
-			asasassjop_bean={helloWorld.getMessage}
+	<div jop_id='id1'>
+		jop_bean={helloWorld.Message}
+		<div jop_id='id2'>
+			asasassjop_bean={helloWorld.Message}
 		</div>
 		<div>
-			jop_bean={helloWorld.getMessage}
-			<div 	jop_id='id3'
-					jop_rendered={}
-					class="{}"
-					>
-				jop_bean={helloWorld.getMessage}
-				<div 	jop_id='id4'
-						jop_rendered={}
-						class="{}"
-						>
-					jop_bean={helloWorld.getMessage}
+			jop_bean={helloWorld.Message}
+			<div jop_id='id3'>
+				jop_bean={helloWorld.Message}
+				<div jop_id='id4'>
+					jop_bean={helloWorld.Message}
 				</div>
 			</div>
 		</div>
