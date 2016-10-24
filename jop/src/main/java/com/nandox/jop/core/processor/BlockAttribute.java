@@ -1,8 +1,9 @@
 package com.nandox.jop.core.processor;
 
+import java.lang.reflect.InvocationTargetException;
+import org.jsoup.nodes.Element;
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
-import java.lang.reflect.InvocationTargetException;
 /**
  * Attribute of page block, it create own bean based on class name specified in attribute list (ATTR_LIST).<br>
  * !!! REMBER...WHEN ADD NEW ATTRIBUTE ADD ITS ITEM IN ATTR_LIST !!! 
@@ -50,6 +51,9 @@ public class BlockAttribute {
 			}
 		}
 		throw new DomException(ErrorsDefine.JOP_ATTR_NOTFOUND);
+	}
+	public static void CleanDomFromAttribute(Element DomEl) {
+		DomEl.removeAttr(JOP_RENDERED_ID);
 	}
 	//
 	//

@@ -100,6 +100,8 @@ public class PageBlock {
 			String a = this.domEl.attr(ba.name);
 			this.clone.attr(ba.name,a.replace(ba.bean.getBeanId(), (String)ba.bean.Fire(Context)));
 		}
+		// delete jop_ attribute (exclude jop_id) from dom
+		BlockAttribute.CleanDomFromAttribute(this.clone);
 		return this.clone.outerHtml();
 	}
 	// Parsing Dom Element to search and build beans and attributes
