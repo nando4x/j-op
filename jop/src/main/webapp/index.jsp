@@ -8,7 +8,7 @@
 </script>
 	<div 	jop_id='id'
 			jop_rendered={helloWorld.IsRendering()}
-			class="{helloWorld.CssClass}"
+			class="xxx {helloWorld.CssClass}"
 			>
 		jop_bean={helloWorld.Message}
 	</div>

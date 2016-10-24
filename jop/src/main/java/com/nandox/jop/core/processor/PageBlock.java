@@ -136,7 +136,8 @@ public class PageBlock {
 			if ( !a.isEmpty() ) {
 				if ( a.trim().indexOf("{") >= 0 ) {
 					if ( a.indexOf("}") > 0 ) {
-						BlockAttribute at = new BlockAttribute(Context,BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME],a);
+						String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
+						BlockAttribute at = new BlockAttribute(Context,BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME],bid);
 						if ( BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].equals(BlockAttribute.JOP_RENDERED_ID) )
 							this.render = at.bean;
 						else
