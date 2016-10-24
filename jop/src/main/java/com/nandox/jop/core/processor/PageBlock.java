@@ -82,8 +82,8 @@ public class PageBlock {
 			w.html(c.clone.outerHtml());
 			w.unwrap();
 		}
-		// check if render is true
-		if ( (Boolean)this.render.Fire(Context) ) {
+		// check render attribute
+		if ( this.render != null && !(Boolean)this.render.Fire(Context) ) {
 			return "";
 		}
 		// Fire every own bean and insert into html
@@ -92,6 +92,13 @@ public class PageBlock {
 			PageBean b = bs.next();
 			String v = (String)b.Fire(Context);
 			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
+		}
+		// Compute attributes
+		Iterator<BlockAttribute> la = this.attrs.iterator();
+		while ( la.hasNext() ) {
+			BlockAttribute ba = la.next();
+			String a = this.domEl.attr(ba.name);
+			this.clone.attr(ba.name,a.replace(ba.bean.getBeanId(), (String)ba.bean.Fire(Context)));
 		}
 		return this.clone.outerHtml();
 	}
@@ -128,9 +135,10 @@ public class PageBlock {
 				if ( a.trim().indexOf("{") >= 0 ) {
 					if ( a.indexOf("}") > 0 ) {
 						BlockAttribute at = new BlockAttribute(Context,BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME],a);
-						this.attrs.add(at);
 						if ( BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].equals(BlockAttribute.JOP_RENDERED_ID) )
 							this.render = at.bean;
+						else
+							this.attrs.add(at);
 					} else
 						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 				} else if (BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].toLowerCase().startsWith("jop_") ) {

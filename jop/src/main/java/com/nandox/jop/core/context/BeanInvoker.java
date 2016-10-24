@@ -52,14 +52,14 @@ public class BeanInvoker {
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @return	  result of method in string format or null if error  
+	 * @return	  result of method or null if error  
 	 */
-	public String Invoke(Object BeanInstance) {
+	public Object Invoke(Object BeanInstance) {
 		Object ret = null;
 		try {
 			ret = this.beanMethod.invoke(BeanInstance);
 		} catch (Exception e) {}
-		return ret.toString();
+		return ret;
 	}
 	/**
 	 * Return this bean hash code
