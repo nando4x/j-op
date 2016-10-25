@@ -17,8 +17,11 @@ import com.nandox.jop.core.dispatcher.Dispatcher;
 
 /**
  * Servlet for JavaScript services.<br>
- * The services are implemented to exchange json fragment, command and response
- *      
+ * The services are implemented to exchange json fragment, context command and response
+ *   context is the services context and command is specific command in context
+ *   Possible Context:
+ *   
+ *      	/inject		to base inject operation
  *   Services command:<br>
  *   	GetBlock: { cmd:'getblock', id:'jop id' } - response block html
  * 
@@ -47,6 +50,9 @@ public class ServiceJSServlet extends HttpServlet {
 		super.init(Config);
 		this.dsp = new Dispatcher();
 	}
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		this.doPost(req, resp);
+	}
 	/* Like get
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -59,10 +65,11 @@ public class ServiceJSServlet extends HttpServlet {
 		    while ((line = reader.readLine()) != null)
 		      jb.append(line);
 		  } catch (Exception e) { /*report an error*/ }
-
+		  // get service context
+		  String sctx = req.getPathInfo();
+		  
 		  try {
-			  JSONTokener t = new JSONTokener(jb.toString());
-			  JSONObject jsonObject = new JSONObject(t); 
+			  JSONObject dt = new JSONObject(new JSONTokener(jb.toString()));
 		  } catch (JSONException e) {
 		    // crash and burn
 		    throw new IOException("Error parsing JSON request string");
@@ -74,5 +81,5 @@ public class ServiceJSServlet extends HttpServlet {
 		  // JSONObject nestedObj = jsonObject.getJSONObject("nestedObjName");
 		  // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
 		  // etc...	}
-
+	}
 }
