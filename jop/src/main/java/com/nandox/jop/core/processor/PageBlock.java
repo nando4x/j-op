@@ -32,6 +32,7 @@ public class PageBlock {
 	protected String id;
 	protected List<PageBlock> child;
 	protected boolean isChild;
+	private String pageId;
 	private List<PageBean> beans;
 	private List<BlockAttribute> attrs;
 	private PageBean render;
@@ -40,13 +41,15 @@ public class PageBlock {
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
+	 * @param	  PageId	page identificator
 	 * @param	  DomElement	HTML element of the block
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageBlock(WebAppContext Context, Element DomElement) throws DomException {
+	public PageBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
+		this.pageId = PageId;
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(JOP_ATTR_ID);
 		this.beans = new ArrayList<PageBean>();
@@ -100,8 +103,9 @@ public class PageBlock {
 			String a = this.domEl.attr(ba.name);
 			this.clone.attr(ba.name,a.replace(ba.bean.getBeanId(), (String)ba.bean.Fire(Context)));
 		}
-		// delete jop_ attribute (exclude jop_id) from dom
+		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
+		this.clone.attr(JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone.outerHtml();
 	}
 	// Parsing Dom Element to search and build beans and attributes

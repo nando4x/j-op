@@ -27,19 +27,22 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public class PageApp {
 	protected static final String DOMPARSER_JOP_SELECTOR = "["+PageBlock.JOP_ATTR_ID+"]";
+	private String id;
 	private Document dom;
 	private Map<String,PageBlock> blocks;
 	private WebAppContext appCtx;
 	/**
 	 * Constructor: parse page content into DOM
 	 * @param	  Context	Application context
+	 * @param	  PageId	page identificator
 	 * @param	  ContentPage	html content page
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception DomException if some syntax error
 	 */	
-	public PageApp(WebAppContext Context, String ContentPage) throws ParseException {
+	public PageApp(WebAppContext Context, String PageId, String ContentPage) throws ParseException {
+		this.id = PageId;
 		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
@@ -82,7 +85,7 @@ public class PageApp {
     		} else {
     			// create block and check syntax error
     			try {
-    				this.blocks.put(id, new PageBlock(this.appCtx,el));
+    				this.blocks.put(id, new PageBlock(this.appCtx,this.id,el));
     			} catch (Exception e) {
     				throw new ParseException(ErrorsDefine.FormatDOM(e.getMessage(),el));
     			}

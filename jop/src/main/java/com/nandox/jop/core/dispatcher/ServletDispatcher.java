@@ -43,7 +43,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 			// Process page content
 			String out = new String(buff);
 			try {
-				out = this.processPage(out);
+				out = this.processPage((pth.charAt(0)=='/'?pth.substring(1):pth),out);
 			} catch (Exception e) {
 				// TODO: manage exception
 				throw new ServletException(e);

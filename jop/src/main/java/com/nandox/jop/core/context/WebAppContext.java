@@ -3,6 +3,8 @@ package com.nandox.jop.core.context;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 import org.springframework.context.ApplicationContext;
+import com.nandox.jop.core.processor.PageApp;
+
 /**
  * Application Context to resolve and invoke bean.<br>
  * The bean is search in spring environment
@@ -21,6 +23,7 @@ public class WebAppContext {
 
 	private ApplicationContext springCtx;
 	private HashMap<String,BeanInvoker> beans;
+	private HashMap<String,PageApp> pages;
 	/**
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
@@ -28,6 +31,7 @@ public class WebAppContext {
 	 */
 	public WebAppContext() {
 		this.beans = new HashMap<String,BeanInvoker>();
+		this.pages = new HashMap<String,PageApp>();
 	}
 	/**
 	 * Get bean invoker (or create new if not exist) by bean name and method name

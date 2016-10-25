@@ -59,21 +59,24 @@ public class Dispatcher {
 	}
 	/**
 	 * Complete process page: parse check and render
+	 * @param	  PageId	page identificator
+	 * @param	  Page		page content
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception ParseException if parsing and check synstax error
 	 * @return	  html rendered
 	 */
-	protected String processPage(String pageContent) throws ParseException {
-		PageApp page = new PageApp(this.appCtx,pageContent);
+	protected String processPage(String PageId, String PageContent) throws ParseException {
+		PageApp page = new PageApp(this.appCtx,PageId,PageContent);
 		return page.Render(appCtx);
 	}
 	// Init environment: create application context and attach the spring context
 	//
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
-		this.appCtx = new WebAppContext();
+		if ( (this.appCtx = (WebAppContext)ctx.getAttribute("JopWebAppContext")) == null )
+			this.appCtx = new WebAppContext();
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));
 		// manage parameters
 		

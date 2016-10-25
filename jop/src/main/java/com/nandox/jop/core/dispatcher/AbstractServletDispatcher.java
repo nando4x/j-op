@@ -35,6 +35,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 
 	/**
 	 * Complete process of page to interpreter and render it
+	 * @param	  PageId	page identificator
 	 * @param	  ContentPage:	html content of the page
 	 * @date      19 set 2016 - 19 set 2016
 	 * @author    Fernando Costantino
@@ -42,7 +43,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 * @exception DomException if dom systax error
 	 * @return	  rendered html
 	 */
-	protected String processPage(String ContentPage) throws Exception {
-		return this.dsp.processPage(ContentPage);
+	protected String processPage(String PageId, String ContentPage) throws Exception {
+		return this.dsp.processPage(PageId, ContentPage);
 	}
 }
