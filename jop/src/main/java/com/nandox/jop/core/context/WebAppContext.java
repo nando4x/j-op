@@ -24,6 +24,7 @@ public class WebAppContext {
 	private ApplicationContext springCtx;
 	private HashMap<String,BeanInvoker> beans;
 	private HashMap<String,PageApp> pages;
+	
 	/**
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
@@ -78,5 +79,15 @@ public class WebAppContext {
 	 */
 	public void setSpringCtx(ApplicationContext springCtx) {
 		this.springCtx = springCtx;
+	}
+	/**
+	 * Return application page map: map with page id and page
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  pages map
+	 */
+	public HashMap<String,PageApp> GetPagesMap() {
+		return this.pages;
 	}
 }

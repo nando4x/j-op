@@ -28,6 +28,7 @@ import com.nandox.jop.core.context.WebAppContext;
 public class PageApp {
 	protected static final String DOMPARSER_JOP_SELECTOR = "["+PageBlock.JOP_ATTR_ID+"]";
 	private String id;
+	private int hash;
 	private Document dom;
 	private Map<String,PageBlock> blocks;
 	private WebAppContext appCtx;
@@ -47,6 +48,13 @@ public class PageApp {
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
+		this.hash = ContentPage.hashCode();
+	}
+	/**
+	 * @return the hash
+	 */
+	public int getHash() {
+		return hash;
 	}
 	/**
 	 * Rendering the page: read every bean value and insert it into dom.<br>

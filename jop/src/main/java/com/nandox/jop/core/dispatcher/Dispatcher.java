@@ -68,8 +68,18 @@ public class Dispatcher {
 	 * @return	  html rendered
 	 */
 	protected String processPage(String PageId, String PageContent) throws ParseException {
-		PageApp page = new PageApp(this.appCtx,PageId,PageContent);
-		return page.Render(appCtx);
+		// check if page is changed, in this case or if not exist create new
+		PageApp page;
+		if ( (page = this.appCtx.GetPagesMap().get(PageId)) != null ) {
+			if ( page.getHash() != PageContent.hashCode() )
+				page = null;
+		}
+		if ( page == null ) { // create new
+			page = new PageApp(this.appCtx,PageId,PageContent);
+			this.appCtx.GetPagesMap().put(PageId, page);
+		}
+		// render page
+		return page.Render(this.appCtx);
 	}
 	// Init environment: create application context and attach the spring context
 	//
