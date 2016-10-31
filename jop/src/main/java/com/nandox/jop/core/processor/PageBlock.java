@@ -26,7 +26,8 @@ public class PageBlock {
 	/** Identification attribute: jop_id */
 	public static final String JOP_ATTR_ID = "jop_id";
 	/** Identification bean: jop_bean */
-	public static final String JOP_BEAN = "jop_bean";
+	public static final String JOP_BEAN_INI = "jop_bean={";
+	public static final String JOP_BEAN_END = "}";
 	
 	protected Element domEl;
 	protected String id;
@@ -162,20 +163,16 @@ public class PageBlock {
 		Set<String> lst = new HashSet<String>();
 		int inx_st = 0;
 		// Search every bean
-		inx_st = txt.indexOf(JOP_BEAN,inx_st);
+		inx_st = txt.indexOf(JOP_BEAN_INI,inx_st);
 		while ( inx_st >= 0 ) {
 			// search and check end bean
-			int inx_end = txt.indexOf("}",inx_st);
+			int inx_end = txt.indexOf(JOP_BEAN_END,inx_st);
 			if ( inx_end > inx_st ) {
-				String bean = txt.substring(inx_st, inx_end+1);
-				// check syntax
-				if ( bean.indexOf(JOP_BEAN) == 0 && bean.indexOf("=") > 0 && bean.indexOf("{") > 0 ) {
-					lst.add(bean);
-				} else
-					throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				String bean = txt.substring(inx_st, inx_end+JOP_BEAN_END.length());
+				lst.add(bean);
 			} else 
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-			inx_st = txt.indexOf(JOP_BEAN,inx_end);
+			inx_st = txt.indexOf(JOP_BEAN_INI,inx_end);
 		}
 		return lst;
 	}

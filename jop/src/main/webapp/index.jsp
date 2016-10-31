@@ -1,4 +1,5 @@
 <html>
+ <link type="javascript" src="jquery.js">
 <body>
 <script type="javascript">
 	var a, b, c;
@@ -8,14 +9,19 @@
 </script>
 	<div 	jop_id='id'
 			jop_rendered={helloWorld.IsRendering()}
-			class="xxx {helloWorld.CssClass}"
+			class="{helloWorld.CssClass}"
 			>
+		<div>	
 		jop_bean={helloWorld.Message}
+		sasa<jbean {helloWorld.Message}/>ssass
+		
+		</div>
 	</div>
 	<div jop_id='id1'>
 		jop_bean={helloWorld.Message}
 		<div jop_id='id2'>
 			asasassjop_bean={helloWorld.Message}
+			<jbean {helloWorld.Message}/>
 		</div>
 		<div>
 			jop_bean={helloWorld.Message}

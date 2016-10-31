@@ -17,13 +17,13 @@ import com.nandox.jop.core.dispatcher.Dispatcher;
 
 /**
  * Servlet for JavaScript services.<br>
- * The services are implemented to exchange json fragment, context command and response
- *   context is the services context and command is specific command in context
- *   Possible Context:
+ * The services are implemented to exchange json fragment, command and response
+ *   
+ *   Possible Service:
  *   
  *      	/inject		to base inject operation
- *   Services command:<br>
- *   	GetBlock: { cmd:'getblock', id:'jop id' } - response block html
+ *   		Services command:<br>
+ *   			GetBlock: { cmd:'getblock', id:'jop id' } - response block html
  * 
  * @project   Jop (Java One Page)
  * 
