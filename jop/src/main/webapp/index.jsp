@@ -13,7 +13,7 @@
 			>
 		<div>	
 		jop_bean={helloWorld.Message}
-		sasa<jbean {helloWorld.Message}/>ssass
+		sasa<jbean>{helloWorld.Message}</jbean>ssass
 		
 		</div>
 	</div>
