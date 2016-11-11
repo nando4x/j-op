@@ -26,7 +26,8 @@ public class PageBlock {
 	/** Identification attribute: jop_id */
 	public static final String JOP_ATTR_ID = "jop_id";
 	/** Identification bean: jop_bean */
-	public static final String JOP_BEAN_INI = "jop_bean={";
+//	public static final String JOP_BEAN_INI = "jop_bean={";
+	public static final String JOP_BEAN_INI = "{";
 	public static final String JOP_BEAN_END = "}";
 	
 	protected Element domEl;
@@ -95,6 +96,7 @@ public class PageBlock {
 		while ( bs.hasNext() ) {
 			PageBean b = bs.next();
 			String v = (String)b.Fire(Context);
+			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 		}
 		// Compute attributes
@@ -114,7 +116,8 @@ public class PageBlock {
 	//
 	private Set<String> parse(WebAppContext Context) throws DomException {
 		// scan for bean: first child and them own
-		Iterator<Element> elems = this.domEl.getAllElements().iterator();
+		//Iterator<Element> elems = this.domEl.getAllElements().iterator();
+		Iterator<Element> elems = this.domEl.select("jbean").iterator();
 		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
@@ -124,7 +127,11 @@ public class PageBlock {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean id to join the same
-    						lst.addAll(this.parseBean(el.ownText()));
+    						//lst.addAll(this.parseBean(el.ownText()));
+    						Set<String> l = this.parseBean(el.ownText());
+    						String id = l.iterator().next();
+    						el.attr("id",id);
+    						lst.addAll(l);
     						break;
     					}
     				}
@@ -174,6 +181,7 @@ public class PageBlock {
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 			inx_st = txt.indexOf(JOP_BEAN_INI,inx_end);
 		}
+		// TODO: error if empty
 		return lst;
 	}
 }

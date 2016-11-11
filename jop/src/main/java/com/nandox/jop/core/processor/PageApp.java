@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import javax.tools.*;
 
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
@@ -49,6 +50,10 @@ public class PageApp {
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 		this.hash = ContentPage.hashCode();
+		JavaCompiler c = ToolProvider.getSystemJavaCompiler();
+		c.toString();
+		ClassLoader l = c.getClass().getClassLoader();
+		c.toString();
 	}
 	/**
 	 * @return the hash
