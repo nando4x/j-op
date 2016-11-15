@@ -1,5 +1,7 @@
 <html>
- <link type="javascript" src="jquery.js">
+<head>
+ <script type="text/javascript" src="jquery-1.12.2.js"/>
+</head>
 <body>
 <script type="javascript">
 	var a, b, c;
@@ -8,13 +10,13 @@
 			<jbean>aaaaa</jbean>
 	}
 </script>
-	<div 	jop_id='id'
+	<div 	jop_id=''
 			jop_rendered={helloWorld.IsRendering()}
-			class="{helloWorld.CssClass}"
+			class="java{helloWorld.CssClass}"
 			>
 		<div>	
 		jop_bean={helloWorld.Message}
-		sasa<jbean>{helloWorld.Message}</jbean>ssass
+		sasa<jbean>{$helloWorld.Message}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>
@@ -29,7 +31,8 @@
 			</tbody>
 		</table>
 	</div>
-	<div jop_id='id1'>
+	<input value="java{$helloWorld.Message}">
+	<div jop_id='id1' onclick="java{}">
 		jop_bean={helloWorld.Message}
 		<div jop_id='id2'>
 			asasassjop_bean={helloWorld.Message}

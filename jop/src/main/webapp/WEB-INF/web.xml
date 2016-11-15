@@ -23,7 +23,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Jop Servlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/xx/*</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>JopServices Servlet</servlet-name>
@@ -33,4 +33,14 @@
 		<servlet-name>JopServices Servlet</servlet-name>
 		<url-pattern>/jopservices/*</url-pattern>
 	</servlet-mapping>
+
+	<filter>
+		<display-name>CsrfPreventionFilter</display-name>
+		<filter-name>CsrfPreventionFilter</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CsrfPreventionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 </web-app>
