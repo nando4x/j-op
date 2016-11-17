@@ -3,6 +3,10 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanInvoker;
 import com.nandox.jop.core.context.BeanException;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
 import com.nandox.jop.core.ErrorsDefine;
 /**
  * Abstract implementation for page bean 
@@ -98,4 +102,11 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 		} else // error delimiter
 			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 	}
+	//
+	//
+	//
+	void createInvokerClass(WebAppContext Context) {
+
+	}
+	
 }

@@ -7,16 +7,16 @@
 	var a, b, c;
 	if ( (a && b) || c > 2 ) {
 		a = "ssa";
-			<jbean>aaaaa</jbean>
 	}
 </script>
 	<div 	jop_id=''
-			jop_rendered={helloWorld.IsRendering()}
+			jop_rendered="java{
+					helloWorld.IsRendering()
+				}"
 			class="java{helloWorld.CssClass}"
 			>
 		<div>	
-		jop_bean={helloWorld.Message}
-		sasa<jbean>{$helloWorld.Message}</jbean>ssass
+		sasa<jbean>{return $helloWorld.Message}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>
@@ -33,17 +33,17 @@
 	</div>
 	<input value="java{$helloWorld.Message}">
 	<div jop_id='id1' onclick="java{}">
-		jop_bean={helloWorld.Message}
+		<jbean>{return $helloWorld.Message}</jbean>
 		<div jop_id='id2'>
-			asasassjop_bean={helloWorld.Message}
-			<jbean>{helloWorld.Message}</jbean>
+			asasass<jbean>{return $helloWorld.Message}</jbean>
+			<jbean>{return $helloWorld.Message}</jbean>
 		</div>
 		<div>
-			jop_bean={helloWorld.Message}
+			<jbean>{return $helloWorld.Message}</jbean>
 			<div jop_id='id3'>
-				jop_bean={helloWorld.Message}
+				<jbean>{return $helloWorld.Message}</jbean>
 				<div jop_id='id4'>
-					jop_bean={helloWorld.Message}
+					<jbean>{return $helloWorld.Message}</jbean>
 				</div>
 			</div>
 		</div>

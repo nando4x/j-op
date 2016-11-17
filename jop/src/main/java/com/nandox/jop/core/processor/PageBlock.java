@@ -29,6 +29,7 @@ public class PageBlock {
 //	public static final String JOP_BEAN_INI = "jop_bean={";
 	public static final String JOP_BEAN_INI = "{";
 	public static final String JOP_BEAN_END = "}";
+	public static final String JOP_BEAN_TAG = "jbean";
 	
 	protected Element domEl;
 	protected String id;
@@ -180,6 +181,24 @@ public class PageBlock {
 			} else 
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 			inx_st = txt.indexOf(JOP_BEAN_INI,inx_end);
+		}
+		// TODO: error if empty
+		return lst;
+	}
+	private Set<String> parseBean(Element element) throws DomException {
+		Set<String> lst = new HashSet<String>();
+		// Search every bean tag
+        Iterator<Element> elems = element.select(JOP_BEAN_TAG).iterator();
+    	while ( elems.hasNext() ) {
+    		Element el = elems.next();
+			// check start and end bean
+			int inx_st = el.text().trim().indexOf(JOP_BEAN_INI);
+			int inx_end = el.text().trim().indexOf(JOP_BEAN_END);
+			if ( inx_st >= 0 && inx_end == el.text().trim().length() ) {
+				String bean = el.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
+				lst.add(bean);
+			} else 
+				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 		}
 		// TODO: error if empty
 		return lst;
