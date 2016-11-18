@@ -1,5 +1,6 @@
 package com.nandox.jop.core.context;
 
+import java.util.ArrayList;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
@@ -34,7 +35,7 @@ import java.util.Arrays;
  */
 
 public class BeanCompiler {
-
+	
 	private JavaCompiler cmpl;
 	DiagnosticCollector<JavaFileObject> dgn;
 	/**
@@ -49,6 +50,48 @@ public class BeanCompiler {
 	    DiagnosticCollector<JavaFileObject> dgn = new DiagnosticCollector<JavaFileObject>();
 	}
 
+	public BeanDescriptor CreateClass (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) {
+    	BeanDescriptor b = new BeanDescriptor();
+    	// Composite java code
+		String code = "public class "+this.getClass().getPackage().getName()+"."+BeanName + " {";
+		code += "	public "+ReturnClass+ " invoke (Object beans[]) {";
+		// search bean reference $xxxx
+		ArrayList<String> l = new ArrayList<String>();
+		int inx_st = BeanCode.indexOf('$');
+		int inx_end = BeanCode.indexOf('.',inx_st);
+		while ( inx_st >= 0 && inx_end > inx_st) {
+			l.add(BeanCode.substring(inx_st+1, inx_end-1));
+			inx_st = BeanCode.indexOf('$');
+			inx_end = BeanCode.indexOf('.',inx_st);
+		}
+		if ( l.size() > 0 ) {
+			b.beans = l.toArray(new String[0]);
+			for ( int ix=0; ix<l.size(); ix++ )
+				code += "	"+Context.GetBeanType(b.beans[ix]).getName()+" "+b.beans[ix]+"=beans["+ix+"]; ";
+		}
+		code += BeanCode;
+		code += "	}";
+		code += "}";
+	    JavaFileObject file = new JavaSourceFromString(BeanName, code);
+	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
+	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, null, null, compilationUnits);
+	    boolean success = task.call();
+	    // TODO: manage error compile
+	    /*for (Diagnostic diagnostic : this.dgn.getDiagnostics()) {
+	      System.out.println(diagnostic.getCode());
+	      System.out.println(diagnostic.getKind());
+	      System.out.println(diagnostic.getPosition());
+	      System.out.println(diagnostic.getStartPosition());
+	      System.out.println(diagnostic.getEndPosition());
+	      System.out.println(diagnostic.getSource());
+	      System.out.println(diagnostic.getMessage(null));
+	    }*/
+	    try {
+	    	b.clazz = Class.forName(BeanName);
+	    } catch (ClassNotFoundException e) {}
+	    return null;
+	}
+	/*
 	public static void main(String args[]) throws IOException {
 	    DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 
@@ -65,7 +108,7 @@ public class BeanCompiler {
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    CompilationTask task = cmpl.getTask(null, null, diagnostics, null, null, compilationUnits);
 
-	    boolean success = task.
+	    boolean success = task.call();
 	    for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
 	      System.out.println(diagnostic.getCode());
 	      System.out.println(diagnostic.getKind());
@@ -95,7 +138,7 @@ public class BeanCompiler {
 	      }
 	    }
 	  }
-	}
+	}*/
 
 	class JavaSourceFromString extends SimpleJavaFileObject {
 	  final String code;
@@ -109,5 +152,10 @@ public class BeanCompiler {
 	  public CharSequence getCharContent(boolean ignoreEncodingErrors) {
 	    return code;
 	  }
+	}
+	
+	class BeanDescriptor {
+		protected Class<?> clazz;
+		protected String[] beans;
 	}
 }

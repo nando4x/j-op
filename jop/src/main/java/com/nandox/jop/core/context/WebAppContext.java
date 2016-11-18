@@ -71,6 +71,18 @@ public class WebAppContext {
 		return this.springCtx.getBean(BeanName);
 	}
 	/**
+	 * Search and return bean Class by name 
+	 * @param 	  BeanName	bean name 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  Bean class
+	 * @exception TODO:
+	 */
+	public Class<?> GetBeanType(String BeanName) {
+		return this.springCtx.getType(BeanName);
+	}
+	/**
 	 * Set spring application context where search bean
 	 * @param 	  springCtx spring application context
 	 * @date      04 ott 2016 - 04 ott 2016
