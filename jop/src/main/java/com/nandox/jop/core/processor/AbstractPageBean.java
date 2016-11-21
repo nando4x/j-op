@@ -36,9 +36,11 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public AbstractPageBean(WebAppContext Context, String BeanId, Class<E> Clazz) throws DomException {
+	public AbstractPageBean(WebAppContext Context, String BeanId, Class<E> ReturnClass) throws DomException {
 		this.beanId = BeanId;
-		this.makeInvoker(Context, Clazz);
+		this.beanName = "testb";
+		//this.makeInvoker(Context, Clazz);
+		this.createInvokerClass(Context, ReturnClass);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageBean#getBeanId
@@ -105,8 +107,12 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 	//
 	//
 	//
-	void createInvokerClass(WebAppContext Context) {
-
+	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
+		try {
+			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanName, this.beanId, RetClass.getName());
+		} catch (Exception e) {
+			throw new DomException(e.getMessage());
+		}
 	}
 	
 }

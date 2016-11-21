@@ -10,10 +10,10 @@
 	}
 </script>
 	<div 	jop_id=''
-			jop_rendered="java{
+			xjop_rendered="java{
 					helloWorld.IsRendering()
 				}"
-			class="java{helloWorld.CssClass}"
+			xclass="java{helloWorld.CssClass}"
 			>
 		<div>	
 		sasa<jbean>{return $helloWorld.Message}</jbean>ssass

@@ -129,7 +129,7 @@ public class PageBlock {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean id to join the same
     						//lst.addAll(this.parseBean(el.ownText()));
-    						Set<String> l = this.parseBean(el.ownText());
+    						Set<String> l = this.parseBean(el);
     						String id = l.iterator().next();
     						el.attr("id",id);
     						lst.addAll(l);
@@ -194,7 +194,7 @@ public class PageBlock {
 			// check start and end bean
 			int inx_st = el.text().trim().indexOf(JOP_BEAN_INI);
 			int inx_end = el.text().trim().indexOf(JOP_BEAN_END);
-			if ( inx_st >= 0 && inx_end == el.text().trim().length() ) {
+			if ( inx_st >= 0 && inx_end == el.text().trim().length()-1 ) {
 				String bean = el.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
 				lst.add(bean);
 			} else 

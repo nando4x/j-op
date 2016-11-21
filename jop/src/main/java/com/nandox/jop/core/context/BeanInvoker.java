@@ -19,6 +19,7 @@ public class BeanInvoker {
 	@SuppressWarnings("rawtypes")
 	private Class beanClass;
 	private Method beanMethod;
+	private String[] beans;
 	/**
 	 * @param	  Clazz class of bean
 	 * @param	  Method bean's method fired
@@ -31,6 +32,19 @@ public class BeanInvoker {
 	public BeanInvoker(Class Clazz, Method Method) {
 		this.beanClass = Clazz;
 		this.beanMethod = Method;
+	}
+	/**
+	 * @param	  Clazz class of bean
+	 * @param	  Beans list of application bean names 
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 */
+	@SuppressWarnings("rawtypes")
+	public BeanInvoker(Class Clazz, String[] Beans) {
+		this.beanClass = Clazz;
+		this.beans = Beans;
 	}
 	/**
 	 * Check if bean method is compliance to return type.<br>

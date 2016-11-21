@@ -39,19 +39,18 @@ public class BeanCompiler {
 	private JavaCompiler cmpl;
 	DiagnosticCollector<JavaFileObject> dgn;
 	/**
-	 * @param	  Context	Application context
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public BeanCompiler (WebAppContext Context) {
-		JavaCompiler cmpl = ToolProvider.getSystemJavaCompiler();
-	    DiagnosticCollector<JavaFileObject> dgn = new DiagnosticCollector<JavaFileObject>();
+	public BeanCompiler () {
+		this.cmpl = ToolProvider.getSystemJavaCompiler();
+	    this.dgn = new DiagnosticCollector<JavaFileObject>();
 	}
 
-	public BeanDescriptor CreateClass (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) {
-    	BeanDescriptor b = new BeanDescriptor();
+	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
+		String beans[] = new String[0];
     	// Composite java code
 		String code = "public class "+this.getClass().getPackage().getName()+"."+BeanName + " {";
 		code += "	public "+ReturnClass+ " invoke (Object beans[]) {";
@@ -60,14 +59,14 @@ public class BeanCompiler {
 		int inx_st = BeanCode.indexOf('$');
 		int inx_end = BeanCode.indexOf('.',inx_st);
 		while ( inx_st >= 0 && inx_end > inx_st) {
-			l.add(BeanCode.substring(inx_st+1, inx_end-1));
-			inx_st = BeanCode.indexOf('$');
+			l.add(BeanCode.substring(inx_st+1, inx_end));
+			inx_st = BeanCode.indexOf('$', inx_st+1);
 			inx_end = BeanCode.indexOf('.',inx_st);
 		}
 		if ( l.size() > 0 ) {
-			b.beans = l.toArray(new String[0]);
+			beans = l.toArray(new String[0]);
 			for ( int ix=0; ix<l.size(); ix++ )
-				code += "	"+Context.GetBeanType(b.beans[ix]).getName()+" "+b.beans[ix]+"=beans["+ix+"]; ";
+				code += "	"+Context.GetBeanType(beans[ix]).getName()+" "+beans[ix]+"=beans["+ix+"]; ";
 		}
 		code += BeanCode;
 		code += "	}";
@@ -76,19 +75,27 @@ public class BeanCompiler {
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, null, null, compilationUnits);
 	    boolean success = task.call();
-	    // TODO: manage error compile
-	    /*for (Diagnostic diagnostic : this.dgn.getDiagnostics()) {
-	      System.out.println(diagnostic.getCode());
-	      System.out.println(diagnostic.getKind());
-	      System.out.println(diagnostic.getPosition());
-	      System.out.println(diagnostic.getStartPosition());
-	      System.out.println(diagnostic.getEndPosition());
-	      System.out.println(diagnostic.getSource());
-	      System.out.println(diagnostic.getMessage(null));
-	    }*/
-	    try {
-	    	b.clazz = Class.forName(BeanName);
-	    } catch (ClassNotFoundException e) {}
+	    if ( success ) {
+		    try {
+		    	return new BeanInvoker(Class.forName(BeanName),beans);
+		    } catch (ClassNotFoundException e) {
+		    	
+		    }
+	    } else {
+		    // TODO: manage error compile
+		    StringWriter writer = new StringWriter();
+		    PrintWriter out = new PrintWriter(writer);
+		    for (Diagnostic diagnostic : this.dgn.getDiagnostics()) {
+		    	out.println(diagnostic.getCode());
+		    	out.println(diagnostic.getKind());
+		    	out.println(diagnostic.getPosition());
+			    out.println(diagnostic.getStartPosition());
+			    out.println(diagnostic.getEndPosition());
+			    out.println(diagnostic.getSource());
+			    out.println(diagnostic.getMessage(null));
+		    }
+			throw new Exception(writer.toString());
+	    }
 	    return null;
 	}
 	/*
@@ -153,9 +160,4 @@ public class BeanCompiler {
 	    return code;
 	  }
 	}
-	
-	class BeanDescriptor {
-		protected Class<?> clazz;
-		protected String[] beans;
-	}
-}
+	class com.nandox.jop.core.context.testb {	public java.lang.String invoke (Object[] beans) {	test.testbean helloWorld=beans[0]; {return "";/*$helloWorld.Message*/}	}}}

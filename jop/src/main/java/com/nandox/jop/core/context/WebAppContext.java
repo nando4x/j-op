@@ -24,6 +24,7 @@ public class WebAppContext {
 	private ApplicationContext springCtx;
 	private HashMap<String,BeanInvoker> beans;
 	private HashMap<String,PageApp> pages;
+	private BeanCompiler bcmpl;
 	
 	/**
 	 * @date      07 ott 2016 - 07 ott 2016
@@ -33,6 +34,7 @@ public class WebAppContext {
 	public WebAppContext() {
 		this.beans = new HashMap<String,BeanInvoker>();
 		this.pages = new HashMap<String,PageApp>();
+		this.bcmpl = new BeanCompiler();
 	}
 	/**
 	 * Get bean invoker (or create new if not exist) by bean name and method name
@@ -101,5 +103,11 @@ public class WebAppContext {
 	 */
 	public HashMap<String,PageApp> GetPagesMap() {
 		return this.pages;
+	}
+	/**
+	 * @return the BeanCompiler
+	 */
+	public BeanCompiler getBeanCompiler() {
+		return bcmpl;
 	}
 }
