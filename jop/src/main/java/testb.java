@@ -1,0 +1,1 @@
+	import test.testbean;public class testb {	public java.lang.String invoke (Object beans[]) {	test.testbean helloWorld=(test.testbean)beans[0]; {return helloWorld.getMessage();}	}}

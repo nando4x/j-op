@@ -16,7 +16,7 @@
 			xclass="java{helloWorld.CssClass}"
 			>
 		<div>	
-		sasa<jbean>{return $helloWorld.Message}</jbean>ssass
+		sasa<jbean>{return $helloWorld.getMessage();}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>
@@ -33,17 +33,17 @@
 	</div>
 	<input value="java{$helloWorld.Message}">
 	<div jop_id='id1' onclick="java{}">
-		<jbean>{return $helloWorld.Message}</jbean>
+		<jbean>{return $helloWorld.getMessage();}</jbean>
 		<div jop_id='id2'>
-			asasass<jbean>{return $helloWorld.Message}</jbean>
-			<jbean>{return $helloWorld.Message}</jbean>
+			asasass<jbean>{return $helloWorld.getMessage();}</jbean>
+			<jbean>{return $helloWorld.getMessage();}</jbean>
 		</div>
 		<div>
-			<jbean>{return $helloWorld.Message}</jbean>
+			<jbean>{return $helloWorld.getMessage();}</jbean>
 			<div jop_id='id3'>
-				<jbean>{return $helloWorld.Message}</jbean>
+				<jbean>{return $helloWorld.getMessage();}</jbean>
 				<div jop_id='id4'>
-					<jbean>{return $helloWorld.Message}</jbean>
+					<jbean>{return $helloWorld.getMessage();}</jbean>
 				</div>
 			</div>
 		</div>

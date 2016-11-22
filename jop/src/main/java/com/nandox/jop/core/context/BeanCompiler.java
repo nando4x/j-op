@@ -52,27 +52,33 @@ public class BeanCompiler {
 	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
 		String beans[] = new String[0];
     	// Composite java code
-		String code = "public class "+this.getClass().getPackage().getName()+"."+BeanName + " {";
-		code += "	public "+ReturnClass+ " invoke (Object beans[]) {";
-		// search bean reference $xxxx
+		String code = "package com.nandox.jop.core.context;";
+		// 		search bean reference $xxxx
 		ArrayList<String> l = new ArrayList<String>();
 		int inx_st = BeanCode.indexOf('$');
 		int inx_end = BeanCode.indexOf('.',inx_st);
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			l.add(BeanCode.substring(inx_st+1, inx_end));
+			code += "import "+Context.GetBeanType(BeanCode.substring(inx_st+1, inx_end)).getName()+";";
+			BeanCode = BeanCode.replace(BeanCode.substring(inx_st, inx_end), BeanCode.substring(inx_st+1, inx_end));
 			inx_st = BeanCode.indexOf('$', inx_st+1);
 			inx_end = BeanCode.indexOf('.',inx_st);
 		}
+		code += "public class "+BeanName + " {";
+		code += "public "+ReturnClass+ " invoke (Object beans[]) {";
 		if ( l.size() > 0 ) {
 			beans = l.toArray(new String[0]);
 			for ( int ix=0; ix<l.size(); ix++ )
-				code += "	"+Context.GetBeanType(beans[ix]).getName()+" "+beans[ix]+"=beans["+ix+"]; ";
+				code += ""+Context.GetBeanType(beans[ix]).getName()+" "+beans[ix]+"=("+Context.GetBeanType(beans[ix]).getName()+")beans["+ix+"]; ";
 		}
 		code += BeanCode;
-		code += "	}";
+		code += "}";
 		code += "}";
 	    JavaFileObject file = new JavaSourceFromString(BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
+	    ArrayList<String> o = new ArrayList<String>();
+	    o.add("-classpath");
+	    o.addAll(System.getProperty("java.class.path")+";")
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, null, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
@@ -160,4 +166,4 @@ public class BeanCompiler {
 	    return code;
 	  }
 	}
-	class com.nandox.jop.core.context.testb {	public java.lang.String invoke (Object[] beans) {	test.testbean helloWorld=beans[0]; {return "";/*$helloWorld.Message*/}	}}}
+}
