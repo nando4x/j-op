@@ -9,7 +9,7 @@
 		a = "ssa";
 	}
 </script>
-	<div 	jop_id=''
+	<div 	jop_id='xxw'
 			xjop_rendered="java{
 					helloWorld.IsRendering()
 				}"

@@ -53,6 +53,7 @@ public class BeanCompiler {
 		String beans[] = new String[0];
     	// Composite java code
 		String code = "package com.nandox.jop.core.context;";
+		String path = "";
 		// 		search bean reference $xxxx
 		ArrayList<String> l = new ArrayList<String>();
 		int inx_st = BeanCode.indexOf('$');
@@ -60,6 +61,7 @@ public class BeanCompiler {
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			l.add(BeanCode.substring(inx_st+1, inx_end));
 			code += "import "+Context.GetBeanType(BeanCode.substring(inx_st+1, inx_end)).getName()+";";
+			path += Context.GetBeanType(BeanCode.substring(inx_st+1, inx_end)).getProtectionDomain().getCodeSource().getLocation() + ";";
 			BeanCode = BeanCode.replace(BeanCode.substring(inx_st, inx_end), BeanCode.substring(inx_st+1, inx_end));
 			inx_st = BeanCode.indexOf('$', inx_st+1);
 			inx_end = BeanCode.indexOf('.',inx_st);
@@ -78,8 +80,8 @@ public class BeanCompiler {
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
-	    o.addAll(System.getProperty("java.class.path")+";")
-	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, null, null, compilationUnits);
+	    o.add(System.getProperty("java.class.path")+";"+path);
+	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
 		    try {
