@@ -2,9 +2,9 @@ package com.nandox.jop.core.context;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-
+import java.io.File;
+import java.net.URLClassLoader;
+import java.net.URL;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -12,14 +12,9 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 /**
  * Descrizione classe
@@ -59,47 +54,26 @@ public class BeanCompiler {
 		ArrayList<String> l = new ArrayList<String>();
 		code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
 		path = this.computeBeansClasspath(Context, l);
-		/*
-		int inx_st = BeanCode.indexOf('$');
-		int inx_end = BeanCode.indexOf('.',inx_st);
-		while ( inx_st >= 0 && inx_end > inx_st) {
-			l.add(BeanCode.substring(inx_st+1, inx_end));
-			code += "import "+Context.GetBeanType(BeanCode.substring(inx_st+1, inx_end)).getName()+";";
-			path += Context.GetBeanType(BeanCode.substring(inx_st+1, inx_end)).getProtectionDomain().getCodeSource().getLocation() + ";";
-			BeanCode = BeanCode.replace(BeanCode.substring(inx_st, inx_end), BeanCode.substring(inx_st+1, inx_end));
-			inx_st = BeanCode.indexOf('$', inx_st+1);
-			inx_end = BeanCode.indexOf('.',inx_st);
-		}
-		code += "public class "+BeanName + " {";
-		code += "public "+ReturnClass+ " invoke (Object beans[]) {";
-		if ( l.size() > 0 ) {
-			beans = l.toArray(new String[0]);
-			for ( int ix=0; ix<l.size(); ix++ )
-				code += ""+Context.GetBeanType(beans[ix]).getName()+" "+beans[ix]+"=("+Context.GetBeanType(beans[ix]).getName()+")beans["+ix+"]; ";
-		}
-		code += BeanCode;
-		code += "}";
-		code += "}";
-		*/
-	    JavaFileObject file = new JavaSourceFromString(BeanName, code);
+	    JavaFileObject file = new JavaSourceFromString("com.xxxx."+BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
-	    //o.add(System.getProperty("java.class.path")+";"+path);
-	    o.add(System.getProperty("java.class.path")+";C:/Projects/EclipseDefWS/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/jop/WEB-INF/classes");//+path);
+	    o.add(System.getProperty("java.class.path")+";"+path);
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
 		    try {
-		    	return new BeanInvoker(Class.forName(BeanName),beans);
-		    } catch (ClassNotFoundException e) {
-		    	
+		    	URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
+		    	return new BeanInvoker(Class.forName("com.xxxx."+BeanName, true, classLoader),beans);
+		    } catch (Exception e) {
+		    	//TODO: gestire errore
+		    	e = e;
 		    }
 	    } else {
 		    // TODO: manage error compile
 		    StringWriter writer = new StringWriter();
 		    PrintWriter out = new PrintWriter(writer);
-		    for (Diagnostic diagnostic : this.dgn.getDiagnostics()) {
+		    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
 		    	out.println(diagnostic.getCode());
 		    	out.println(diagnostic.getKind());
 		    	out.println(diagnostic.getPosition());
@@ -117,7 +91,7 @@ public class BeanCompiler {
 	//
 	//
 	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
-		String code = "package com.nandox.jop.core.context;";
+		String code = "package com.xxxx;";
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
 		int inx_end = source.indexOf('.',inx_st);
@@ -148,7 +122,7 @@ public class BeanCompiler {
 	private String computeBeansClasspath (WebAppContext context, List<String> beans) {
 		String path = "";
 		for ( String bean: beans ) {
-			path += context.GetBeanType(bean).getClassLoader().getResource("");//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
+			path += context.GetBeanType(bean).getClassLoader().getResource("").getPath();//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
 			path += ";";
 		}
 		return path;
