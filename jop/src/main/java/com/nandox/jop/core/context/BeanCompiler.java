@@ -1,6 +1,7 @@
 package com.nandox.jop.core.context;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
@@ -56,6 +57,9 @@ public class BeanCompiler {
 		String path = "";
 		// 		search bean reference $xxxx
 		ArrayList<String> l = new ArrayList<String>();
+		//code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
+		//path = this.computeBeansClasspath(Context, l);
+		
 		int inx_st = BeanCode.indexOf('$');
 		int inx_end = BeanCode.indexOf('.',inx_st);
 		while ( inx_st >= 0 && inx_end > inx_st) {
@@ -76,11 +80,12 @@ public class BeanCompiler {
 		code += BeanCode;
 		code += "}";
 		code += "}";
+		
 	    JavaFileObject file = new JavaSourceFromString(BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
-	    o.add(System.getProperty("java.class.path")+";"+path);
+	    o.add(System.getProperty("java.class.path")+";file:/C:/Users/Fernando/Documents/XframeDefWS/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/jop/WEB-INF/classes");//+path);
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
@@ -105,6 +110,47 @@ public class BeanCompiler {
 			throw new Exception(writer.toString());
 	    }
 	    return null;
+	}
+	
+	//
+	//
+	//
+	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
+		String code = "package com.nandox.jop.core.context;";
+		// 	search beans reference $xxxx and put them on argument list
+		int inx_st = source.indexOf('$');
+		int inx_end = source.indexOf('.',inx_st);
+		while ( inx_st >= 0 && inx_end > inx_st) {
+			beans.add(source.substring(inx_st+1, inx_end));
+			code += "import "+context.GetBeanType(source.substring(inx_st+1, inx_end)).getName()+";";
+			source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
+			inx_st = source.indexOf('$', inx_st+1);
+			inx_end = source.indexOf('.',inx_st);
+		}
+		code += "public class "+classname + " {";
+		code += "public "+returnclass+ " invoke (Object beans[]) {";
+		if ( beans.size() > 0 ) {
+			int ix=0;
+			for ( String bean: beans ) {
+				code += ""+context.GetBeanType(bean).getName()+" "+bean+"=("+context.GetBeanType(bean).getName()+")beans["+ix+"]; ";
+				ix++;
+			}
+		}
+		code += source;
+		code += "}";
+		code += "}";
+		return code;
+	}
+	//
+	//
+	//
+	private String computeBeansClasspath (WebAppContext context, List<String> beans) {
+		String path = "";
+		for ( String bean: beans ) {
+			path += context.GetBeanType(bean).getClassLoader().getResource("");//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
+			path += ";";
+		}
+		return path;
 	}
 	/*
 	public static void main(String args[]) throws IOException {
