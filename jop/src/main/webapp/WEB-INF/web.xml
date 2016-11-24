@@ -34,7 +34,7 @@
 		<url-pattern>/jopservices/*</url-pattern>
 	</servlet-mapping>
 
-	<filter>
+	<!--filter>
 		<display-name>CsrfPreventionFilter</display-name>
 		<filter-name>CsrfPreventionFilter</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
@@ -42,5 +42,5 @@
 	<filter-mapping>
 		<filter-name>CsrfPreventionFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping-->
 </web-app>
