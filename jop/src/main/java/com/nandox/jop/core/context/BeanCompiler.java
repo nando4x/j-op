@@ -57,9 +57,9 @@ public class BeanCompiler {
 		String path = "";
 		// 		search bean reference $xxxx
 		ArrayList<String> l = new ArrayList<String>();
-		//code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
-		//path = this.computeBeansClasspath(Context, l);
-		
+		code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
+		path = this.computeBeansClasspath(Context, l);
+		/*
 		int inx_st = BeanCode.indexOf('$');
 		int inx_end = BeanCode.indexOf('.',inx_st);
 		while ( inx_st >= 0 && inx_end > inx_st) {
@@ -80,12 +80,13 @@ public class BeanCompiler {
 		code += BeanCode;
 		code += "}";
 		code += "}";
-		
+		*/
 	    JavaFileObject file = new JavaSourceFromString(BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
-	    o.add(System.getProperty("java.class.path")+";file:/C:/Users/Fernando/Documents/XframeDefWS/.metadata/.plugins/org.eclipse.wst.server.core/tmp1/wtpwebapps/jop/WEB-INF/classes");//+path);
+	    //o.add(System.getProperty("java.class.path")+";"+path);
+	    o.add(System.getProperty("java.class.path")+";C:/Projects/EclipseDefWS/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/jop/WEB-INF/classes");//+path);
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
