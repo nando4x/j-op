@@ -2,9 +2,7 @@ package com.nandox.jop.core.context;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 import java.net.URLClassLoader;
-import java.net.URL;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -33,7 +31,8 @@ import java.util.Arrays;
 public class BeanCompiler {
 	
 	private JavaCompiler cmpl;
-	DiagnosticCollector<JavaFileObject> dgn;
+	private DiagnosticCollector<JavaFileObject> dgn;
+	private String classpath;
 	/**
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
@@ -43,27 +42,38 @@ public class BeanCompiler {
 	public BeanCompiler () {
 		this.cmpl = ToolProvider.getSystemJavaCompiler();
 	    this.dgn = new DiagnosticCollector<JavaFileObject>();
+	    this.classpath = ((URLClassLoader)this.getClass().getClassLoader()).getURLs()[0].getPath();
+	}
+
+	/**
+	 * @param classpath the classpath to set
+	 */
+	public void setClasspath(String classpath) {
+		if ( classpath != null )
+			this.classpath = classpath;
 	}
 
 	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
-		String beans[] = new String[0];
     	// Composite java code
 		String code = "package com.nandox.jop.core.context;";
 		String path = "";
 		// 		search bean reference $xxxx
 		ArrayList<String> l = new ArrayList<String>();
 		code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
+		String beans[] = l.toArray(new String[0]);
 		path = this.computeBeansClasspath(Context, l);
 	    JavaFileObject file = new JavaSourceFromString("com.xxxx."+BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
 	    o.add(System.getProperty("java.class.path")+";"+path);
+	    o.add("-d");
+	    o.add(this.classpath);
 	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 	    boolean success = task.call();
 	    if ( success ) {
 		    try {
-		    	URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
+		    	ClassLoader classLoader = this.getClass().getClassLoader();//URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
 		    	return new BeanInvoker(Class.forName("com.xxxx."+BeanName, true, classLoader),beans);
 		    } catch (Exception e) {
 		    	//TODO: gestire errore
@@ -102,7 +112,7 @@ public class BeanCompiler {
 			inx_st = source.indexOf('$', inx_st+1);
 			inx_end = source.indexOf('.',inx_st);
 		}
-		code += "public class "+classname + " {";
+		code += "public class "+classname + " implements com.nandox.jop.core.context.BeanExecutor<"+returnclass+"> {";
 		code += "public "+returnclass+ " invoke (Object beans[]) {";
 		if ( beans.size() > 0 ) {
 			int ix=0;

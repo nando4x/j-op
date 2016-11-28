@@ -27,6 +27,9 @@ public class Dispatcher {
 	public static final String DSP_SERVICE_SERVLET_NAME = "";
 	public static final String DSP_SERVICE_SERVLET_URL = "";
 	public static final Class<? extends Servlet> DSP_SERVICE_SERVLET_CLASS = ServletDispatcher.class;
+	
+	protected static final String ATTR_APPLCONTEXT = "JopWebAppContext";
+	protected static final String INIT_PARAM_COMPILER_DESTPATH ="jop.param.compiler.destpath";
 
 	private WebAppContext appCtx;
 	/**
@@ -85,10 +88,12 @@ public class Dispatcher {
 	//
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
-		if ( (this.appCtx = (WebAppContext)ctx.getAttribute("JopWebAppContext")) == null )
+		if ( (this.appCtx = (WebAppContext)ctx.getAttribute(ATTR_APPLCONTEXT)) == null )
 			this.appCtx = new WebAppContext();
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));
+
 		// manage parameters
+		this.appCtx.SetCompilerPath(ctx.getInitParameter(INIT_PARAM_COMPILER_DESTPATH));
 		
 		// add runtime service servlet
 		//ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);

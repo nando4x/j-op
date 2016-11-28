@@ -110,4 +110,15 @@ public class WebAppContext {
 	public BeanCompiler getBeanCompiler() {
 		return bcmpl;
 	}
+	/**
+	 * Set compiler destination class path
+	 * @param	  Path absolute path
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  pages map
+	 */
+	public void SetCompilerPath(String Path) {
+		this.bcmpl.setClasspath(Path);
+	}
 }

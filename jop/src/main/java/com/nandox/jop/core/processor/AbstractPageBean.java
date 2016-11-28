@@ -4,9 +4,6 @@ import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanInvoker;
 import com.nandox.jop.core.context.BeanException;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
-
 import com.nandox.jop.core.ErrorsDefine;
 /**
  * Abstract implementation for page bean 
@@ -24,6 +21,7 @@ import com.nandox.jop.core.ErrorsDefine;
 public abstract class AbstractPageBean<E extends Object> implements PageBean {
 
 	private String beanId;
+	private String code;
 	private BeanInvoker invoker;
 	private String beanName;
 	private E value;
@@ -37,7 +35,8 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 	 * @exception
 	 */
 	public AbstractPageBean(WebAppContext Context, String BeanId, Class<E> ReturnClass) throws DomException {
-		this.beanId = BeanId;
+		this.beanId = "Jbean_"+BeanId.hashCode();
+		this.code = BeanId;
 		this.beanName = "testb";
 		//this.makeInvoker(Context, Clazz);
 		this.createInvokerClass(Context, ReturnClass);
@@ -69,7 +68,7 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 	@SuppressWarnings("unchecked")
 	protected Object Invoke(WebAppContext Context) {
 		if ( this.value == null )
-			this.value = (E)this.invoker.Invoke(Context.GetBeanInstance(this.beanName));
+			this.value = (E)this.invoker.Invoke(Context);
 		return this.value;
 	}
 
@@ -109,7 +108,7 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 	//
 	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
 		try {
-			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanName, this.beanId, RetClass.getName());
+			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanId, this.code, RetClass.getName());
 		} catch (Exception e) {
 			throw new DomException(e.getMessage());
 		}

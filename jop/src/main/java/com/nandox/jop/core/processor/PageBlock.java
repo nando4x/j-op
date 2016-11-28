@@ -98,7 +98,10 @@ public class PageBlock {
 			PageBean b = bs.next();
 			String v = (String)b.Fire(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
-			this.clone.html(this.clone.html().replace(b.getBeanId(), v));
+			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getBeanId()).iterator().next();
+			elem = elem.wrap("<div>");
+			elem.html(v);
+			elem.unwrap();
 		}
 		// Compute attributes
 		Iterator<BlockAttribute> la = this.attrs.iterator();
@@ -118,7 +121,7 @@ public class PageBlock {
 	private Set<String> parse(WebAppContext Context) throws DomException {
 		// scan for bean: first child and them own
 		//Iterator<Element> elems = this.domEl.getAllElements().iterator();
-		Iterator<Element> elems = this.domEl.select("jbean").iterator();
+		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
 		Set<String> lst = new HashSet<String>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
@@ -129,10 +132,10 @@ public class PageBlock {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// get bean id to join the same
     						//lst.addAll(this.parseBean(el.ownText()));
-    						Set<String> l = this.parseBean(el);
-    						String id = l.iterator().next();
-    						el.attr("id",id);
-    						lst.addAll(l);
+    						String code = this.parseBean(el);
+    						PageBean bean = new SimplePageBean(Context,code);
+    						this.beans.add(bean);
+    						el.attr("id",bean.getBeanId());
     						break;
     					}
     				}
@@ -185,22 +188,13 @@ public class PageBlock {
 		// TODO: error if empty
 		return lst;
 	}
-	private Set<String> parseBean(Element element) throws DomException {
-		Set<String> lst = new HashSet<String>();
-		// Search every bean tag
-        Iterator<Element> elems = element.select(JOP_BEAN_TAG).iterator();
-    	while ( elems.hasNext() ) {
-    		Element el = elems.next();
-			// check start and end bean
-			int inx_st = el.text().trim().indexOf(JOP_BEAN_INI);
-			int inx_end = el.text().trim().indexOf(JOP_BEAN_END);
-			if ( inx_st >= 0 && inx_end == el.text().trim().length()-1 ) {
-				String bean = el.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
-				lst.add(bean);
-			} else 
-				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-		}
-		// TODO: error if empty
-		return lst;
+	private String parseBean(Element element) throws DomException {
+		// check start and end bean
+		int inx_st = element.text().trim().indexOf(JOP_BEAN_INI);
+		int inx_end = element.text().trim().indexOf(JOP_BEAN_END);
+		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
+			return element.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
+		} else 
+			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 	}
 }
