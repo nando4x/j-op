@@ -72,6 +72,9 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 		return this.value;
 	}
 
+	static public String ComputeId(String Code) {
+		return ""+Code.hashCode();
+	}
 	// Get invoker from applicartion context by class and method
 	// name take from bean identificator
 	//

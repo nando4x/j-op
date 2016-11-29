@@ -2,6 +2,7 @@ package com.nandox.jop.core.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 import java.net.URLClassLoader;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -12,7 +13,9 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 /**
  * Descrizione classe
@@ -33,6 +36,8 @@ public class BeanCompiler {
 	private JavaCompiler cmpl;
 	private DiagnosticCollector<JavaFileObject> dgn;
 	private String classpath;
+	private ClassLoader classLoader;
+	private HashMap<String,BeanInvoker> cls;
 	/**
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
@@ -43,6 +48,8 @@ public class BeanCompiler {
 		this.cmpl = ToolProvider.getSystemJavaCompiler();
 	    this.dgn = new DiagnosticCollector<JavaFileObject>();
 	    this.classpath = ((URLClassLoader)this.getClass().getClassLoader()).getURLs()[0].getPath();
+    	this.classLoader = this.getClass().getClassLoader();
+    	this.cls = new HashMap<String,BeanInvoker>();
 	}
 
 	/**
@@ -55,6 +62,9 @@ public class BeanCompiler {
 
 	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
     	// Composite java code
+		if ( this.cls.containsKey(BeanName) ) {
+			return this.cls.get(BeanName);
+		}
 		String code = "package com.nandox.jop.core.context;";
 		String path = "";
 		// 		search bean reference $xxxx
@@ -62,7 +72,7 @@ public class BeanCompiler {
 		code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
 		String beans[] = l.toArray(new String[0]);
 		path = this.computeBeansClasspath(Context, l);
-	    JavaFileObject file = new JavaSourceFromString("com.xxxx."+BeanName, code);
+	    JavaFileObject file = new JavaSourceFromString(/*"com.xxxx."+*/BeanName, code);
 	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 	    ArrayList<String> o = new ArrayList<String>();
 	    o.add("-classpath");
@@ -73,8 +83,12 @@ public class BeanCompiler {
 	    boolean success = task.call();
 	    if ( success ) {
 		    try {
-		    	ClassLoader classLoader = this.getClass().getClassLoader();//URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
-		    	return new BeanInvoker(Class.forName("com.xxxx."+BeanName, true, classLoader),beans);
+		    	//URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
+		    	Class c = classLoader.loadClass(BeanName);
+		    	//Class c = Class.forName(/*"com.xxxx."+*/BeanName, true, classLoader);
+		    	BeanInvoker i = new BeanInvoker(c,beans);
+		    	this.cls.put(BeanName, i);
+		    	return i;
 		    } catch (Exception e) {
 		    	//TODO: gestire errore
 		    	e = e;
@@ -101,7 +115,7 @@ public class BeanCompiler {
 	//
 	//
 	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
-		String code = "package com.xxxx;";
+		String code = "";//"package com.xxxx;";
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
 		int inx_end = source.indexOf('.',inx_st);

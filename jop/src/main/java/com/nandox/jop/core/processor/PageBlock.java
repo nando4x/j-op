@@ -3,9 +3,10 @@ package com.nandox.jop.core.processor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -57,9 +58,7 @@ public class PageBlock {
 		this.id = this.domEl.attr(JOP_ATTR_ID);
 		this.beans = new ArrayList<PageBean>();
 		this.attrs = new ArrayList<BlockAttribute>();
-		Iterator<String> i = this.parse(Context).iterator();
-		while ( i.hasNext() )
-			this.beans.add(new SimplePageBean(Context,i.next()));
+		this.parse(Context);
 	}
 	/**
 	 * @return the id
@@ -99,9 +98,11 @@ public class PageBlock {
 			String v = (String)b.Fire(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getBeanId()).iterator().next();
-			elem = elem.wrap("<div>");
-			elem.html(v);
-			elem.unwrap();
+			//elem = elem.wrap("<div>");
+			//elem.html(v);
+			//elem.unwrap();
+			TextNode txt = new TextNode(v,"");
+			elem.replaceWith(txt);
 		}
 		// Compute attributes
 		Iterator<BlockAttribute> la = this.attrs.iterator();
@@ -118,11 +119,10 @@ public class PageBlock {
 	// Parsing Dom Element to search and build beans and attributes
 	//
 	//
-	private Set<String> parse(WebAppContext Context) throws DomException {
-		// scan for bean: first child and them own
-		//Iterator<Element> elems = this.domEl.getAllElements().iterator();
+	private void parse(WebAppContext Context) throws DomException {
+		// scan for bean tag that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
-		Set<String> lst = new HashSet<String>();
+		HashMap<String,PageBean> lst = new HashMap<String,PageBean>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.attr(JOP_ATTR_ID).isEmpty() ) {
@@ -130,20 +130,24 @@ public class PageBlock {
     			while ( p != null ) {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
-    						// get bean id to join the same
-    						//lst.addAll(this.parseBean(el.ownText()));
+    						// build bean and join the same
+    						PageBean bean;
     						String code = this.parseBean(el);
-    						PageBean bean = new SimplePageBean(Context,code);
+    						if ( !lst.containsKey(AbstractPageBean.ComputeId(code)) ) {
+    							bean = new SimplePageBean(Context,code);
+    							lst.put(bean.getBeanId(), bean);
+    						} else
+    							bean = lst.get(AbstractPageBean.ComputeId(code));
     						this.beans.add(bean);
     						el.attr("id",bean.getBeanId());
-    						break;
     					}
+						break;
     				}
     				p = p.parent();
     			}
 			} else if ( el.attr(JOP_ATTR_ID).equals(this.id) ) {
 				// get own direct bean
-				lst.addAll(this.parseBean(el.ownText()));
+				//lst.addAll(this.parseBean(el.ownText()));
 			}
 		}
 		// get attributes
@@ -165,12 +169,20 @@ public class PageBlock {
 				}
 			}
 		}
-		return lst;
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
 	//
-	private Set<String> parseBean(String txt) throws DomException {
+	private String parseBean(Element element) throws DomException {
+		// check start and end bean
+		int inx_st = element.text().trim().indexOf(JOP_BEAN_INI);
+		int inx_end = element.text().trim().indexOf(JOP_BEAN_END);
+		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
+			return element.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
+		} else 
+			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+	}
+	/*private Set<String> parseBean(String txt) throws DomException {
 		Set<String> lst = new HashSet<String>();
 		int inx_st = 0;
 		// Search every bean
@@ -187,14 +199,5 @@ public class PageBlock {
 		}
 		// TODO: error if empty
 		return lst;
-	}
-	private String parseBean(Element element) throws DomException {
-		// check start and end bean
-		int inx_st = element.text().trim().indexOf(JOP_BEAN_INI);
-		int inx_end = element.text().trim().indexOf(JOP_BEAN_END);
-		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
-			return element.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
-		} else 
-			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-	}
+	}*/
 }
