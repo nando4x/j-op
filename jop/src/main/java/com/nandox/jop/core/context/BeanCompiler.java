@@ -37,7 +37,7 @@ public class BeanCompiler {
 	private DiagnosticCollector<JavaFileObject> dgn;
 	private String classpath;
 	private ClassLoader classLoader;
-	private HashMap<String,BeanInvoker> cls;
+	private HashMap<String,BeanInvoker> invokers;
 	/**
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
@@ -49,7 +49,7 @@ public class BeanCompiler {
 	    this.dgn = new DiagnosticCollector<JavaFileObject>();
 	    this.classpath = ((URLClassLoader)this.getClass().getClassLoader()).getURLs()[0].getPath();
     	this.classLoader = this.getClass().getClassLoader();
-    	this.cls = new HashMap<String,BeanInvoker>();
+    	this.invokers = new HashMap<String,BeanInvoker>();
 	}
 
 	/**
@@ -61,54 +61,56 @@ public class BeanCompiler {
 	}
 
 	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
-    	// Composite java code
-		if ( this.cls.containsKey(BeanName) ) {
-			return this.cls.get(BeanName);
-		}
-		String code = "package com.nandox.jop.core.context;";
-		String path = "";
-		// 		search bean reference $xxxx
-		ArrayList<String> l = new ArrayList<String>();
-		code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
-		String beans[] = l.toArray(new String[0]);
-		path = this.computeBeansClasspath(Context, l);
-	    JavaFileObject file = new JavaSourceFromString(/*"com.xxxx."+*/BeanName, code);
-	    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
-	    ArrayList<String> o = new ArrayList<String>();
-	    o.add("-classpath");
-	    o.add(System.getProperty("java.class.path")+";"+path);
-	    o.add("-d");
-	    o.add(this.classpath);
-	    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
-	    boolean success = task.call();
-	    if ( success ) {
-		    try {
-		    	//URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
-		    	Class c = classLoader.loadClass(BeanName);
-		    	//Class c = Class.forName(/*"com.xxxx."+*/BeanName, true, classLoader);
-		    	BeanInvoker i = new BeanInvoker(c,beans);
-		    	this.cls.put(BeanName, i);
-		    	return i;
-		    } catch (Exception e) {
-		    	//TODO: gestire errore
-		    	e = e;
+		// Check if invoker already exist
+		if ( !this.invokers.containsKey(BeanName) ) {
+	    	// Composite java code
+			String pkg = "com.xxxx";
+			String code = "";
+			String path = "";
+			// 		search bean reference $xxxx
+			ArrayList<String> l = new ArrayList<String>();
+			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
+			String beans[] = l.toArray(new String[0]);
+			path = this.computeBeansClasspath(Context, l);
+		    JavaFileObject file = new JavaSourceFromString(/*"com.xxxx."+*/BeanName, code);
+		    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
+		    ArrayList<String> o = new ArrayList<String>();
+		    o.add("-classpath");
+		    o.add(System.getProperty("java.class.path")+";"+path);
+		    o.add("-d");
+		    o.add(this.classpath);
+		    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
+		    boolean success = task.call();
+		    if ( success ) {
+			    try {
+			    	//URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
+			    	Class c = classLoader.loadClass(BeanName);
+			    	//Class c = Class.forName(/*"com.xxxx."+*/BeanName, true, classLoader);
+			    	BeanInvoker i = new BeanInvoker(c,beans);
+			    	this.invokers.put(BeanName, i);
+			    	return i;
+			    } catch (Exception e) {
+			    	//TODO: gestire errore
+			    	e = e;
+			    }
+		    } else {
+			    // TODO: manage error compile
+			    StringWriter writer = new StringWriter();
+			    PrintWriter out = new PrintWriter(writer);
+			    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
+			    	out.println(diagnostic.getCode());
+			    	out.println(diagnostic.getKind());
+			    	out.println(diagnostic.getPosition());
+				    out.println(diagnostic.getStartPosition());
+				    out.println(diagnostic.getEndPosition());
+				    out.println(diagnostic.getSource());
+				    out.println(diagnostic.getMessage(null));
+			    }
+				throw new Exception(writer.toString());
 		    }
-	    } else {
-		    // TODO: manage error compile
-		    StringWriter writer = new StringWriter();
-		    PrintWriter out = new PrintWriter(writer);
-		    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
-		    	out.println(diagnostic.getCode());
-		    	out.println(diagnostic.getKind());
-		    	out.println(diagnostic.getPosition());
-			    out.println(diagnostic.getStartPosition());
-			    out.println(diagnostic.getEndPosition());
-			    out.println(diagnostic.getSource());
-			    out.println(diagnostic.getMessage(null));
-		    }
-			throw new Exception(writer.toString());
-	    }
-	    return null;
+		    return null;
+		} else
+			return this.invokers.get(BeanName);
 	}
 	
 	//
