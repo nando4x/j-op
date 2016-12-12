@@ -5,7 +5,7 @@ package com.nandox.jop.core.context;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    BeanExecutor.java
+ * @module    ExpressionExecutor.java
  * 
  * @date      27 nov 2016 - 27 nov 2016
  * 
@@ -14,6 +14,6 @@ package com.nandox.jop.core.context;
  * @revisor   Fernando Costantino
  */
 
-public interface BeanExecutor<E> {
+public interface ExpressionExecutor<E> {
 	public E invoke(Object Beans[]);
 }

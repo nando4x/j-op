@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.context.BeanInvoker;
+import com.nandox.jop.core.context.ExpressionInvoker;
 import com.nandox.jop.core.context.BeanException;
 
 import com.nandox.jop.core.ErrorsDefine;
@@ -10,7 +10,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    AbstractPageBean.java
+ * @module    AbstractPageExpression.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 
@@ -18,47 +18,52 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @revisor   Fernando Costantino
  */
-public abstract class AbstractPageBean<E extends Object> implements PageBean {
+public abstract class AbstractPageExpression<E extends Object> implements PageExpression {
 
 	private String beanId;
 	private String code;
-	private BeanInvoker invoker;
-	private String beanName;
+	private ExpressionInvoker invoker;
 	private E value;
 
 	/**
 	 * @param	  Context	Application context
-	 * @param	  BeanId	bean identificator name
+	 * @param	  Code		bean code
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public AbstractPageBean(WebAppContext Context, String BeanId, Class<E> ReturnClass) throws DomException {
-		this.beanId = "Jbean_"+BeanId.hashCode();
-		this.code = BeanId;
-		this.beanName = "testb";
+	public AbstractPageExpression(WebAppContext Context, String Code, Class<E> ReturnClass) throws DomException {
+		int i = Code.hashCode();
+		this.beanId = "Jbean_"+(i<0?i*-1:i);
+		this.code = Code;
 		//this.makeInvoker(Context, Clazz);
 		this.createInvokerClass(Context, ReturnClass);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBean#getBeanId
+	 * @see com.nandox.jop.core.processor.PageExpression#getBeanId
 	 */
 	public String getBeanId() {
 		return beanId;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBean#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#getBeanCode()
+	 */
+	public String getBeanCode() {
+		return code;
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	public abstract E Fire(WebAppContext Context);
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBean#ResetValue
+	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue
 	 */
 	public void ResetValue () {
 		this.value = null;
 	}
 	/**
-	 * Invoke bean method by own BeanInvoker only if value is not reset.<br>
+	 * Invoke bean method by own ExpressionInvoker only if value is not reset.<br>
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -85,7 +90,7 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 			// get bean name
 			int inx_dot = this.beanId.indexOf(".",inx_st+1);
 			if ( inx_dot > 0 ) {
-				String name = this.beanName = this.beanId.substring(inx_st+1, inx_dot).trim();
+				String name = this.beanId.substring(inx_st+1, inx_dot).trim();
 				String method = this.beanId.substring(inx_dot+1, inx_end).trim();
 				int br;
 				if ( (br = method.indexOf("(")) > 0 ) {
@@ -106,7 +111,7 @@ public abstract class AbstractPageBean<E extends Object> implements PageBean {
 		} else // error delimiter
 			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 	}
-	//
+	// Create and compile invoker class 
 	//
 	//
 	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {

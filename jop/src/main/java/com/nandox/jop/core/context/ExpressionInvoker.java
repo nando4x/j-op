@@ -14,10 +14,10 @@ import java.lang.reflect.Method;
  * 
  * @revisor   Fernando Costantino
  */
-public class BeanInvoker {
+public class ExpressionInvoker {
 
 	@SuppressWarnings("rawtypes")
-	private Class<BeanExecutor> beanClass;
+	private Class<ExpressionExecutor> beanClass;
 	private Method beanMethod;
 	private String[] beans;
 	/**
@@ -29,7 +29,7 @@ public class BeanInvoker {
 	 * @exception
 	 */
 	@SuppressWarnings("rawtypes")
-	public BeanInvoker(Class Clazz, Method Method) {
+	public ExpressionInvoker(Class Clazz, Method Method) {
 		this.beanClass = Clazz;
 		this.beanMethod = Method;
 	}
@@ -42,7 +42,7 @@ public class BeanInvoker {
 	 * @exception
 	 */
 	@SuppressWarnings("rawtypes")
-	public BeanInvoker(Class Clazz, String[] Beans) {
+	public ExpressionInvoker(Class<ExpressionExecutor> Clazz, String[] Beans) {
 		this.beanClass = Clazz;
 		this.beans = Beans;
 	}
@@ -79,12 +79,12 @@ public class BeanInvoker {
 		Object ret = null;
 		Object beans[] = new Object[this.beans.length];
 		try {
-			BeanExecutor<?> o = this.beanClass.newInstance();
+			ExpressionExecutor<?> o = this.beanClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.GetBeanInstance(this.beans[ix]);
 			ret = o.invoke(beans);
 		} catch (Exception e) {
-			e = e;
+			// TODO: gestire erroe
 		}
 		return ret;
 	}

@@ -13,16 +13,14 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 /**
  * Descrizione classe
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    BeanCompiler.java
+ * @module    ExpressionCompiler.java
  * 
  * @date      17 nov 2016 - 17 nov 2016
  * 
@@ -31,25 +29,29 @@ import java.util.Arrays;
  * @revisor   Fernando Costantino
  */
 
-public class BeanCompiler {
+public class ExpressionCompiler {
 	
+	/** */
+	public static final String PACKAGE = "";
+	
+	private static final String package_pfx = (PACKAGE.isEmpty()?"":PACKAGE+"."); 
 	private JavaCompiler cmpl;
 	private DiagnosticCollector<JavaFileObject> dgn;
 	private String classpath;
 	private ClassLoader classLoader;
-	private HashMap<String,BeanInvoker> invokers;
+	private HashMap<String,ExpressionInvoker> invokers;
 	/**
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public BeanCompiler () {
+	public ExpressionCompiler () {
 		this.cmpl = ToolProvider.getSystemJavaCompiler();
 	    this.dgn = new DiagnosticCollector<JavaFileObject>();
 	    this.classpath = ((URLClassLoader)this.getClass().getClassLoader()).getURLs()[0].getPath();
     	this.classLoader = this.getClass().getClassLoader();
-    	this.invokers = new HashMap<String,BeanInvoker>();
+    	this.invokers = new HashMap<String,ExpressionInvoker>();
 	}
 
 	/**
@@ -60,38 +62,46 @@ public class BeanCompiler {
 			this.classpath = classpath;
 	}
 
-	public BeanInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
+	/** Create or get (if exist) the invoker
+	 * @param	  Context	Application context
+	 * @param	  BeanName name of bean
+	 * @param	  BeanCode java code of bean
+	 * @param	  ReturnClass name of the returned type
+	 * @date      17 nov 2016 - 17 nov 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 */
+	public ExpressionInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
 		// Check if invoker already exist
 		if ( !this.invokers.containsKey(BeanName) ) {
-	    	// Composite java code
-			String pkg = "com.xxxx";
+	    	// Composite java code and class path 
 			String code = "";
 			String path = "";
-			// 		search bean reference $xxxx
-			ArrayList<String> l = new ArrayList<String>();
+			ArrayList<String> l = new ArrayList<String>(); // create list of argumented bean
 			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
 			String beans[] = l.toArray(new String[0]);
 			path = this.computeBeansClasspath(Context, l);
-		    JavaFileObject file = new JavaSourceFromString(/*"com.xxxx."+*/BeanName, code);
+		    JavaFileObject file = new JavaSourceFromString(package_pfx+BeanName, code);
 		    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 		    ArrayList<String> o = new ArrayList<String>();
-		    o.add("-classpath");
-		    o.add(System.getProperty("java.class.path")+";"+path);
+	    	o.add("-classpath");
+		    if ( path.isEmpty() )
+		    	path = this.classpath;
+	    	o.add(System.getProperty("java.class.path")+";"+path);
 		    o.add("-d");
 		    o.add(this.classpath);
 		    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 		    boolean success = task.call();
 		    if ( success ) {
 			    try {
-			    	//URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("").toURI().toURL() });
-			    	Class c = classLoader.loadClass(BeanName);
-			    	//Class c = Class.forName(/*"com.xxxx."+*/BeanName, true, classLoader);
-			    	BeanInvoker i = new BeanInvoker(c,beans);
+			    	@SuppressWarnings({ "rawtypes", "unchecked" })
+					Class<ExpressionExecutor> c = (Class<ExpressionExecutor>)classLoader.loadClass(package_pfx+BeanName);
+			    	ExpressionInvoker i = new ExpressionInvoker(c,beans);
 			    	this.invokers.put(BeanName, i);
 			    	return i;
 			    } catch (Exception e) {
 			    	//TODO: gestire errore
-			    	e = e;
 			    }
 		    } else {
 			    // TODO: manage error compile
@@ -113,11 +123,11 @@ public class BeanCompiler {
 			return this.invokers.get(BeanName);
 	}
 	
-	//
+	// Composite code of bean class
 	//
 	//
 	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
-		String code = "";//"package com.xxxx;";
+		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
 		int inx_end = source.indexOf('.',inx_st);
@@ -128,7 +138,7 @@ public class BeanCompiler {
 			inx_st = source.indexOf('$', inx_st+1);
 			inx_end = source.indexOf('.',inx_st);
 		}
-		code += "public class "+classname + " implements com.nandox.jop.core.context.BeanExecutor<"+returnclass+"> {";
+		code += "public class "+classname + " implements com.nandox.jop.core.context.ExpressionExecutor<"+returnclass+"> {";
 		code += "public "+returnclass+ " invoke (Object beans[]) {";
 		if ( beans.size() > 0 ) {
 			int ix=0;
@@ -142,7 +152,7 @@ public class BeanCompiler {
 		code += "}";
 		return code;
 	}
-	//
+	// Compute path getting classe path of bean used as argument
 	//
 	//
 	private String computeBeansClasspath (WebAppContext context, List<String> beans) {
@@ -151,6 +161,10 @@ public class BeanCompiler {
 			path += context.GetBeanType(bean).getClassLoader().getResource("").getPath();//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
 			path += ";";
 		}
+		/*if ( path.isEmpty() ) {
+			path += this.getClass().getClassLoader().getResource("").getPath();//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
+			path += ";";
+		}*/
 		return path;
 	}
 	/*

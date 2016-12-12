@@ -7,7 +7,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    SimplePageBean.java
+ * @module    SimplePageExpression.java
  * 
  * @date      13 ott 2016 - 13 ott 2016
  * 
@@ -16,17 +16,17 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class SimplePageBean extends AbstractPageBean<String> {
+public class SimplePageExpression extends AbstractPageExpression<String> {
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBean#PageBean(WebAppContext,String)
+	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String)
 	 */
-	public SimplePageBean(WebAppContext Context, String BeanId) throws DomException {
-		super(Context, BeanId,String.class);
+	public SimplePageExpression(WebAppContext Context, String Code) throws DomException {
+		super(Context, Code,String.class);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageBean#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
 	public String Fire(WebAppContext Context) {

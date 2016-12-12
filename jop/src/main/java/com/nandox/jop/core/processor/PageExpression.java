@@ -15,12 +15,16 @@ import com.nandox.jop.core.context.WebAppContext;
  * 
  * @revisor   Fernando Costantino
  */
-public interface PageBean {
+public interface PageExpression {
 
 	/**
 	 * @return the beanId
 	 */
 	String getBeanId();
+	/**
+	 * @return the bean code
+	 */
+	String getBeanCode();
 
 	/**
 	 * Fire bean method on specific context.<br>

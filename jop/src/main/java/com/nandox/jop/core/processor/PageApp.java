@@ -13,7 +13,7 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 /**
  * Class of Page application.<br>
- * One page application is composite by PageBlock, every block can contains PageBean  
+ * One page application is composite by PageBlock, every block can contains PageExpression  
  * 
  * @project   Jop (Java One Page)
  * 

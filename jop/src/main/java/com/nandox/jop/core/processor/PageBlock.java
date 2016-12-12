@@ -2,7 +2,6 @@ package com.nandox.jop.core.processor;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
@@ -37,9 +36,9 @@ public class PageBlock {
 	protected List<PageBlock> child;
 	protected boolean isChild;
 	private String pageId;
-	private List<PageBean> beans;
+	private List<PageExpression> beans;
 	private List<BlockAttribute> attrs;
-	private PageBean render;
+	private PageExpression render;
 	private Element clone;
 	
 	/**
@@ -56,7 +55,7 @@ public class PageBlock {
 		this.pageId = PageId;
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(JOP_ATTR_ID);
-		this.beans = new ArrayList<PageBean>();
+		this.beans = new ArrayList<PageExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
 		this.parse(Context);
 	}
@@ -92,9 +91,9 @@ public class PageBlock {
 			return "";
 		}
 		// Fire every own bean and insert into html
-		Iterator<PageBean> bs = this.beans.iterator();
+		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
-			PageBean b = bs.next();
+			PageExpression b = bs.next();
 			String v = (String)b.Fire(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getBeanId()).iterator().next();
@@ -109,7 +108,7 @@ public class PageBlock {
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
-			this.clone.attr(ba.name,a.replace(ba.bean.getBeanId(), (String)ba.bean.Fire(Context)));
+			this.clone.attr(ba.name,a.replace("java"+ba.bean.getBeanCode(), (String)ba.bean.Fire(Context)));
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
@@ -122,7 +121,7 @@ public class PageBlock {
 	private void parse(WebAppContext Context) throws DomException {
 		// scan for bean tag that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
-		HashMap<String,PageBean> lst = new HashMap<String,PageBean>();
+		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.attr(JOP_ATTR_ID).isEmpty() ) {
@@ -131,13 +130,13 @@ public class PageBlock {
     				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
     						// build bean and join the same
-    						PageBean bean;
+    						PageExpression bean;
     						String code = this.parseBean(el);
-    						if ( !lst.containsKey(AbstractPageBean.ComputeId(code)) ) {
-    							bean = new SimplePageBean(Context,code);
+    						if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
+    							bean = new SimplePageExpression(Context,code);
     							lst.put(bean.getBeanId(), bean);
     						} else
-    							bean = lst.get(AbstractPageBean.ComputeId(code));
+    							bean = lst.get(AbstractPageExpression.ComputeId(code));
     						this.beans.add(bean);
     						el.attr("id",bean.getBeanId());
     					}

@@ -7,7 +7,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    BooleanPageBean.java
+ * @module    BooleanPageExpression.java
  * 
  * @date      16 ott 2016 - 16 ott 2016
  * 
@@ -16,14 +16,14 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class BooleanPageBean extends AbstractPageBean<Boolean> {
+public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 
-	public BooleanPageBean(WebAppContext Context, String BeanId) throws DomException {
-		super(Context, BeanId,Boolean.class);
+	public BooleanPageExpression(WebAppContext Context, String Code) throws DomException {
+		super(Context, Code,Boolean.class);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.AbstractPageBean#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
 	public Boolean Fire(WebAppContext Context) {

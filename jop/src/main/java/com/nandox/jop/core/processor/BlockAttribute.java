@@ -23,30 +23,30 @@ public class BlockAttribute {
 	public static final String JOP_RENDERED_ID = "jop_rendered";
 	/** List of possible attributes */
 	protected static final String[][] ATTR_LIST = { 
-													{JOP_RENDERED_ID,BooleanPageBean.class.getCanonicalName()},
-													{"class",SimplePageBean.class.getCanonicalName()}
+													{JOP_RENDERED_ID,BooleanPageExpression.class.getCanonicalName()},
+													{"class",SimplePageExpression.class.getCanonicalName()}
 												  };
 	protected static final int ATTR_NAME = 0;
 	protected static final int ATTR_CLASS = 1;
 	/** */
 	protected String name;
 	/** */
-	protected PageBean bean;
+	protected PageExpression bean;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
 	 * @param	  Name		Attribute name
-	 * @param	  BeanId	Attribute bean
+	 * @param	  Code		Attribute code
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception DomException if attribute name not found or syntax error
 	 */	
-	public BlockAttribute(WebAppContext Context, String Name, String BeanId) throws DomException {
+	public BlockAttribute(WebAppContext Context, String Name, String Code) throws DomException {
 		this.name = Name;
 		for ( int ix=0; ix<ATTR_LIST.length; ix++ ) {
 			if ( Name.toLowerCase().equals(ATTR_LIST[ix][ATTR_NAME].toLowerCase()) ) {
-				this.parse(Context,BeanId,ix);
+				this.parse(Context,Code,ix);
 				return;
 			}
 		}
@@ -58,9 +58,9 @@ public class BlockAttribute {
 	//
 	//
 	//
-	private void parse(WebAppContext context, String beanId, int listInx) throws DomException {
+	private void parse(WebAppContext context, String code, int listInx) throws DomException {
 		try {
-			this.bean = (PageBean)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).getDeclaredConstructor(WebAppContext.class, String.class).newInstance(context,beanId);
+			this.bean = (PageExpression)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).getDeclaredConstructor(WebAppContext.class, String.class).newInstance(context,code);
 			return;
 		} catch ( InvocationTargetException e ) {
 			throw new DomException(e.getTargetException().getMessage());

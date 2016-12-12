@@ -22,9 +22,9 @@ import com.nandox.jop.core.processor.PageApp;
 public class WebAppContext {
 
 	private ApplicationContext springCtx;
-	private HashMap<String,BeanInvoker> beans;
+	private HashMap<String,ExpressionInvoker> beans;
 	private HashMap<String,PageApp> pages;
-	private BeanCompiler bcmpl;
+	private ExpressionCompiler bcmpl;
 	
 	/**
 	 * @date      07 ott 2016 - 07 ott 2016
@@ -32,9 +32,9 @@ public class WebAppContext {
 	 * @revisor   Fernando Costantino
 	 */
 	public WebAppContext() {
-		this.beans = new HashMap<String,BeanInvoker>();
+		this.beans = new HashMap<String,ExpressionInvoker>();
 		this.pages = new HashMap<String,PageApp>();
-		this.bcmpl = new BeanCompiler();
+		this.bcmpl = new ExpressionCompiler();
 	}
 	/**
 	 * Get bean invoker (or create new if not exist) by bean name and method name
@@ -46,15 +46,15 @@ public class WebAppContext {
 	 * @exception BeanException if bean not found or if not have method 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public BeanInvoker GetBeanInvoker(String BeanName, String Method) throws BeanException {
+	public ExpressionInvoker GetBeanInvoker(String BeanName, String Method) throws BeanException {
 		try {
 			Class cl = this.springCtx.getType(BeanName);
 			Method m = cl.getMethod(Method);
 			String key;
-			if ( this.beans.containsKey((key=BeanInvoker.ComputeHash(cl, m))) ) {
+			if ( this.beans.containsKey((key=ExpressionInvoker.ComputeHash(cl, m))) ) {
 				return this.beans.get(key);
 			} else {
-				BeanInvoker bi = new BeanInvoker(cl,m);
+				ExpressionInvoker bi = new ExpressionInvoker(cl,m);
 				this.beans.put(bi.GetHash(),bi);
 				return bi;
 			}
@@ -105,9 +105,9 @@ public class WebAppContext {
 		return this.pages;
 	}
 	/**
-	 * @return the BeanCompiler
+	 * @return the ExpressionCompiler
 	 */
-	public BeanCompiler getBeanCompiler() {
+	public ExpressionCompiler getBeanCompiler() {
 		return bcmpl;
 	}
 	/**
