@@ -3,8 +3,8 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.ExpressionInvoker;
 import com.nandox.jop.core.context.BeanException;
-
 import com.nandox.jop.core.ErrorsDefine;
+
 /**
  * Abstract implementation for page expression 
  * 
@@ -27,7 +27,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 
 	/**
 	 * @param	  Context	Application context
-	 * @param	  Code		bean code
+	 * @param	  Code		expression code
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -78,22 +78,32 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	}
 
 	/**
-	 * Invoke own ExpressionInvoker only if value is not reset.<br>
+	 * Compute expression identifier by hash code<br>
 	 * @param	  Code expression code
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return	  value on specific type
+	 * @return	  identifier
 	 */
 	static public String ComputeId(String Code) {
 		int i = Code.hashCode();
 		return "Jbean_"+(i<0?i*-1:i);
 	}
+	// Create and compile invoker class 
+	//
+	//
+	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
+		try {
+			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanId, this.code, RetClass.getName());
+		} catch (Exception e) {
+			throw new DomException(e.getMessage());
+		}
+	}
 	// Get invoker from applicartion context by class and method
 	// name take from bean identificator
 	//
-	private void makeInvoker(WebAppContext Context, Class<E> clazz) throws DomException {
+	/*private void makeInvoker(WebAppContext Context, Class<E> clazz) throws DomException {
 		int inx_st = this.beanId.indexOf("{");
 		int inx_end = this.beanId.indexOf("}");
 		if ( inx_st >=0 && inx_end > inx_st ) {
@@ -120,16 +130,5 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
 		} else // error delimiter
 			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-	}
-	// Create and compile invoker class 
-	//
-	//
-	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
-		try {
-			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanId, this.code, RetClass.getName());
-		} catch (Exception e) {
-			throw new DomException(e.getMessage());
-		}
-	}
-	
+	}*/
 }

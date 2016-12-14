@@ -40,7 +40,7 @@ public interface PageExpression {
 	Object Execute(WebAppContext Context);
 
 	/**
-	 * Reset bean value to null.<br>
+	 * Reset expression return value to null.<br>
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino

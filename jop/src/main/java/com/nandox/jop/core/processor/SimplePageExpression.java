@@ -26,7 +26,7 @@ public class SimplePageExpression extends AbstractPageExpression<String> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
 	public String Execute(WebAppContext Context) {

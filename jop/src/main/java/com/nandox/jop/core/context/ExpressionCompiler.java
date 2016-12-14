@@ -16,7 +16,9 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.Arrays;
 /**
- * Descrizione classe
+ * Compile a java expression.<br>
+ * Compile and create the invoker class of an expression, if already exist an invoker for the same expression<br>
+ * return it 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -31,7 +33,7 @@ import java.util.Arrays;
 
 public class ExpressionCompiler {
 	
-	/** */
+	/** package of expression class */
 	public static final String PACKAGE = "";
 	
 	private static final String package_pfx = (PACKAGE.isEmpty()?"":PACKAGE+"."); 
@@ -78,22 +80,25 @@ public class ExpressionCompiler {
 	    	// Composite java code and class path 
 			String code = "";
 			String path = "";
-			ArrayList<String> l = new ArrayList<String>(); // create list of argumented bean
+			ArrayList<String> l = new ArrayList<String>(); // create list of argumented beans
 			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
 			String beans[] = l.toArray(new String[0]);
 			path = this.computeBeansClasspath(Context, l);
 		    JavaFileObject file = new JavaSourceFromString(package_pfx+BeanName, code);
 		    Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
 		    ArrayList<String> o = new ArrayList<String>();
+		    // Add path with compiler options
 	    	o.add("-classpath");
 		    if ( path.isEmpty() )
 		    	path = this.classpath;
 	    	o.add(System.getProperty("java.class.path")+";"+path);
 		    o.add("-d");
 		    o.add(this.classpath);
+		    // Compile
 		    CompilationTask task = this.cmpl.getTask(null, null, this.dgn, o, null, compilationUnits);
 		    boolean success = task.call();
 		    if ( success ) {
+		    	// Create invoker with the class just compiled
 			    try {
 			    	@SuppressWarnings({ "rawtypes", "unchecked" })
 					Class<ExpressionExecutor> c = (Class<ExpressionExecutor>)classLoader.loadClass(package_pfx+BeanName);
@@ -123,7 +128,7 @@ public class ExpressionCompiler {
 			return this.invokers.get(BeanName);
 	}
 	
-	// Composite code of bean class
+	// Composite code of expression class
 	//
 	//
 	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
@@ -138,7 +143,8 @@ public class ExpressionCompiler {
 			inx_st = source.indexOf('$', inx_st+1);
 			inx_end = source.indexOf('.',inx_st);
 		}
-		code += "public class "+classname + " implements com.nandox.jop.core.context.ExpressionExecutor<"+returnclass+"> {";
+		// wrap code to class that implements ExpressionExecutor interface
+		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
 		code += "public "+returnclass+ " invoke (Object beans[]) {";
 		if ( beans.size() > 0 ) {
 			int ix=0;

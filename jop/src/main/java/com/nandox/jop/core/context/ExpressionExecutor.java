@@ -1,7 +1,7 @@
 package com.nandox.jop.core.context;
 
 /**
- * Descrizione classe
+ * Executor of an page expression
  * 
  * @project   Jop (Java One Page)
  * 
@@ -15,5 +15,13 @@ package com.nandox.jop.core.context;
  */
 
 public interface ExpressionExecutor<E> {
+	
+	/** Main method to invoke expression
+	 * @param	  Beans array of beans called in expression
+	 * @date      17 nov 2016 - 17 nov 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception specific type value
+	 */
 	public E invoke(Object Beans[]);
 }

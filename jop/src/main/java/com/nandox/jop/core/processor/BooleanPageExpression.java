@@ -23,7 +23,7 @@ public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
 	public Boolean Execute(WebAppContext Context) {
