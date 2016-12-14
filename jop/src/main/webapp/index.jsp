@@ -31,7 +31,8 @@
 			</tbody>
 		</table>
 	</div>
-	<input value="java{$helloWorld.Message}">
+	<input value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
+	<input value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
 	<div jop_id='id1' onclick="java{}">
 		<jbean>{return 
 		$helloWorld.getMessage();}</jbean>
