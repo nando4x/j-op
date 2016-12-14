@@ -3,11 +3,12 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Represent generic page bean
+ * Represent generic page expression.<br>
+ * An expression is java (or other) language expression used in page into attribute or jbean tag
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    PageBlock.java
+ * @module    PageExpression.java
  * 
  * @date      17 set 2016 - 17 set 2016
  * 
@@ -18,25 +19,25 @@ import com.nandox.jop.core.context.WebAppContext;
 public interface PageExpression {
 
 	/**
-	 * @return the beanId
+	 * @return the expression identifier
 	 */
-	String getBeanId();
+	String getId();
 	/**
-	 * @return the bean code
+	 * @return the expression code
 	 */
-	String getBeanCode();
+	String getCode();
 
 	/**
-	 * Fire bean method on specific context.<br>
-	 * Get bean instance from context and then use own invoker to invoke method
+	 * Execute expression on specific context.<br>
+	 * The context is used to get beans instance if present in expression
 	 * @param	  Context	Application context
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return	  result of method in type bean format  
+	 * @return	  result of method in specific type  
 	 */
-	Object Fire(WebAppContext Context);
+	Object Execute(WebAppContext Context);
 
 	/**
 	 * Reset bean value to null.<br>

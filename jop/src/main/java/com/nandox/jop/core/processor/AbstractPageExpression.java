@@ -6,7 +6,7 @@ import com.nandox.jop.core.context.BeanException;
 
 import com.nandox.jop.core.ErrorsDefine;
 /**
- * Abstract implementation for page bean 
+ * Abstract implementation for page expression 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -34,28 +34,27 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @exception
 	 */
 	public AbstractPageExpression(WebAppContext Context, String Code, Class<E> ReturnClass) throws DomException {
-		int i = Code.hashCode();
-		this.beanId = "Jbean_"+(i<0?i*-1:i);
+		this.beanId = ComputeId(Code);
 		this.code = Code;
 		//this.makeInvoker(Context, Clazz);
 		this.createInvokerClass(Context, ReturnClass);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#getBeanId
+	 * @see com.nandox.jop.core.processor.PageExpression#getId
 	 */
-	public String getBeanId() {
+	public String getId() {
 		return beanId;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#getBeanCode()
+	 * @see com.nandox.jop.core.processor.PageExpression#getCode()
 	 */
-	public String getBeanCode() {
+	public String getCode() {
 		return code;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
-	public abstract E Fire(WebAppContext Context);
+	public abstract E Execute(WebAppContext Context);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue
 	 */
@@ -63,7 +62,8 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		this.value = null;
 	}
 	/**
-	 * Invoke bean method by own ExpressionInvoker only if value is not reset.<br>
+	 * Invoke own ExpressionInvoker only if value is not reset.<br>
+	 * @param	  Context	Application context
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -77,8 +77,18 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		return this.value;
 	}
 
+	/**
+	 * Invoke own ExpressionInvoker only if value is not reset.<br>
+	 * @param	  Code expression code
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  value on specific type
+	 */
 	static public String ComputeId(String Code) {
-		return ""+Code.hashCode();
+		int i = Code.hashCode();
+		return "Jbean_"+(i<0?i*-1:i);
 	}
 	// Get invoker from applicartion context by class and method
 	// name take from bean identificator

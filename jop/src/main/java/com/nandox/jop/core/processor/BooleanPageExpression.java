@@ -3,7 +3,7 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Boolean Page Bean used for boolean page block attributes
+ * Boolean returned Expression Page: used for boolean page block attributes
  * 
  * @project   Jop (Java One Page)
  * 
@@ -26,7 +26,7 @@ public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
-	public Boolean Fire(WebAppContext Context) {
+	public Boolean Execute(WebAppContext Context) {
 		return (Boolean)this.Invoke(Context);
 	}
 }

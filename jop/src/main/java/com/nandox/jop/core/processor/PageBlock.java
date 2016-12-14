@@ -87,16 +87,16 @@ public class PageBlock {
 			w.unwrap();
 		}
 		// check render attribute
-		if ( this.render != null && !(Boolean)this.render.Fire(Context) ) {
+		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
 			return "";
 		}
 		// Fire every own bean and insert into html
 		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
 			PageExpression b = bs.next();
-			String v = (String)b.Fire(Context);
+			String v = (String)b.Execute(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
-			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getBeanId()).iterator().next();
+			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getId()).iterator().next();
 			//elem = elem.wrap("<div>");
 			//elem.html(v);
 			//elem.unwrap();
@@ -108,7 +108,7 @@ public class PageBlock {
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
-			this.clone.attr(ba.name,a.replace("java"+ba.bean.getBeanCode(), (String)ba.bean.Fire(Context)));
+			this.clone.attr(ba.name,a.replace("java"+ba.bean.getCode(), (String)ba.bean.Execute(Context)));
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
@@ -134,11 +134,11 @@ public class PageBlock {
     						String code = this.parseBean(el);
     						if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
     							bean = new SimplePageExpression(Context,code);
-    							lst.put(bean.getBeanId(), bean);
+    							lst.put(bean.getId(), bean);
     						} else
     							bean = lst.get(AbstractPageExpression.ComputeId(code));
     						this.beans.add(bean);
-    						el.attr("id",bean.getBeanId());
+    						el.attr("id",bean.getId());
     					}
 						break;
     				}

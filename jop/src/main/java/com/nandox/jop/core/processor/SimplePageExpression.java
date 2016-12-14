@@ -3,7 +3,7 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Simple page bean that return a string format
+ * Simple page expression that return a string format
  * 
  * @project   Jop (Java One Page)
  * 
@@ -29,7 +29,7 @@ public class SimplePageExpression extends AbstractPageExpression<String> {
 	 * @see com.nandox.jop.core.processor.PageExpression#Fire(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
-	public String Fire(WebAppContext Context) {
+	public String Execute(WebAppContext Context) {
 		return (String)this.Invoke(Context);
 	}
 }
