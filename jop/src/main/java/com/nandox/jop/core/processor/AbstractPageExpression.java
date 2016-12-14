@@ -2,8 +2,6 @@ package com.nandox.jop.core.processor;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.ExpressionInvoker;
-import com.nandox.jop.core.context.BeanException;
-import com.nandox.jop.core.ErrorsDefine;
 
 /**
  * Abstract implementation for page expression 
@@ -20,7 +18,7 @@ import com.nandox.jop.core.ErrorsDefine;
  */
 public abstract class AbstractPageExpression<E extends Object> implements PageExpression {
 
-	private String beanId;
+	private String Id;
 	private String code;
 	private ExpressionInvoker invoker;
 	private E value;
@@ -34,7 +32,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @exception
 	 */
 	public AbstractPageExpression(WebAppContext Context, String Code, Class<E> ReturnClass) throws DomException {
-		this.beanId = ComputeId(Code);
+		this.Id = ComputeId(Code);
 		this.code = Code;
 		//this.makeInvoker(Context, Clazz);
 		this.createInvokerClass(Context, ReturnClass);
@@ -43,7 +41,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @see com.nandox.jop.core.processor.PageExpression#getId
 	 */
 	public String getId() {
-		return beanId;
+		return Id;
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#getCode()
@@ -95,7 +93,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	//
 	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
 		try {
-			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.beanId, this.code, RetClass.getName());
+			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.Id, this.code, RetClass.getName());
 		} catch (Exception e) {
 			throw new DomException(e.getMessage());
 		}
@@ -117,7 +115,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 					if ( method.indexOf(")",br) > 0 )
 						method = method.substring(0,br);
 					else // error brachet
-						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+						throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 				} else
 					method = "get"+method.substring(0, 1).toUpperCase()+method.substring(1);
 				try {
@@ -127,8 +125,8 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 					this.invoker.CheckCompliance(clazz);
 				} catch (BeanException e) { throw new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
 			} else // error dot
-				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 		} else // error delimiter
-			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 	}*/
 }

@@ -23,11 +23,9 @@ public class ErrorsDefine {
 	/** */
 	static final public String JOP_ID_DOUBLE = "Block id duplicated";  
 	/** */
-	static final public String JOP_BEAN_SYNTAX = "Syntax error in page bean";  
+	static final public String JOP_EXPR_SYNTAX = "Syntax error in page expression";  
 	/** */
-	static final public String JOP_BEAN_NOTFOUND = "Page bean not found";  
-	/** */
-	static final public String JOP_BEAN_TYPEWRONG = "Page bean return type wrong";  
+	static final public String JOP_BEAN_NOTFOUND = "Bean used in page expression don't exist";  
 
 	public static String FormatDOM(String Msg, Element Elem) {
 		return Msg+"\r\n\t\t*********************************************************\r\n"+Elem.outerHtml();

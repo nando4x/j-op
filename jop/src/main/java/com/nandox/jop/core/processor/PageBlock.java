@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
+import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -27,14 +28,18 @@ public class PageBlock {
 	public static final String JOP_ATTR_ID = "jop_id";
 	/** Identification bean: jop_bean */
 //	public static final String JOP_BEAN_INI = "jop_bean={";
-	public static final String JOP_BEAN_INI = "{";
-	public static final String JOP_BEAN_END = "}";
+	public static final String JOP_EXPR_INI = "{";
+	public static final String JOP_EXPR_END = "}";
 	public static final String JOP_BEAN_TAG = "jbean";
-	
+	/** block DOM */
 	protected Element domEl;
+	/** block identifier */
 	protected String id;
+	/** child blocks */
 	protected List<PageBlock> child;
+	/** true if block is child of another block */
 	protected boolean isChild;
+	
 	private String pageId;
 	private List<PageExpression> beans;
 	private List<BlockAttribute> attrs;
@@ -81,10 +86,10 @@ public class PageBlock {
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
 			c.Render(Context);
-			Element w = this.clone.getElementsByAttributeValue(JOP_ATTR_ID, c.id).first();
-			w = w.wrap("<div>");
+			Element e = this.clone.getElementsByAttributeValue(JOP_ATTR_ID, c.id).first();
+			Element w = e.wrap("<div>");
 			w.html(c.clone.outerHtml());
-			w.unwrap();
+			e.unwrap();
 		}
 		// check render attribute
 		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
@@ -97,9 +102,6 @@ public class PageBlock {
 			String v = (String)b.Execute(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getId()).iterator().next();
-			//elem = elem.wrap("<div>");
-			//elem.html(v);
-			//elem.unwrap();
 			TextNode txt = new TextNode(v,"");
 			elem.replaceWith(txt);
 		}
@@ -108,7 +110,7 @@ public class PageBlock {
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
-			this.clone.attr(ba.name,a.replace("java"+ba.bean.getCode(), (String)ba.bean.Execute(Context)));
+			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
@@ -150,21 +152,23 @@ public class PageBlock {
 			}
 		}
 		// get attributes
-		for ( int ix=0; ix<BlockAttribute.ATTR_LIST.length; ix++ ) {
-			String a = this.domEl.attr(BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME]);
-			if ( !a.isEmpty() ) {
-				if ( a.trim().indexOf("{") >= 0 ) {
-					if ( a.indexOf("}") > 0 ) {
-						String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
-						BlockAttribute at = new BlockAttribute(Context,BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME],bid);
-						if ( BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].equals(BlockAttribute.JOP_RENDERED_ID) )
-							this.render = at.bean;
-						else
-							this.attrs.add(at);
-					} else
-						throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
-				} else if (BlockAttribute.ATTR_LIST[ix][BlockAttribute.ATTR_NAME].toLowerCase().startsWith("jop_") ) {
-					throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
+		while (attrs.hasNext() ) {
+			Attribute attr =  attrs.next();
+			if ( !attr.getKey().equals(JOP_ATTR_ID) ) {
+				String a = attr.getValue();
+				if ( !a.isEmpty() ) {
+					if ( a.trim().indexOf("java{") >= 0 ) {
+						if ( a.indexOf("}") > 0 ) {
+							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
+							BlockAttribute at = new BlockAttribute(Context,attr.getKey(),bid);
+							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_RENDERED_ID) )
+								this.render = at.expr;
+							else
+								this.attrs.add(at);
+						} else
+							throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+					}
 				}
 			}
 		}
@@ -174,12 +178,12 @@ public class PageBlock {
 	//
 	private String parseBean(Element element) throws DomException {
 		// check start and end bean
-		int inx_st = element.text().trim().indexOf(JOP_BEAN_INI);
-		int inx_end = element.text().trim().indexOf(JOP_BEAN_END);
+		int inx_st = element.text().trim().indexOf(JOP_EXPR_INI);
+		int inx_end = element.text().trim().indexOf(JOP_EXPR_END);
 		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
-			return element.text().trim().substring(inx_st, inx_end+JOP_BEAN_END.length());
+			return element.text().trim().substring(inx_st, inx_end+JOP_EXPR_END.length());
 		} else 
-			throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 	}
 	/*private Set<String> parseBean(String txt) throws DomException {
 		Set<String> lst = new HashSet<String>();
@@ -193,7 +197,7 @@ public class PageBlock {
 				String bean = txt.substring(inx_st, inx_end+JOP_BEAN_END.length());
 				lst.add(bean);
 			} else 
-				throw new DomException(ErrorsDefine.JOP_BEAN_SYNTAX);
+				throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 			inx_st = txt.indexOf(JOP_BEAN_INI,inx_end);
 		}
 		// TODO: error if empty

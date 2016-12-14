@@ -9,6 +9,10 @@
 		a = "ssa";
 	}
 </script>
+	<div jop_id=''>
+	</div>
+	<div jop_id=''>
+	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
 					return (1==1);
@@ -33,7 +37,7 @@
 	</div>
 	<input value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
 	<input value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
-	<div jop_id='id1' onclick="java{}">
+	<div jop_id='id1' onclick="{}">
 		<jbean>{return 
 		$helloWorld.getMessage();}</jbean>
 		<div jop_id='id2'>

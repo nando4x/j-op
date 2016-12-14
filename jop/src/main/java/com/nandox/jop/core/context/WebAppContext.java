@@ -1,7 +1,6 @@
 package com.nandox.jop.core.context;
 
 import java.util.HashMap;
-import java.lang.reflect.Method;
 import org.springframework.context.ApplicationContext;
 import com.nandox.jop.core.processor.PageApp;
 
@@ -22,7 +21,6 @@ import com.nandox.jop.core.processor.PageApp;
 public class WebAppContext {
 
 	private ApplicationContext springCtx;
-	private HashMap<String,ExpressionInvoker> beans;
 	private HashMap<String,PageApp> pages;
 	private ExpressionCompiler bcmpl;
 	
@@ -32,33 +30,8 @@ public class WebAppContext {
 	 * @revisor   Fernando Costantino
 	 */
 	public WebAppContext() {
-		this.beans = new HashMap<String,ExpressionInvoker>();
 		this.pages = new HashMap<String,PageApp>();
 		this.bcmpl = new ExpressionCompiler();
-	}
-	/**
-	 * Get bean invoker (or create new if not exist) by bean name and method name
-	 * @param 	  BeanName	bean name 
-	 * @param 	  Method	bean method
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception BeanException if bean not found or if not have method 
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ExpressionInvoker GetBeanInvoker(String BeanName, String Method) throws BeanException {
-		try {
-			Class cl = this.springCtx.getType(BeanName);
-			Method m = cl.getMethod(Method);
-			String key;
-			if ( this.beans.containsKey((key=ExpressionInvoker.ComputeHash(cl, m))) ) {
-				return this.beans.get(key);
-			} else {
-				ExpressionInvoker bi = new ExpressionInvoker(cl,m);
-				this.beans.put(bi.GetHash(),bi);
-				return bi;
-			}
-		} catch (Exception e) { throw new BeanException(); }
 	}
 	/**
 	 * Search and return bean instance by name 

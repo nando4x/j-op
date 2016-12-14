@@ -11,6 +11,9 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
+
+import com.nandox.jop.core.ErrorsDefine;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -131,17 +134,21 @@ public class ExpressionCompiler {
 	// Composite code of expression class
 	//
 	//
-	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) {
+	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) throws Exception {
 		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
 		int inx_end = source.indexOf('.',inx_st);
 		while ( inx_st >= 0 && inx_end > inx_st) {
-			beans.add(source.substring(inx_st+1, inx_end));
-			code += "import "+context.GetBeanType(source.substring(inx_st+1, inx_end)).getName()+";";
-			source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
-			inx_st = source.indexOf('$', inx_st+1);
-			inx_end = source.indexOf('.',inx_st);
+			try {
+				beans.add(source.substring(inx_st+1, inx_end));
+				code += "import "+context.GetBeanType(source.substring(inx_st+1, inx_end)).getName()+";";
+				source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
+				inx_st = source.indexOf('$', inx_st+1);
+				inx_end = source.indexOf('.',inx_st);
+			} catch ( org.springframework.beans.factory.NoSuchBeanDefinitionException e ) {
+				throw new Exception(ErrorsDefine.JOP_BEAN_NOTFOUND);
+			}
 		}
 		// wrap code to class that implements ExpressionExecutor interface
 		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";

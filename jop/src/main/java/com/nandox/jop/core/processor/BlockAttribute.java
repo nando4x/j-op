@@ -23,15 +23,15 @@ public class BlockAttribute {
 	public static final String JOP_RENDERED_ID = "jop_rendered";
 	/** List of possible attributes */
 	protected static final String[][] ATTR_LIST = { 
-													{JOP_RENDERED_ID,BooleanPageExpression.class.getCanonicalName()},
-													{"class",SimplePageExpression.class.getCanonicalName()}
+													{"*",SimplePageExpression.class.getCanonicalName()},
+													{JOP_RENDERED_ID,BooleanPageExpression.class.getCanonicalName()}
 												  };
 	protected static final int ATTR_NAME = 0;
 	protected static final int ATTR_CLASS = 1;
 	/** */
 	protected String name;
 	/** */
-	protected PageExpression bean;
+	protected PageExpression expr;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -44,13 +44,14 @@ public class BlockAttribute {
 	 */	
 	public BlockAttribute(WebAppContext Context, String Name, String Code) throws DomException {
 		this.name = Name;
-		for ( int ix=0; ix<ATTR_LIST.length; ix++ ) {
-			if ( Name.toLowerCase().equals(ATTR_LIST[ix][ATTR_NAME].toLowerCase()) ) {
-				this.parse(Context,Code,ix);
-				return;
-			}
+		int ix;
+		for ( ix=0; ix<ATTR_LIST.length; ix++ ) {
+			if ( Name.toLowerCase().equals(ATTR_LIST[ix][ATTR_NAME].toLowerCase()) )
+				break;
 		}
-		throw new DomException(ErrorsDefine.JOP_ATTR_NOTFOUND);
+		if ( ix >= ATTR_LIST.length )
+			ix = 0;
+		this.parse(Context,Code,ix);
 	}
 	public static void CleanDomFromAttribute(Element DomEl) {
 		DomEl.removeAttr(JOP_RENDERED_ID);
@@ -60,7 +61,7 @@ public class BlockAttribute {
 	//
 	private void parse(WebAppContext context, String code, int listInx) throws DomException {
 		try {
-			this.bean = (PageExpression)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).getDeclaredConstructor(WebAppContext.class, String.class).newInstance(context,code);
+			this.expr = (PageExpression)Class.forName(ATTR_LIST[listInx][ATTR_CLASS]).getDeclaredConstructor(WebAppContext.class, String.class).newInstance(context,code);
 			return;
 		} catch ( InvocationTargetException e ) {
 			throw new DomException(e.getTargetException().getMessage());
