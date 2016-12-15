@@ -15,7 +15,7 @@
 	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
-					return (1==1);
+					return (1==0);
 				}"
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>

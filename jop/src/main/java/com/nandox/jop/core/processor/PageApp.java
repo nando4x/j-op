@@ -71,9 +71,8 @@ public class PageApp {
 		while ( i.hasNext() ) {
 			PageBlock pb = i.next();
 			if ( !pb.isChild ) {
-				Element w = d.getElementsByAttributeValue(PageBlock.JOP_ATTR_ID, pb.id).first().wrap("<div>");
-				w.html(pb.Render(Context));
-				w.unwrap();
+				Element e = d.getElementsByAttributeValue(PageBlock.JOP_ATTR_ID, pb.id).first();
+				e.replaceWith(pb.Render(Context));
 			}
 		}
 		return d.html();

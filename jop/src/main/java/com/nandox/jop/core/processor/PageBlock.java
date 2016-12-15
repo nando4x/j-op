@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
@@ -44,7 +45,7 @@ public class PageBlock {
 	private List<PageExpression> beans;
 	private List<BlockAttribute> attrs;
 	private PageExpression render;
-	private Element clone;
+	protected Element clone;
 	
 	/**
 	 * Constructor: parse DOM element
@@ -79,21 +80,18 @@ public class PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public String Render(WebAppContext Context) {
+	public Node Render(WebAppContext Context) {
 		this.clone = this.domEl.clone();
 		// rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
-			c.Render(Context);
 			Element e = this.clone.getElementsByAttributeValue(JOP_ATTR_ID, c.id).first();
-			Element w = e.wrap("<div>");
-			w.html(c.clone.outerHtml());
-			e.unwrap();
+			e.replaceWith(c.Render(Context));
 		}
 		// check render attribute
 		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
-			return "";
+			return new TextNode("","");
 		}
 		// Fire every own bean and insert into html
 		Iterator<PageExpression> bs = this.beans.iterator();
@@ -115,7 +113,7 @@ public class PageBlock {
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
 		this.clone.attr(JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
-		return this.clone.outerHtml();
+		return this.clone;
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
