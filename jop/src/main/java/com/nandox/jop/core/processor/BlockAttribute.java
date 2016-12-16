@@ -2,7 +2,6 @@ package com.nandox.jop.core.processor;
 
 import java.lang.reflect.InvocationTargetException;
 import org.jsoup.nodes.Element;
-import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 /**
  * Attribute of page block, it create own bean based on class name specified in attribute list (ATTR_LIST).<br>
@@ -20,11 +19,13 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public class BlockAttribute {
 	/** Identification attribute: jop_id */
-	public static final String JOP_RENDERED_ID = "jop_rendered";
+	public static final String JOP_ATTR_ID = "jop_rendered";
+	/** Rendered flag attribute: jop_rendered */
+	public static final String JOP_ATTR_RENDERED = "jop_rendered";
 	/** List of possible attributes */
 	protected static final String[][] ATTR_LIST = { 
 													{"*",SimplePageExpression.class.getCanonicalName()},
-													{JOP_RENDERED_ID,BooleanPageExpression.class.getCanonicalName()}
+													{JOP_ATTR_RENDERED,BooleanPageExpression.class.getCanonicalName()}
 												  };
 	protected static final int ATTR_NAME = 0;
 	protected static final int ATTR_CLASS = 1;
@@ -54,7 +55,7 @@ public class BlockAttribute {
 		this.parse(Context,Code,ix);
 	}
 	public static void CleanDomFromAttribute(Element DomEl) {
-		DomEl.removeAttr(JOP_RENDERED_ID);
+		DomEl.removeAttr(JOP_ATTR_RENDERED);
 	}
 	//
 	//

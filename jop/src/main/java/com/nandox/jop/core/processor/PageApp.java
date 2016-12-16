@@ -26,7 +26,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
-	protected static final String DOMPARSER_JOP_SELECTOR = "["+PageBlock.JOP_ATTR_ID+"]";
+	protected static final String DOMPARSER_JOP_SELECTOR = "["+BlockAttribute.JOP_ATTR_ID+"]";
 	private String id;
 	private int hash;
 	private Document dom;
@@ -71,7 +71,7 @@ public class PageApp {
 		while ( i.hasNext() ) {
 			PageBlock pb = i.next();
 			if ( !pb.isChild ) {
-				Element e = d.getElementsByAttributeValue(PageBlock.JOP_ATTR_ID, pb.id).first();
+				Element e = d.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, pb.id).first();
 				e.replaceWith(pb.Render(Context));
 			}
 		}
@@ -87,11 +87,11 @@ public class PageApp {
     	while ( elems.hasNext() ) {
     		inx++;
     		Element el = elems.next();
-    		String id = el.attr(PageBlock.JOP_ATTR_ID);
+    		String id = el.attr(BlockAttribute.JOP_ATTR_ID);
     		// generate auto id if empty
     		if ( id.isEmpty() ) {
     			id = inx+"-"+this.computeJopId(el);
-    			el.attr(PageBlock.JOP_ATTR_ID,id);
+    			el.attr(BlockAttribute.JOP_ATTR_ID,id);
     		}
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
@@ -114,10 +114,10 @@ public class PageApp {
         		Element el = elems.next();
         		Element p = el.parent(); 
     			while ( p != null ) {
-    				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(b[ix].id) ) {
-    						child.add(this.blocks.get(el.attr(PageBlock.JOP_ATTR_ID)));
-    						this.blocks.get(el.attr(PageBlock.JOP_ATTR_ID)).isChild = true;
+    				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
+    					if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(b[ix].id) ) {
+    						child.add(this.blocks.get(el.attr(BlockAttribute.JOP_ATTR_ID)));
+    						this.blocks.get(el.attr(BlockAttribute.JOP_ATTR_ID)).isChild = true;
     					}
     					break;
     				}

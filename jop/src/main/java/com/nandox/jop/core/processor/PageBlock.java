@@ -25,8 +25,6 @@ import com.nandox.jop.core.ErrorsDefine;
  * @revisor   Fernando Costantino
  */
 public class PageBlock {
-	/** Identification attribute: jop_id */
-	public static final String JOP_ATTR_ID = "jop_id";
 	/** Identification bean: jop_bean */
 //	public static final String JOP_BEAN_INI = "jop_bean={";
 	public static final String JOP_EXPR_INI = "{";
@@ -60,7 +58,7 @@ public class PageBlock {
 	public PageBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
 		this.pageId = PageId;
 		this.domEl = DomElement;
-		this.id = this.domEl.attr(JOP_ATTR_ID);
+		this.id = this.domEl.attr(BlockAttribute.JOP_ATTR_ID);
 		this.beans = new ArrayList<PageExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
 		this.parse(Context);
@@ -86,7 +84,7 @@ public class PageBlock {
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
-			Element e = this.clone.getElementsByAttributeValue(JOP_ATTR_ID, c.id).first();
+			Element e = this.clone.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, c.id).first();
 			e.replaceWith(c.Render(Context));
 		}
 		// check render attribute
@@ -112,7 +110,7 @@ public class PageBlock {
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
-		this.clone.attr(JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
+		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
 	}
 	// Parsing Dom Element to search and build beans and attributes
@@ -124,11 +122,11 @@ public class PageBlock {
 		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
-			if ( el.attr(JOP_ATTR_ID).isEmpty() ) {
+			if ( el.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
         		Element p = el.parent(); 
     			while ( p != null ) {
-    				if ( !p.attr(PageBlock.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(PageBlock.JOP_ATTR_ID).equals(this.id) ) {
+    				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
+    					if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
     						// build bean and join the same
     						PageExpression bean;
     						String code = this.parseBean(el);
@@ -144,7 +142,7 @@ public class PageBlock {
     				}
     				p = p.parent();
     			}
-			} else if ( el.attr(JOP_ATTR_ID).equals(this.id) ) {
+			} else if ( el.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
 				// get own direct bean
 				//lst.addAll(this.parseBean(el.ownText()));
 			}
@@ -153,14 +151,14 @@ public class PageBlock {
 		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equals(JOP_ATTR_ID) ) {
+			if ( !attr.getKey().equals(BlockAttribute.JOP_ATTR_ID) ) {
 				String a = attr.getValue();
 				if ( !a.isEmpty() ) {
 					if ( a.trim().indexOf("java{") >= 0 ) {
 						if ( a.indexOf("}") > 0 ) {
 							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
 							BlockAttribute at = new BlockAttribute(Context,attr.getKey(),bid);
-							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_RENDERED_ID) )
+							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
 								this.render = at.expr;
 							else
 								this.attrs.add(at);
