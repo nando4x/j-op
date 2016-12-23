@@ -29,7 +29,7 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr>
+				<tr jop_repeater='java{}'>
 					<td>dt col1</td>
 				</tr>
 			</tbody>
