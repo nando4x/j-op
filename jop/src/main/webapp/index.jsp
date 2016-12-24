@@ -30,7 +30,7 @@
 			</thead>
 			<tbody>
 				<tr jop_repeater='java{}'>
-					<td>dt col1</td>
+					<td>java{return var.getCol1()}</td>
 				</tr>
 			</tbody>
 		</table>
