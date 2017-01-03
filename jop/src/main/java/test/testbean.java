@@ -18,4 +18,9 @@ public class testbean {
    public String getCssClass() {
 	   return "myCssClass";
    }
+   
+   public String[] getArray () {
+	   String r[] = { "a", "b" };
+	   return r;
+   }
 }

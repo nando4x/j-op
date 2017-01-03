@@ -29,14 +29,19 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr jop_repeater='java{JopHelper.setVar('var',$helloWorld.getTab());}'>
-					<td>java{return var.getCol1();}</td>
+				<tr jop_repeater='java{return $helloWorld.getArray();} jop_var='var'>
+					<td>java{return var;}</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 	<input value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
 	<input value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
+	<select>
+		<option jop_repeater='java{return $helloWorld.getArray();}' 
+				jop_var='var' 
+				value='java{return var;}'>java{return var;}</option>
+	</select>
 	<div jop_id='id1' onclick="{}">
 		<jbean>{return 
 		$helloWorld.getMessage();}</jbean>
