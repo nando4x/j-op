@@ -29,13 +29,8 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-<<<<<<< HEAD
 				<tr jop_repeater='java{JopHelper.setVar('var',$helloWorld.getTab());}'>
 					<td>java{return var.getCol1();}</td>
-=======
-				<tr jop_repeater='java{}'>
-					<td>java{return var.getCol1()}</td>
->>>>>>> branch 'master' of https://github.com/nando4x/j-op
 				</tr>
 			</tbody>
 		</table>
