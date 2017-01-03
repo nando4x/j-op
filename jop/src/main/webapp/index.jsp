@@ -29,8 +29,8 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr jop_repeater='java{}'>
-					<td>java{return var.getCol1()}</td>
+				<tr jop_repeater='java{JopHelper.setVar('var',$helloWorld.getTab());}'>
+					<td>java{return var.getCol1();}</td>
 				</tr>
 			</tbody>
 		</table>
