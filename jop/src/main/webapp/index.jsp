@@ -1,7 +1,7 @@
 <html>
 <head>
  <script type="text/javascript" src="jquery-1.12.2.js"/>
-</head >
+</head>
 <body>
 <script type="javascript">
 	var a, b, c;
@@ -13,8 +13,9 @@
 	</div>
 	<div jop_id=''>
 	</div>
-	<div	jop_rendered="java{
-					return (1==1);
+	<div 	jop_id='xxw'
+			jop_rendered="java{
+					return (1==0);
 				}"
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>
