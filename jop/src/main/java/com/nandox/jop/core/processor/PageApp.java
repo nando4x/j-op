@@ -26,12 +26,13 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
-	protected static final String DOMPARSER_JOP_SELECTOR = "["+BlockAttribute.JOP_ATTR_ID+"]";
+	protected static final String DOMPARSER_JOP_SELECTOR = BlockAttribute.GetAttributeSelector();//"["+BlockAttribute.JOP_ATTR_ID+"]";
 	private String id;
 	private int hash;
 	private Document dom;
 	private Map<String,PageBlock> blocks;
 	private WebAppContext appCtx;
+	private int auto_id_index;
 	/**
 	 * Constructor: parse page content into DOM
 	 * @param	  Context	Application context
@@ -83,14 +84,14 @@ public class PageApp {
 	private void parse() throws ParseException {
 		// Search every jop block into dom and create it
         Iterator<Element> elems = this.dom.select(DOMPARSER_JOP_SELECTOR).iterator();
-        int inx=0;
+        this.auto_id_index=0;
     	while ( elems.hasNext() ) {
-    		inx++;
     		Element el = elems.next();
     		String id = el.attr(BlockAttribute.JOP_ATTR_ID);
     		// generate auto id if empty
     		if ( id.isEmpty() ) {
-    			id = inx+"-"+this.computeJopId(el);
+        		auto_id_index++;
+    			id = ""+auto_id_index;
     			el.attr(BlockAttribute.JOP_ATTR_ID,id);
     		}
 			// check for double jop id

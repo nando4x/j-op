@@ -1,6 +1,7 @@
 package com.nandox.jop.core.processor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 /**
@@ -19,7 +20,7 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public class BlockAttribute {
 	/** Identification attribute: jop_id */
-	public static final String JOP_ATTR_ID = "jop_rendered";
+	public static final String JOP_ATTR_ID = "jop_id";
 	/** Rendered flag attribute: jop_rendered */
 	public static final String JOP_ATTR_RENDERED = "jop_rendered";
 	/** List of possible attributes */
@@ -56,6 +57,20 @@ public class BlockAttribute {
 	}
 	public static void CleanDomFromAttribute(Element DomEl) {
 		DomEl.removeAttr(JOP_ATTR_RENDERED);
+	}
+	protected static String GetAttributeSelector () {
+		String sel = "";
+		Field fld[] = BlockAttribute.class.getDeclaredFields();
+		for ( int ix=0; ix<fld.length; ix++ ) {
+			if ( fld[ix].getName().startsWith("JOP_ATTR") ) {
+				if ( !sel.isEmpty() )
+					sel += ",";
+				try {
+					sel += "["+(String)fld[ix].get(null)+"]";
+				} catch (Exception e) {}
+			}
+		}
+		return sel;
 	}
 	//
 	//

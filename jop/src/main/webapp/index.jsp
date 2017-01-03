@@ -1,7 +1,7 @@
 <html>
 <head>
  <script type="text/javascript" src="jquery-1.12.2.js"/>
-</head>
+</head >
 <body>
 <script type="javascript">
 	var a, b, c;
@@ -13,9 +13,8 @@
 	</div>
 	<div jop_id=''>
 	</div>
-	<div 	jop_id='xxw'
-			jop_rendered="java{
-					return (1==0);
+	<div	jop_rendered="java{
+					return (1==1);
 				}"
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>
@@ -29,8 +28,8 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr>
-					<td>dt col1</td>
+				<tr jop_repeater='java{}'>
+					<td>java{return var.getCol1()}</td>
 				</tr>
 			</tbody>
 		</table>
