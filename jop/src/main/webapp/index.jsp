@@ -11,16 +11,14 @@
 </script>
 	<div jop_id=''>
 	</div>
-	<div jop_id=''>
-	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
-					return (1==0);
+					return (1==1);
 				}"
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>
 		<div>	
-		sasa<span>aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
+		sasa<span class="java{return $helloWorld.getCssClass();} xxxx">aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>
@@ -29,19 +27,32 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr jop_repeater='java{return $helloWorld.getArray();} jop_var='var'>
+				<tr rjop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
 					<td>java{return var;}</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-	<input value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
-	<input value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
-	<select>
-		<option jop_repeater='java{return $helloWorld.getArray();}' 
-				jop_var='var' 
+	<form jop_id=''>
+		<input name="male" value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
+		<input value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
+		<textarea rows="4" cols="50">
+			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
+		</textarea>
+		<select>
+			<option rjop_repeater='java{return $helloWorld.getArray();}' 
+				rjop_var='var' 
 				value='java{return var;}'>java{return var;}</option>
-	</select>
+		</select>
+	<fieldset>
+    <legend>Personalia:</legend>
+    Name: <input type="text"><br>
+    Email: <input type="text"><br>
+    Date of birth: <input type="text">
+  	</fieldset>
+  	<label for="male">Male</label>	
+		 <button type="button">Click Me!</button>
+	</form>
 	<div jop_id='id1' onclick="{}">
 		<jbean>{return 
 		$helloWorld.getMessage();}</jbean>

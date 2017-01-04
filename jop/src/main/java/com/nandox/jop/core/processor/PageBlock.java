@@ -117,14 +117,15 @@ public class PageBlock {
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {
-		// scan for bean tag that is not inside another child block 
+		// Scan for bean tag that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
 		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
-			if ( el.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
+			//if ( el.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
         		Element p = el.parent(); 
     			while ( p != null ) {
+    				// check if tag is in another child block 
     				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
     					if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
     						// build bean and join the same
@@ -142,12 +143,12 @@ public class PageBlock {
     				}
     				p = p.parent();
     			}
-			} else if ( el.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
+			/*} else if ( el.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
 				// get own direct bean
 				//lst.addAll(this.parseBean(el.ownText()));
-			}
+			}*/
 		}
-		// get attributes
+		// Get and process attributes of this block
 		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
@@ -168,6 +169,7 @@ public class PageBlock {
 				}
 			}
 		}
+		// Scan 
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
