@@ -123,7 +123,19 @@ public class PageBlock {
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			//if ( el.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-        		Element p = el.parent(); 
+			if ( this.checkIfParentBlockIsThis(el)) {
+				// build bean and join the same
+				PageExpression bean;
+				String code = this.parseBean(el);
+				if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
+					bean = new SimplePageExpression(Context,code);
+					lst.put(bean.getId(), bean);
+				} else
+					bean = lst.get(AbstractPageExpression.ComputeId(code));
+				this.beans.add(bean);
+				el.attr("id",bean.getId());
+			}
+        		/*Element p = el.parent(); 
     			while ( p != null ) {
     				// check if tag is in another child block 
     				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
@@ -142,7 +154,7 @@ public class PageBlock {
 						break;
     				}
     				p = p.parent();
-    			}
+    			}*/
 			/*} else if ( el.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
 				// get own direct bean
 				//lst.addAll(this.parseBean(el.ownText()));
@@ -152,7 +164,7 @@ public class PageBlock {
 		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equals(BlockAttribute.JOP_ATTR_ID) ) {
+			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
 				if ( !a.isEmpty() ) {
 					if ( a.trim().indexOf("java{") >= 0 ) {
@@ -182,6 +194,22 @@ public class PageBlock {
 			return element.text().trim().substring(inx_st, inx_end+JOP_EXPR_END.length());
 		} else 
 			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+	}
+	// Check if parent job_id is of this block
+	//
+	//
+	private boolean checkIfParentBlockIsThis ( Element el ) {
+		Element p = el.parent(); 
+		while ( p != null ) {
+			// check if tag is in another child block 
+			if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
+				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
+					return true;
+				}
+			}
+			p = p.parent();
+		}
+		return false;
 	}
 	/*private Set<String> parseBean(String txt) throws DomException {
 		Set<String> lst = new HashSet<String>();
