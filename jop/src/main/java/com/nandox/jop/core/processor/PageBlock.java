@@ -122,7 +122,6 @@ public class PageBlock {
 		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
-			//if ( el.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
 			if ( this.checkIfParentBlockIsThis(el)) {
 				// build bean and join the same
 				PageExpression bean;
@@ -135,30 +134,6 @@ public class PageBlock {
 				this.beans.add(bean);
 				el.attr("id",bean.getId());
 			}
-        		/*Element p = el.parent(); 
-    			while ( p != null ) {
-    				// check if tag is in another child block 
-    				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
-    						// build bean and join the same
-    						PageExpression bean;
-    						String code = this.parseBean(el);
-    						if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
-    							bean = new SimplePageExpression(Context,code);
-    							lst.put(bean.getId(), bean);
-    						} else
-    							bean = lst.get(AbstractPageExpression.ComputeId(code));
-    						this.beans.add(bean);
-    						el.attr("id",bean.getId());
-    					}
-						break;
-    				}
-    				p = p.parent();
-    			}*/
-			/*} else if ( el.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
-				// get own direct bean
-				//lst.addAll(this.parseBean(el.ownText()));
-			}*/
 		}
 		// Get and process attributes of this block
 		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
@@ -181,7 +156,9 @@ public class PageBlock {
 				}
 			}
 		}
-		// Scan 
+		// Get and process attributes of childs block
+		elems = this.domEl.children().iterator();
+		
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
@@ -203,9 +180,10 @@ public class PageBlock {
 		while ( p != null ) {
 			// check if tag is in another child block 
 			if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) ) {
+				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) )
 					return true;
-				}
+				else
+					return false;
 			}
 			p = p.parent();
 		}
