@@ -117,22 +117,29 @@ public class PageBlock {
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {
-		// Scan for bean tag that is not inside another child block 
+		// Scan for element that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
+		elems = this.domEl.children().iterator();
 		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( this.checkIfParentBlockIsThis(el)) {
-				// build bean and join the same
-				PageExpression bean;
-				String code = this.parseBean(el);
-				if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
-					bean = new SimplePageExpression(Context,code);
-					lst.put(bean.getId(), bean);
-				} else
-					bean = lst.get(AbstractPageExpression.ComputeId(code));
-				this.beans.add(bean);
-				el.attr("id",bean.getId());
+				// check if bean or attributes element 
+				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) {
+					// build bean and join the same
+					PageExpression bean;
+					String code = this.parseBean(el);
+					if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
+						bean = new SimplePageExpression(Context,code);
+						lst.put(bean.getId(), bean);
+					} else
+						bean = lst.get(AbstractPageExpression.ComputeId(code));
+					this.beans.add(bean);
+					el.attr("id",bean.getId());
+				} else {
+					// Get and process attributes of childs block
+					this.parseAttributes(Context, el);
+				}
 			}
 		}
 		// Get and process attributes of this block
@@ -156,8 +163,6 @@ public class PageBlock {
 				}
 			}
 		}
-		// Get and process attributes of childs block
-		elems = this.domEl.children().iterator();
 		
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
@@ -188,6 +193,31 @@ public class PageBlock {
 			p = p.parent();
 		}
 		return false;
+	}
+	// Parse attributes element to verify delimiter { }
+	//
+	//
+	private void parseAttributes(WebAppContext context, Element el) throws DomException {
+		Iterator<Attribute> attrs = el.attributes().iterator();
+		while (attrs.hasNext() ) {
+			Attribute attr =  attrs.next();
+			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
+				String a = attr.getValue();
+				if ( !a.isEmpty() ) {
+					if ( a.trim().indexOf("java{") >= 0 ) {
+						if ( a.indexOf("}") > 0 ) {
+							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
+							BlockAttribute at = new BlockAttribute(context,attr.getKey(),bid);
+							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
+								this.render = at.expr;
+							else
+								this.attrs.add(at);
+						} else
+							throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+					}
+				}
+			}
+		}
 	}
 	/*private Set<String> parseBean(String txt) throws DomException {
 		Set<String> lst = new HashSet<String>();
