@@ -27,9 +27,9 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr rjop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
+				<!-- <tr rjop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
 					<td>java{return var;}</td>
-				</tr>
+				</tr> -->
 			</tbody>
 		</table>
 	</div>
@@ -40,9 +40,9 @@
 			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 		</textarea>
 		<select>
-			<option rjop_repeater='java{return $helloWorld.getArray();}' 
+			<!-- <option rjop_repeater='java{return $helloWorld.getArray();}' 
 				rjop_var='var' 
-				value='java{return var;}'>java{return var;}</option>
+				value='java{return var;}'>java{return var;}</option> -->
 		</select>
 	<fieldset>
     <legend>Personalia:</legend>
