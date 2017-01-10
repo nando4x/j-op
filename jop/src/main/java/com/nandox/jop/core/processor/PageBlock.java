@@ -151,7 +151,7 @@ public class PageBlock {
 					this.beans.add(bean);
 					el.attr("id",bean.getId());
 				} else {
-					// Get and process attributes of childs block
+					// Get and process attributes of children block
 					this.parseAttributes(Context, el);
 				}
 			}
