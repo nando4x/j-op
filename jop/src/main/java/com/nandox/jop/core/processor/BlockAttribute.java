@@ -34,6 +34,8 @@ public class BlockAttribute {
 	protected String name;
 	/** */
 	protected PageExpression expr;
+	/** */
+	protected String elem_tmp_id;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -45,7 +47,11 @@ public class BlockAttribute {
 	 * @exception DomException if attribute name not found or syntax error
 	 */	
 	public BlockAttribute(WebAppContext Context, String Name, String Code) throws DomException {
+		this(Context, Name, Code, null);
+	}
+	public BlockAttribute(WebAppContext Context, String Name, String Code, String ElemId) throws DomException {
 		this.name = Name;
+		this.elem_tmp_id = ElemId;
 		int ix;
 		for ( ix=0; ix<ATTR_LIST.length; ix++ ) {
 			if ( Name.toLowerCase().equals(ATTR_LIST[ix][ATTR_NAME].toLowerCase()) )

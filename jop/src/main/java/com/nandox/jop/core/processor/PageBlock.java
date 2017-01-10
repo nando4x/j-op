@@ -43,6 +43,8 @@ public class PageBlock {
 	private List<PageExpression> beans;
 	private List<BlockAttribute> attrs;
 	private PageExpression render;
+	private static final String tmp_attr_id = "_jop_tmp_id";
+	private int auto_id_index;
 	protected Element clone;
 	
 	/**
@@ -119,7 +121,7 @@ public class PageBlock {
 	private void parse(WebAppContext Context) throws DomException {
 		// Scan for element that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
-		elems = this.domEl.children().iterator();
+		elems = this.domEl.getAllElements().iterator();
 		HashMap<String,PageExpression> lst = new HashMap<String,PageExpression>();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
@@ -143,7 +145,8 @@ public class PageBlock {
 			}
 		}
 		// Get and process attributes of this block
-		Iterator<Attribute> attrs = this.domEl.attributes().iterator();
+		this.parseAttributes(Context, this.domEl);
+		/*Iterator<Attribute> attrs = this.domEl.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
 			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
@@ -163,7 +166,7 @@ public class PageBlock {
 				}
 			}
 		}
-		
+		*/
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
@@ -206,8 +209,15 @@ public class PageBlock {
 				if ( !a.isEmpty() ) {
 					if ( a.trim().indexOf("java{") >= 0 ) {
 						if ( a.indexOf("}") > 0 ) {
-							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
-							BlockAttribute at = new BlockAttribute(context,attr.getKey(),bid);
+							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);
+							BlockAttribute at;
+							if ( el == this.domEl )
+								at = new BlockAttribute(context,attr.getKey(),bid);
+							else {
+								String id = this.pageId + "-" + this.auto_id_index++;
+								at = new BlockAttribute(context,attr.getKey(),bid,id);
+								el.attr(tmp_attr_id,id);
+							}
 							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
 								this.render = at.expr;
 							else
