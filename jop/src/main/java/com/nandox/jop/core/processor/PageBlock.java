@@ -42,8 +42,10 @@ public class PageBlock {
 	private String pageId;
 	private List<PageExpression> beans;
 	private List<BlockAttribute> attrs;
+	private List<BlockAttribute> attrs_child;
 	private PageExpression render;
 	private static final String tmp_attr_id = "_jop_tmp_id";
+	private static final String form_selector = "[value^=java{]";
 	private int auto_id_index;
 	protected Element clone;
 	
@@ -63,6 +65,7 @@ public class PageBlock {
 		this.id = this.domEl.attr(BlockAttribute.JOP_ATTR_ID);
 		this.beans = new ArrayList<PageExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
+		this.attrs_child = new ArrayList<BlockAttribute>();
 		this.parse(Context);
 	}
 	/**
@@ -103,12 +106,21 @@ public class PageBlock {
 			TextNode txt = new TextNode(v,"");
 			elem.replaceWith(txt);
 		}
-		// Compute attributes
+		// Compute own attributes
 		Iterator<BlockAttribute> la = this.attrs.iterator();
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
 			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
+		}
+		// Compute attributes of childs
+		la = this.attrs_child.iterator();
+		while ( la.hasNext() ) {
+			BlockAttribute ba = la.next();
+			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, ba.elem_tmp_id).first();
+			String a = e.attr(ba.name);
+			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
+			e.removeAttr(tmp_attr_id);
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
@@ -146,27 +158,9 @@ public class PageBlock {
 		}
 		// Get and process attributes of this block
 		this.parseAttributes(Context, this.domEl);
-		/*Iterator<Attribute> attrs = this.domEl.attributes().iterator();
-		while (attrs.hasNext() ) {
-			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
-				String a = attr.getValue();
-				if ( !a.isEmpty() ) {
-					if ( a.trim().indexOf("java{") >= 0 ) {
-						if ( a.indexOf("}") > 0 ) {
-							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);  
-							BlockAttribute at = new BlockAttribute(Context,attr.getKey(),bid);
-							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
-								this.render = at.expr;
-							else
-								this.attrs.add(at);
-						} else
-							throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-					}
-				}
-			}
-		}
-		*/
+		
+		// Get and process value attribute of form tags
+		elems = this.domEl.select(form_selector).iterator();
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
@@ -211,17 +205,18 @@ public class PageBlock {
 						if ( a.indexOf("}") > 0 ) {
 							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);
 							BlockAttribute at;
-							if ( el == this.domEl )
+							if ( el == this.domEl ) {
 								at = new BlockAttribute(context,attr.getKey(),bid);
-							else {
+								if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
+									this.render = at.expr;
+								else
+									this.attrs.add(at);
+							} else {
 								String id = this.pageId + "-" + this.auto_id_index++;
 								at = new BlockAttribute(context,attr.getKey(),bid,id);
 								el.attr(tmp_attr_id,id);
+								this.attrs_child.add(at);
 							}
-							if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
-								this.render = at.expr;
-							else
-								this.attrs.add(at);
 						} else
 							throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
 					}
