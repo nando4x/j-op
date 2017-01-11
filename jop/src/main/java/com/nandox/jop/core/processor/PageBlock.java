@@ -113,7 +113,7 @@ public class PageBlock {
 			String a = this.domEl.attr(ba.name);
 			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
 		}
-		// Compute attributes of childs
+		// Compute attributes of children
 		la = this.attrs_child.iterator();
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
@@ -161,6 +161,12 @@ public class PageBlock {
 		
 		// Get and process value attribute of form tags
 		elems = this.domEl.select(form_selector).iterator();
+		while ( elems.hasNext() ) {
+			Element el = elems.next();
+			if ( el.tag().isFormSubmittable() ) {
+				
+			}
+		}
 	}
 	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
 	//
