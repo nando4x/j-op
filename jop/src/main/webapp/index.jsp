@@ -33,10 +33,10 @@
 			</tbody>
 		</table>
 	</div>
-	<form jop_id=''>
+	<form jop_id='' action="index.jsp" method="post">
 		<input name="male" value="java{if(value!=null) $helloWorld.setMessage(value) else return $helloWorld.getMessage();}">
 		<input  value="java{return JopHelper.manageInput($helloWorld,"Message",value);}">
-		<textarea rows="4" cols="50">
+		<textarea rows="4" cols="50" name="ddd">
 			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 		</textarea>
 		<select>
@@ -46,12 +46,13 @@
 		</select>
 	<fieldset>
     <legend>Personalia:</legend>
-    Name: <input type="text"><br>
+    Name: <input name="cccc" type="text"><br>
     Email: <input type="text"><br>
     Date of birth: <input type="text">
   	</fieldset>
   	<label for="male">Male</label>	
 		 <button type="button">Click Me!</button>
+		<input  type="submit">
 	</form>
 	<div jop_id='id1' onclick="{}">
 		<jbean>{return 

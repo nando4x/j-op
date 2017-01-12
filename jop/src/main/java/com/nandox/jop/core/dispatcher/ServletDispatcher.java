@@ -32,7 +32,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// read requested page file in buffer
-		String pth = req.getServletPath()+req.getPathInfo();
+		String pth = (req.getServletPath()==null?"":req.getServletPath())+(req.getPathInfo()==null?"":req.getPathInfo());
 		String contextPath = this.getServletContext().getRealPath(File.separator);
 		File f = new File(contextPath+File.separator+pth);
 		if ( f.canRead() ) {
