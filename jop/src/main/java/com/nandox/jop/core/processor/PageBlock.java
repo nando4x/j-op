@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.Attribute;
@@ -159,12 +160,25 @@ public class PageBlock {
 		// Get and process attributes of this block
 		this.parseAttributes(Context, this.domEl);
 		
-		// Get and process value attribute of form tags
-		elems = this.domEl.select(form_selector).iterator();
+		// Get and process value attribute of form tags (es. input)
+		Elements grp = this.domEl.select(form_selector);
+		grp.add(this.domEl); // add self to the list
+		elems = grp.iterator();
 		while ( elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.tag().isFormSubmittable() ) {
-				
+				if ( this.checkIfParentBlockIsThis(el)) {
+					String a = el.attr("value");
+					if ( !a.isEmpty() ) {
+						if ( a.trim().indexOf("java{") >= 0 ) {
+							if ( a.lastIndexOf("}") > 0 ) {
+								String bid = a.substring(a.indexOf("{"),a.trim().lastIndexOf("}")+1);
+								bid = bid;
+							} else
+								throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+						}
+					}
+				}
 			}
 		}
 	}
