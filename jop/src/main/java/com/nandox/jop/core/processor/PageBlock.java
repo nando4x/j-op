@@ -169,14 +169,9 @@ public class PageBlock {
 			if ( el.tag().isFormSubmittable() ) {
 				if ( this.checkIfParentBlockIsThis(el)) {
 					String a = el.attr("value");
-					if ( !a.isEmpty() ) {
-						if ( a.trim().indexOf("java{") >= 0 ) {
-							if ( a.lastIndexOf("}") > 0 ) {
-								String bid = a.substring(a.indexOf("{"),a.trim().lastIndexOf("}")+1);
-								bid = bid;
-							} else
-								throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-						}
+					String bid = this.parseJavaExpression(a); 
+					if ( bid != null ) {
+						bid = bid;
 					}
 				}
 			}
@@ -243,6 +238,21 @@ public class PageBlock {
 				}
 			}
 		}
+	}
+	// Parse expression check syntax and extract string of expression
+	//
+	//
+	private String parseJavaExpression (String code) throws DomException {
+		if ( !code.isEmpty() ) {
+			if ( code.trim().indexOf("java{") >= 0 ) {
+				if ( code.lastIndexOf("}") > 0 ) {
+					String bid = code.substring(code.indexOf("{"),code.trim().lastIndexOf("}")+1);
+					return bid;
+				} else
+					throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+			}
+		}
+		return null;
 	}
 	/*private Set<String> parseBean(String txt) throws DomException {
 		Set<String> lst = new HashSet<String>();
