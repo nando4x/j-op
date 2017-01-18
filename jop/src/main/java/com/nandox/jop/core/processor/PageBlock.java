@@ -182,12 +182,13 @@ public class PageBlock {
 	//
 	private String parseBean(Element element) throws DomException {
 		// check start and end bean
-		int inx_st = element.text().trim().indexOf(JOP_EXPR_INI);
+		return this.parseJavaExpression("java"+element.text().trim());
+		/*int inx_st = element.text().trim().indexOf(JOP_EXPR_INI);
 		int inx_end = element.text().trim().indexOf(JOP_EXPR_END);
 		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
 			return element.text().trim().substring(inx_st, inx_end+JOP_EXPR_END.length());
 		} else 
-			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);*/
 	}
 	// Check if parent job_id is of this block
 	//
@@ -215,25 +216,20 @@ public class PageBlock {
 			Attribute attr =  attrs.next();
 			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
-				if ( !a.isEmpty() ) {
-					if ( a.trim().indexOf("java{") >= 0 ) {
-						if ( a.indexOf("}") > 0 ) {
-							String bid = a.substring(a.indexOf("{"),a.trim().indexOf("}")+1);
-							BlockAttribute at;
-							if ( el == this.domEl ) {
-								at = new BlockAttribute(context,attr.getKey(),bid);
-								if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
-									this.render = at.expr;
-								else
-									this.attrs.add(at);
-							} else {
-								String id = this.pageId + "-" + this.auto_id_index++;
-								at = new BlockAttribute(context,attr.getKey(),bid,id);
-								el.attr(tmp_attr_id,id);
-								this.attrs_child.add(at);
-							}
-						} else
-							throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
+				String bid = this.parseJavaExpression(a); 
+				if ( bid != null ) {
+					BlockAttribute at;
+					if ( el == this.domEl ) {
+						at = new BlockAttribute(context,attr.getKey(),bid);
+						if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
+							this.render = at.expr;
+						else
+							this.attrs.add(at);
+					} else {
+						String id = this.pageId + "-" + this.auto_id_index++;
+						at = new BlockAttribute(context,attr.getKey(),bid,id);
+						el.attr(tmp_attr_id,id);
+						this.attrs_child.add(at);
 					}
 				}
 			}
@@ -244,9 +240,9 @@ public class PageBlock {
 	//
 	private String parseJavaExpression (String code) throws DomException {
 		if ( !code.isEmpty() ) {
-			if ( code.trim().indexOf("java{") >= 0 ) {
-				if ( code.lastIndexOf("}") > 0 ) {
-					String bid = code.substring(code.indexOf("{"),code.trim().lastIndexOf("}")+1);
+			if ( code.trim().indexOf("java"+JOP_EXPR_INI) >= 0 ) {
+				if ( code.lastIndexOf(JOP_EXPR_END) > 0 ) {
+					String bid = code.substring(code.indexOf(JOP_EXPR_INI),code.trim().lastIndexOf(JOP_EXPR_END)+1);
 					return bid;
 				} else
 					throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
