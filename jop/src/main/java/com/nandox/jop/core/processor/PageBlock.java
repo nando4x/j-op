@@ -181,31 +181,8 @@ public class PageBlock {
 	//
 	//
 	private String parseBean(Element element) throws DomException {
-		// check start and end bean
+		// parse as java expression
 		return this.parseJavaExpression("java"+element.text().trim());
-		/*int inx_st = element.text().trim().indexOf(JOP_EXPR_INI);
-		int inx_end = element.text().trim().indexOf(JOP_EXPR_END);
-		if ( inx_st >= 0 && inx_end == element.text().trim().length()-1 ) {
-			return element.text().trim().substring(inx_st, inx_end+JOP_EXPR_END.length());
-		} else 
-			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);*/
-	}
-	// Check if parent job_id is of this block
-	//
-	//
-	private boolean checkIfParentBlockIsThis ( Element el ) {
-		Element p = el.parent(); 
-		while ( p != null ) {
-			// check if tag is in another child block 
-			if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) )
-					return true;
-				else
-					return false;
-			}
-			p = p.parent();
-		}
-		return false;
 	}
 	// Parse attributes element to verify delimiter { }
 	//
@@ -250,22 +227,21 @@ public class PageBlock {
 		}
 		return null;
 	}
-	/*private Set<String> parseBean(String txt) throws DomException {
-		Set<String> lst = new HashSet<String>();
-		int inx_st = 0;
-		// Search every bean
-		inx_st = txt.indexOf(JOP_BEAN_INI,inx_st);
-		while ( inx_st >= 0 ) {
-			// search and check end bean
-			int inx_end = txt.indexOf(JOP_BEAN_END,inx_st);
-			if ( inx_end > inx_st ) {
-				String bean = txt.substring(inx_st, inx_end+JOP_BEAN_END.length());
-				lst.add(bean);
-			} else 
-				throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-			inx_st = txt.indexOf(JOP_BEAN_INI,inx_end);
+	// Check if parent job_id is of this block
+	//
+	//
+	private boolean checkIfParentBlockIsThis ( Element el ) {
+		Element p = el.parent(); 
+		while ( p != null ) {
+			// check if tag is in another child block 
+			if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
+				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) )
+					return true;
+				else
+					return false;
+			}
+			p = p.parent();
 		}
-		// TODO: error if empty
-		return lst;
-	}*/
+		return false;
+	}
 }
