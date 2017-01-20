@@ -171,7 +171,8 @@ public class PageBlock {
 					String a = el.attr("value");
 					String bid = this.parseJavaExpression(a); 
 					if ( bid != null ) {
-						bid = bid;
+						PageExpression form;
+						//form = new SimplePageExpression(Context,bid);
 					}
 				}
 			}
