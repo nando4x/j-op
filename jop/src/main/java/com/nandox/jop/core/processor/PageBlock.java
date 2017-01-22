@@ -42,6 +42,7 @@ public class PageBlock {
 	
 	private String pageId;
 	private List<PageExpression> beans;
+	private List<PageExpression> forms;
 	private List<BlockAttribute> attrs;
 	private List<BlockAttribute> attrs_child;
 	private PageExpression render;
@@ -123,6 +124,18 @@ public class PageBlock {
 			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
 			e.removeAttr(tmp_attr_id);
 		}
+		// Compute forms 
+		/*bs = this.forms.iterator();
+		while ( bs.hasNext() ) {
+			PageExpression b = bs.next();
+			String v = (String)b.Execute(Context);
+			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, ).first();
+			String a = e.attr("value");
+			e.attr("value",a.replace("java"+b.getCode(), v));
+			e.removeAttr(tmp_attr_id);
+		}*/
+		
+		
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		BlockAttribute.CleanDomFromAttribute(this.clone);
 		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
@@ -172,7 +185,9 @@ public class PageBlock {
 					String bid = this.parseJavaExpression(a); 
 					if ( bid != null ) {
 						PageExpression form;
-						//form = new SimplePageExpression(Context,bid);
+						form = new SimplePageExpression(Context,bid);
+						
+						this.forms.add(form);
 					}
 				}
 			}

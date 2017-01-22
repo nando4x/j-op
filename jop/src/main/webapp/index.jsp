@@ -34,8 +34,10 @@
 		</table>
 	</div>
 	<form jop_id='' action="index.jsp" method="post">
-		<input name="male" value="java{if(value!=null) { $helloWorld.setMessage(value) } else return $helloWorld.getMessage();}">
-		<input  value='java{return JopHelper.manageInput($helloWorld,"Message",value);}'>
+		<input name="male" value="xjava{if(value!=null) { $helloWorld.setMessage(value); } else return $helloWorld.getMessage();}">
+			ssasssasa
+		</input>
+		<input  value='xjava{return JopHelper.manageInput($helloWorld,"Message",value);}'>
 		<textarea rows="4" cols="50" name="ddd">
 			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 		</textarea>
