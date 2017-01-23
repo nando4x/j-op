@@ -34,7 +34,7 @@
 		</table>
 	</div>
 	<form jop_id='' action="index.jsp" method="post">
-		<input name="male" value="xjava{if(value!=null) { $helloWorld.setMessage(value); } else return $helloWorld.getMessage();}">
+		<input name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>
 		<input  value='xjava{return JopHelper.manageInput($helloWorld,"Message",value);}'>

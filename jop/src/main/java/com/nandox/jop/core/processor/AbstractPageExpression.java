@@ -18,7 +18,7 @@ import com.nandox.jop.core.context.ExpressionInvoker;
  */
 public abstract class AbstractPageExpression<E extends Object> implements PageExpression {
 
-	private String Id;
+	protected String Id;
 	private String code;
 	private ExpressionInvoker invoker;
 	private E value;

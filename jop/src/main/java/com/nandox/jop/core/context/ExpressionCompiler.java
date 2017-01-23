@@ -152,7 +152,7 @@ public class ExpressionCompiler {
 		}
 		// wrap code to class that implements ExpressionExecutor interface
 		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke (Object beans[]) {";
+		code += "public "+returnclass+ " invoke (Object beans[],"+returnclass+" value, String nativeValue) {";
 		if ( beans.size() > 0 ) {
 			int ix=0;
 			for ( String bean: beans ) {

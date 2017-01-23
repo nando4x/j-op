@@ -48,7 +48,7 @@ public class ExpressionInvoker {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.GetBeanInstance(this.beans[ix]);
-			ret = o.invoke(beans);
+			ret = o.invoke(beans,null,null);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}

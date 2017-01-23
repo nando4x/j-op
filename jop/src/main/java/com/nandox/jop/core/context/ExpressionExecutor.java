@@ -18,10 +18,12 @@ public interface ExpressionExecutor<E> {
 	
 	/** Main method to invoke expression
 	 * @param	  Beans array of beans called in expression
+	 * @param	  Value value for writing invoke
+	 * @param	  NativeValue string value for writing invoke
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception specific type value
 	 */
-	public E invoke(Object Beans[]);
+	public E invoke(Object Beans[], E Value, String NativeValue);
 }

@@ -66,6 +66,7 @@ public class PageBlock {
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(BlockAttribute.JOP_ATTR_ID);
 		this.beans = new ArrayList<PageExpression>();
+		this.forms = new ArrayList<PageExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
 		this.attrs_child = new ArrayList<BlockAttribute>();
 		this.parse(Context);
@@ -125,15 +126,14 @@ public class PageBlock {
 			e.removeAttr(tmp_attr_id);
 		}
 		// Compute forms 
-		/*bs = this.forms.iterator();
+		bs = this.forms.iterator();
 		while ( bs.hasNext() ) {
 			PageExpression b = bs.next();
 			String v = (String)b.Execute(Context);
-			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, ).first();
+			Element e = this.clone.getElementsByAttributeValue("name", b.getId()).first();
 			String a = e.attr("value");
 			e.attr("value",a.replace("java"+b.getCode(), v));
-			e.removeAttr(tmp_attr_id);
-		}*/
+		}
 		
 		
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
@@ -186,7 +186,11 @@ public class PageBlock {
 					if ( bid != null ) {
 						PageExpression form;
 						form = new SimplePageExpression(Context,bid);
-						
+						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
+							el.attr("name",""+this.auto_id_index);
+							auto_id_index++;
+						}
+						((SimplePageExpression)form).Id = el.attr("name");
 						this.forms.add(form);
 					}
 				}
