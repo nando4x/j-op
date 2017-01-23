@@ -133,6 +133,8 @@ public class PageBlock {
 			Element e = this.clone.getElementsByAttributeValue("name", b.getId()).first();
 			String a = e.attr("value");
 			e.attr("value",a.replace("java"+b.getCode(), v));
+			// add page id to name attribute
+			e.attr("name","["+this.pageId+"]."+e.attr("name"));
 		}
 		
 		

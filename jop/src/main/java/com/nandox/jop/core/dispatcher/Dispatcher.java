@@ -1,5 +1,7 @@
 package com.nandox.jop.core.dispatcher;
 
+import java.util.Map;
+import java.util.Iterator;
 import java.util.HashMap;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -70,6 +72,14 @@ public class Dispatcher {
 	 * @exception ParseException if parsing and check synstax error
 	 * @return	  html rendered
 	 */
+	/**
+	 * Descrizione
+	 * @date      23 gen 2017 - 23 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
 	protected String processPage(String PageId, String PageContent) throws ParseException {
 		// check if page is changed, in this case or if not exist create new
 		PageApp page;
@@ -83,6 +93,47 @@ public class Dispatcher {
 		}
 		// render page
 		return page.Render(this.appCtx);
+	}
+	/**
+	 * Return Map of query data per page id
+	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
+	 * @date      23 gen 2017 - 23 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	protected Map<String,Map<String,String[]>> getQueryDataByPage(Map<String,String[]> QueryData) {
+		Map<String,Map<String,String[]>> map = new HashMap<String,Map<String,String[]>>();
+		Iterator<String> i = QueryData.keySet().iterator();
+		while (i.hasNext()) {
+			String key = i.next();
+			int ini = key.indexOf("[");
+			int end = key.indexOf("].");
+			if ( ini >= 0 && end > ini ) {
+				String pageId = key.substring(ini+1, end);
+				Map<String,String[]> val = map.get(pageId);
+				if ( val == null ) {
+					val = new HashMap<String,String[]>();
+				}
+				val.put(key.substring(end+2), QueryData.get(key));
+				map.put(pageId, val);
+			}
+		}
+		return map;
+	}
+	protected void processPageFormAction(Map<String,Map<String,String[]>> PageData) {
+		Iterator<String> i = PageData.keySet().iterator();
+		while ( i.hasNext() ) {
+			String pageId = i.next();
+			PageApp page;
+			if ( (page = this.appCtx.GetPagesMap().get(pageId)) != null ) {
+				//TODO: manage page data
+			} else {
+				//TODO: manage error page not exist
+			}
+			
+		}
 	}
 	// Init environment: create application context and attach the spring context
 	//

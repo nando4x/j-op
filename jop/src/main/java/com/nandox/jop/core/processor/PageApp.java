@@ -78,6 +78,9 @@ public class PageApp {
 		}
 		return d.html();
 	}
+	public void Action(WebAppContext Context, Map<String,String[]> Data) {
+		
+	}
 	// Parsing page content to search and build every block 
 	//
 	//

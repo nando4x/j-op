@@ -43,6 +43,9 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 			// Process page content
 			String out = new String(buff);
 			try {
+				// if is submit action process query data before
+				if ( !req.getParameterMap().isEmpty() )
+					this.processDataQuery(req.getParameterMap());
 				out = this.processPage((pth.charAt(0)=='/'?pth.substring(1):pth),out);
 			} catch (Exception e) {
 				// TODO: manage exception

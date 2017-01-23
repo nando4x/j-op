@@ -1,5 +1,7 @@
 package com.nandox.jop.core.dispatcher;
 
+import java.util.Map;
+import java.util.Iterator;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +20,10 @@ import javax.servlet.http.HttpServlet;
  * @revisor   Fernando Costantino
  */
 
+/**
+ * @author Fernando
+ *
+ */
 public abstract class AbstractServletDispatcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -45,5 +51,18 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 */
 	protected String processPage(String PageId, String ContentPage) throws Exception {
 		return this.dsp.processPage(PageId, ContentPage);
+	}
+	/**
+	 * Process data query of submit action
+	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
+	 * @date      23 gen 2017 - 23 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	protected void processDataQuery(Map<String,String[]> QueryData) {
+		// page id from query data
+		this.dsp.getQueryDataByPage(QueryData);
 	}
 }
