@@ -89,7 +89,7 @@ public class PageBlock {
 	 */	
 	public Node Render(WebAppContext Context) {
 		this.clone = this.domEl.clone();
-		// rendering all child in recursive mode
+		// ### Rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
@@ -100,7 +100,7 @@ public class PageBlock {
 		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
 			return new TextNode("","");
 		}
-		// Fire every own bean and insert into html
+		// ### Fire every own bean and insert into html
 		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
 			PageExpression b = bs.next();
@@ -110,14 +110,14 @@ public class PageBlock {
 			TextNode txt = new TextNode(v,"");
 			elem.replaceWith(txt);
 		}
-		// Compute own attributes
+		// ### Compute own attributes
 		Iterator<BlockAttribute> la = this.attrs.iterator();
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
 			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
 		}
-		// Compute attributes of children
+		// ### Compute attributes of children
 		la = this.attrs_child.iterator();
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
@@ -126,7 +126,7 @@ public class PageBlock {
 			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
 			e.removeAttr(tmp_attr_id);
 		}
-		// Compute forms 
+		// ### Compute forms 
 		bs = this.forms.iterator();
 		while ( bs.hasNext() ) {
 			PageExpression b = bs.next();
@@ -144,6 +144,16 @@ public class PageBlock {
 		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
 	}
+	/**
+	 * Perform action submit
+	 * @param	  Context	Application context
+	 * @param	  Data	Map with name of tag and data
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
 	public void Action(WebAppContext Context, Map<String,String[]> Data) {
 		// Search form tag with key (name) of the Data
 		Iterator<PageExpression> i = this.forms.iterator();
@@ -151,6 +161,8 @@ public class PageBlock {
 			PageExpression pe;
 			if ( Data.containsKey((pe=i.next()).getId()) ) {
 				// Invoke expression in write mode
+				// get string data
+				String val = Data.get(pe.getId())[0];
 				//TODO:
 			}
 		}
