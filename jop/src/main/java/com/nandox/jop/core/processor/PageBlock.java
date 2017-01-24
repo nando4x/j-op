@@ -43,7 +43,7 @@ public class PageBlock {
 	
 	private String pageId;
 	private List<PageExpression> beans;
-	private List<PageExpression> forms;
+	private List<PageWriteExpression> forms;
 	private List<BlockAttribute> attrs;
 	private List<BlockAttribute> attrs_child;
 	private PageExpression render;
@@ -67,7 +67,7 @@ public class PageBlock {
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(BlockAttribute.JOP_ATTR_ID);
 		this.beans = new ArrayList<PageExpression>();
-		this.forms = new ArrayList<PageExpression>();
+		this.forms = new ArrayList<PageWriteExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
 		this.attrs_child = new ArrayList<BlockAttribute>();
 		this.parse(Context);
@@ -127,9 +127,9 @@ public class PageBlock {
 			e.removeAttr(tmp_attr_id);
 		}
 		// ### Compute forms 
-		bs = this.forms.iterator();
+		Iterator<PageWriteExpression> f = this.forms.iterator();
 		while ( bs.hasNext() ) {
-			PageExpression b = bs.next();
+			PageWriteExpression b = f.next();
 			String v = (String)b.Execute(Context);
 			Element e = this.clone.getElementsByAttributeValue("name", b.getId()).first();
 			String a = e.attr("value");
@@ -156,14 +156,13 @@ public class PageBlock {
 	 */
 	public void Action(WebAppContext Context, Map<String,String[]> Data) {
 		// Search form tag with key (name) of the Data
-		Iterator<PageExpression> i = this.forms.iterator();
+		Iterator<PageWriteExpression> i = this.forms.iterator();
 		while ( i.hasNext() ) {
-			PageExpression pe;
+			PageWriteExpression pe;
 			if ( Data.containsKey((pe=i.next()).getId()) ) {
 				// Invoke expression in write mode
-				// get string data
-				String val = Data.get(pe.getId())[0];
-				//TODO:
+				String val = Data.get(pe.getId())[0]; // get string data
+				pe.Execute(Context, val);
 			}
 		}
 	}
@@ -210,7 +209,7 @@ public class PageBlock {
 					String a = el.attr("value");
 					String bid = this.parseJavaExpression(a); 
 					if ( bid != null ) {
-						PageExpression form;
+						PageWriteExpression form;
 						form = new SimplePageExpression(Context,bid);
 						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 							el.attr("name",""+this.auto_id_index);

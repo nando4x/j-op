@@ -16,7 +16,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 
-public class SimplePageExpression extends AbstractPageExpression<String> {
+public class SimplePageExpression extends AbstractPageExpression<String> implements PageWriteExpression {
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String)
@@ -31,5 +31,14 @@ public class SimplePageExpression extends AbstractPageExpression<String> {
 	@Override
 	public String Execute(WebAppContext Context) {
 		return (String)this.Invoke(Context);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String)
+	 */
+	@Override
+	public Object Execute(WebAppContext Context, String NativeValue) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
