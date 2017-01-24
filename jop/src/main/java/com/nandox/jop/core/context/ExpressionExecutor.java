@@ -25,5 +25,5 @@ public interface ExpressionExecutor<E> {
 	 * @revisor   Fernando Costantino
 	 * @exception specific type value
 	 */
-	public E invoke(Object Beans[], E Value, String NativeValue);
+	public E invoke(Object Beans[], Object Value, String NativeValue);
 }

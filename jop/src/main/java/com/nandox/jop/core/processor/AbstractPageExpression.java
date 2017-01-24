@@ -74,7 +74,11 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 			this.value = (E)this.invoker.Invoke(Context);
 		return this.value;
 	}
-
+	@SuppressWarnings("unchecked")
+	protected Object Invoke(WebAppContext Context, E Value, String NativeValue) {
+		this.value = (E)this.invoker.Invoke(Context,Value,NativeValue);
+		return this.value;
+	}
 	/**
 	 * Compute expression identifier by hash code<br>
 	 * @param	  Code expression code

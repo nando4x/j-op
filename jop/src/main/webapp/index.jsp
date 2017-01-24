@@ -18,7 +18,7 @@
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>
 		<div>	
-		sasa<span class="java{return $helloWorld.getCssClass();} xxxx">aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
+		sasas<span class="java{return $helloWorld.getCssClass();} xxxx">aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>

@@ -37,8 +37,8 @@ public class SimplePageExpression extends AbstractPageExpression<String> impleme
 	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String)
 	 */
 	@Override
-	public Object Execute(WebAppContext Context, String NativeValue) {
+	public String Execute(WebAppContext Context, String NativeValue) {
 		// TODO Auto-generated method stub
-		return null;
+		return (String)this.Invoke(Context,NativeValue,NativeValue);
 	}
 }

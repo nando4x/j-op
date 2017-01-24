@@ -128,7 +128,7 @@ public class PageBlock {
 		}
 		// ### Compute forms 
 		Iterator<PageWriteExpression> f = this.forms.iterator();
-		while ( bs.hasNext() ) {
+		while ( f.hasNext() ) {
 			PageWriteExpression b = f.next();
 			String v = (String)b.Execute(Context);
 			Element e = this.clone.getElementsByAttributeValue("name", b.getId()).first();

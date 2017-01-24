@@ -54,4 +54,17 @@ public class ExpressionInvoker {
 		}
 		return ret;
 	}
+	public Object Invoke(WebAppContext Context, Object Value, String NativeValue) {
+		Object ret = null;
+		Object beans[] = new Object[this.beans.length];
+		try {
+			ExpressionExecutor<?> o = this.expClass.newInstance();
+			for ( int ix=0; ix<this.beans.length; ix++)
+				beans[ix] = Context.GetBeanInstance(this.beans[ix]);
+			ret = o.invoke(beans,Value,NativeValue);
+		} catch (Exception e) {
+			// TODO: gestire erroe
+		}
+		return ret;
+	}
 }
