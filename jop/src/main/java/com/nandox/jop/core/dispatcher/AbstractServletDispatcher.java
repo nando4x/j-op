@@ -63,6 +63,6 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 */
 	protected void processDataQuery(Map<String,String[]> QueryData) {
 		// page id from query data
-		this.dsp.getQueryDataByPage(QueryData);
+		this.dsp.processPageFormAction(this.dsp.getQueryDataByPage(QueryData));
 	}
 }

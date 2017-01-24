@@ -122,13 +122,22 @@ public class Dispatcher {
 		}
 		return map;
 	}
+	/**
+	 * Process data submit action
+	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
 	protected void processPageFormAction(Map<String,Map<String,String[]>> PageData) {
 		Iterator<String> i = PageData.keySet().iterator();
 		while ( i.hasNext() ) {
 			String pageId = i.next();
 			PageApp page;
 			if ( (page = this.appCtx.GetPagesMap().get(pageId)) != null ) {
-				//TODO: manage page data
+				page.Action(this.appCtx, PageData.get(pageId));
 			} else {
 				//TODO: manage error page not exist
 			}

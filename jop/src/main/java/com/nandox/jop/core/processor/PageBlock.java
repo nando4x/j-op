@@ -2,6 +2,7 @@ package com.nandox.jop.core.processor;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.jsoup.nodes.Element;
@@ -142,6 +143,17 @@ public class PageBlock {
 		BlockAttribute.CleanDomFromAttribute(this.clone);
 		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
+	}
+	public void Action(WebAppContext Context, Map<String,String[]> Data) {
+		// Search form tag with key (name) of the Data
+		Iterator<PageExpression> i = this.forms.iterator();
+		while ( i.hasNext() ) {
+			PageExpression pe;
+			if ( Data.containsKey((pe=i.next()).getId()) ) {
+				// Invoke expression in write mode
+				//TODO:
+			}
+		}
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//

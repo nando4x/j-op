@@ -78,8 +78,23 @@ public class PageApp {
 		}
 		return d.html();
 	}
+	/**
+	 * Performe action submit: search from own form and if present invoke in write mode with data
+	 * @param	  Context	Application context
+	 * @param	  Data	Map with name of tag and data
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
 	public void Action(WebAppContext Context, Map<String,String[]> Data) {
-		
+		// Scan every block
+		Iterator<PageBlock> i = this.blocks.values().iterator();
+		while (i.hasNext() ) {
+			PageBlock b = i.next();
+			b.Action(Context, Data);
+		}
 	}
 	// Parsing page content to search and build every block 
 	//
