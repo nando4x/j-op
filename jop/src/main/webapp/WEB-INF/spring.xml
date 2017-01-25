@@ -6,5 +6,5 @@
    <bean id="helloWorld" class="test.testbean">
        <property name="message" value="Hello World!"/>
    </bean>
-
+	<bean class="com.nandox.jop.core.context.proxy"/>
 </beans>
