@@ -165,6 +165,11 @@ public class PageBlock {
 				pe.Execute(Context, val);
 			}
 		}
+		// Reset all value expression 
+		Iterator<PageExpression> bs = this.beans.iterator();
+		while ( bs.hasNext() ) {
+			bs.next().ResetValue();
+		}
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
