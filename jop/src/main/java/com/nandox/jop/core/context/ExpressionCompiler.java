@@ -142,7 +142,7 @@ public class ExpressionCompiler {
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			try {
 				beans.add(source.substring(inx_st+1, inx_end));
-				code += "import "+context.GetBeanType(source.substring(inx_st+1, inx_end)).getName()+";";
+				code += "import "+this.epurateClassName(context.GetBeanType(source.substring(inx_st+1, inx_end)).getName())+";";
 				source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
 				inx_st = source.indexOf('$', inx_st+1);
 				inx_end = source.indexOf('.',inx_st);
@@ -157,7 +157,8 @@ public class ExpressionCompiler {
 		if ( beans.size() > 0 ) {
 			int ix=0;
 			for ( String bean: beans ) {
-				code += ""+context.GetBeanType(bean).getName()+" "+bean+"=("+context.GetBeanType(bean).getName()+")beans["+ix+"]; ";
+				String bcls = this.epurateClassName(context.GetBeanType(bean).getName());
+				code += ""+bcls+" "+bean+"=("+bcls+")beans["+ix+"]; ";
 				ix++;
 			}
 		}
@@ -180,6 +181,14 @@ public class ExpressionCompiler {
 			path += ";";
 		}*/
 		return path;
+	}
+	//
+	//
+	//
+	private String epurateClassName (String ClassName) {
+		if ( ClassName.indexOf("$$") > 0 )
+			ClassName = ClassName.substring(0,ClassName.indexOf("$$"));
+		return ClassName;
 	}
 	/*
 	public static void main(String args[]) throws IOException {

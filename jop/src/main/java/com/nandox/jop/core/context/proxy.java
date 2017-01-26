@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import javassist.util.proxy.ProxyFactory;
+import net.sf.cglib.proxy.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -30,21 +30,21 @@ public class proxy implements BeanPostProcessor {
 	  // simply return the instantiated bean as-is
 	  public Object postProcessBeforeInitialization(Object bean, String beanName)
                                             throws BeansException {
-	  	Handler handler = new Handler(bean);
-      	Object f = Proxy.newProxyInstance(bean.getClass().getClassLoader(),
-              new Class[] { bean.getClass() },
-              handler);
-      	ProxyFactory factory = new ProxyFactory();
-      	factory.setSuperclass(Dog.class);
-      	factory.setFilter(
-      	    new MethodFilter() {
-      	        @Override
-      	        public boolean isHandled(Method method) {
-      	            return Modifier.isAbstract(method.getModifiers());
-      	        }
+      	  Enhancer enhancer = new Enhancer();
+      	  enhancer.setSuperclass(bean.getClass());
+      	  enhancer.setCallback(new MethodInterceptor() {
+      	    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy)
+      	        throws Throwable {
+      	      if(method.getDeclaringClass() != Object.class && method.getReturnType() == String.class) {
+      	        return "Hello cglib!";
+      	      } else {
+      	        return proxy.invokeSuper(obj, args);
+      	      }
       	    }
-      	);
-		  return f; // we could potentially return any object reference here...
+      	  });
+      	  Object f = enhancer.create();
+      	
+      	return f; // we could potentially return any object reference here...
 	  }
 
 	  public Object postProcessAfterInitialization(Object bean, String beanName)
