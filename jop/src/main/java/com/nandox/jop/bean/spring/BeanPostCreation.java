@@ -1,7 +1,11 @@
 package com.nandox.jop.bean.spring;
 
+import java.beans.PropertyDescriptor;
+
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+import com.nandox.jop.core.context.BeanMonitoring;
 /**
  * Spring Bean post processor.<br>
  * In the post creation do this:<br>
@@ -17,7 +21,32 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * 
  * @revisor   Fernando Costantino
  */
-public class BeanPostCreation implements BeanPostProcessor {
+public class BeanPostCreation implements InstantiationAwareBeanPostProcessor {
+
+	/* (non-Javadoc)
+	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation(java.lang.Object, java.lang.String)
+	 */
+	public boolean postProcessAfterInstantiation(Object arg0, String arg1) throws BeansException {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)
+	 */
+	public Object postProcessBeforeInstantiation(Class<?> Bean, String BeanName) throws BeansException {
+		BeanMonitoring bm = BeanMonitoring.Utils.GetInstance();
+		return bm.ProxyBean(Bean, BeanName);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessPropertyValues(org.springframework.beans.PropertyValues, java.beans.PropertyDescriptor[], java.lang.Object, java.lang.String)
+	 */
+	public PropertyValues postProcessPropertyValues(PropertyValues arg0, PropertyDescriptor[] arg1, Object arg2,
+			String arg3) throws BeansException {
+		// TODO Auto-generated method stub
+		return arg0;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
@@ -30,7 +59,6 @@ public class BeanPostCreation implements BeanPostProcessor {
 	 * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
 	 */
 	public Object postProcessBeforeInitialization(Object Bean, String BeanName) throws BeansException {
-		// TODO Auto-generated method stub
 		return Bean;
 	}
 
