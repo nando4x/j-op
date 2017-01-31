@@ -3,6 +3,9 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+	<!--bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" >
+	</bean-->
+
    <bean id="helloWorld" class="test.testbean">
        <property name="message" value="Hello World!"/>
    </bean>
