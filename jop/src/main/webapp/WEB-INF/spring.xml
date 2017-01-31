@@ -6,5 +6,18 @@
    <bean id="helloWorld" class="test.testbean">
        <property name="message" value="Hello World!"/>
    </bean>
-	<bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
+	<!--bean class="com.nandox.jop.bean.spring.BeanPostCreation"/-->
+	<bean id="jopproxyadvice" class="com.nandox.jop.bean.spring.BeanPostCreation"/>
+	<bean id="jopproxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+       <property name="beanNames">
+       	<list>
+       		<value>*</value>
+       	</list>
+       </property>
+       <property name="interceptorNames">
+       	<list>
+       		<value>jopproxyadvice</value>
+       	</list>
+       </property>
+	</bean> 
 </beans>

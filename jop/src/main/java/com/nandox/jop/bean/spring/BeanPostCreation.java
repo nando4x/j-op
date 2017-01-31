@@ -1,10 +1,13 @@
 package com.nandox.jop.bean.spring;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
+import org.springframework.aop.MethodBeforeAdvice;
+import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import com.nandox.jop.core.context.BeanMonitoring;
 /**
  * Spring Bean post processor.<br>
@@ -21,7 +24,15 @@ import com.nandox.jop.core.context.BeanMonitoring;
  * 
  * @revisor   Fernando Costantino
  */
-public class BeanPostCreation implements InstantiationAwareBeanPostProcessor {
+public class BeanPostCreation implements MethodBeforeAdvice {//InstantiationAwareBeanPostProcessor {
+
+	/* (non-Javadoc)
+	 * @see org.springframework.aop.MethodBeforeAdvice#before(java.lang.reflect.Method, java.lang.Object[], java.lang.Object)
+	 */
+	@Override
+	public void before(Method arg0, Object[] arg1, Object arg2) throws Throwable {
+		arg0 = arg0;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation(java.lang.Object, java.lang.String)
