@@ -67,4 +67,10 @@ public class ExpressionInvoker {
 		}
 		return ret;
 	}
+	/**
+	 * @return the beans
+	 */
+	public String[] getBeans() {
+		return beans;
+	}
 }

@@ -11,6 +11,7 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
@@ -175,6 +176,7 @@ public class PageBlock {
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {
+		BeanMonitoring mon = BeanMonitoring.Utils.GetInstance();
 		// Scan for element that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
 		elems = this.domEl.getAllElements().iterator();
@@ -190,18 +192,19 @@ public class PageBlock {
 					if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
 						bean = new SimplePageExpression(Context,code);
 						lst.put(bean.getId(), bean);
+						mon.RegisterRefreshable(bean.GetBeansList(), this);
 					} else
 						bean = lst.get(AbstractPageExpression.ComputeId(code));
 					this.beans.add(bean);
 					el.attr("id",bean.getId());
 				} else {
 					// Get and process attributes of children block
-					this.parseAttributes(Context, el);
+					this.parseAttributes(Context, el,mon);
 				}
 			}
 		}
 		// Get and process attributes of this block
-		this.parseAttributes(Context, this.domEl);
+		this.parseAttributes(Context, this.domEl,mon);
 		
 		// Get and process value attribute of form tags (es. input)
 		Elements grp = this.domEl.select(form_selector);
@@ -216,6 +219,7 @@ public class PageBlock {
 					if ( bid != null ) {
 						PageWriteExpression form;
 						form = new SimplePageExpression(Context,bid);
+						mon.RegisterRefreshable(form.GetBeansList(), this);
 						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 							el.attr("name",""+this.auto_id_index);
 							auto_id_index++;
@@ -237,7 +241,7 @@ public class PageBlock {
 	// Parse attributes element to verify delimiter { }
 	//
 	//
-	private void parseAttributes(WebAppContext context, Element el) throws DomException {
+	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon) throws DomException {
 		Iterator<Attribute> attrs = el.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
@@ -252,11 +256,13 @@ public class PageBlock {
 							this.render = at.expr;
 						else
 							this.attrs.add(at);
+						mon.RegisterRefreshable(at.expr.GetBeansList(), this);
 					} else {
 						String id = this.pageId + "-" + this.auto_id_index++;
 						at = new BlockAttribute(context,attr.getKey(),bid,id);
 						el.attr(tmp_attr_id,id);
 						this.attrs_child.add(at);
+						mon.RegisterRefreshable(at.expr.GetBeansList(), this);
 					}
 				}
 			}

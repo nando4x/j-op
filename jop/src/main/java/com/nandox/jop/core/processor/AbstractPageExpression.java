@@ -79,6 +79,13 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		this.value = (E)this.invoker.Invoke(Context,Value,NativeValue);
 		return this.value;
 	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageExpression#GetBeansList()
+	 */
+	@Override
+	public String[] GetBeansList() {
+		return this.invoker.getBeans();
+	}
 	/**
 	 * Compute expression identifier by hash code<br>
 	 * @param	  Code expression code

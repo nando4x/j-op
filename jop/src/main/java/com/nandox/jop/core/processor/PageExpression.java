@@ -48,5 +48,15 @@ public interface PageExpression {
 	 * @return	    
 	 */
 	void ResetValue();
+	
+	/**
+	 * Return the list of bean managed from expression
+	 * @date      01 feb 2017 - 01 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  array of bean name
+	 */
+	String[] GetBeansList();
 
 }
