@@ -1,18 +1,17 @@
 package com.nandox.jop.bean.spring;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.aop.MethodBeforeAdvice;
-import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import com.nandox.jop.core.context.BeanMonitoring;
 /**
  * Spring Bean post processor.<br>
- * In the post creation do this:<br>
- * attach proxy to bean before initialization 
+ * In the post creation attach proxy to bean before initialization 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -24,29 +23,32 @@ import com.nandox.jop.core.context.BeanMonitoring;
  * 
  * @revisor   Fernando Costantino
  */
-public class BeanPostCreation implements MethodBeforeAdvice {//InstantiationAwareBeanPostProcessor {
+public class BeanPostCreation implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
+	
+	private AutowireCapableBeanFactory bfact;
+	/* Monitoring the bean 
+	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)
+	 */
+	public Object postProcessBeforeInstantiation(Class<?> Bean, String BeanName) throws BeansException {
+		BeanMonitoring bm = BeanMonitoring.Utils.GetInstance();
+		Object b = bm.ProxyBean(Bean, BeanName);
+		if ( b != null )
+			this.bfact.configureBean(b, BeanName);
+		return b;
+	}
 
 	/* (non-Javadoc)
-	 * @see org.springframework.aop.MethodBeforeAdvice#before(java.lang.reflect.Method, java.lang.Object[], java.lang.Object)
+	 * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
 	 */
-	public void before(Method arg0, Object[] arg1, Object arg2) throws Throwable {
-		arg0 = arg0;
+	public void setBeanFactory(BeanFactory factory) throws BeansException {
+		this.bfact = (AutowireCapableBeanFactory)factory;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation(java.lang.Object, java.lang.String)
 	 */
 	public boolean postProcessAfterInstantiation(Object arg0, String arg1) throws BeansException {
-		// TODO Auto-generated method stub
 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)
-	 */
-	public Object postProcessBeforeInstantiation(Class<?> Bean, String BeanName) throws BeansException {
-		BeanMonitoring bm = BeanMonitoring.Utils.GetInstance();
-		return bm.ProxyBean(Bean, BeanName);
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +56,6 @@ public class BeanPostCreation implements MethodBeforeAdvice {//InstantiationAwar
 	 */
 	public PropertyValues postProcessPropertyValues(PropertyValues arg0, PropertyDescriptor[] arg1, Object arg2,
 			String arg3) throws BeansException {
-		// TODO Auto-generated method stub
 		return arg0;
 	}
 
@@ -71,5 +72,4 @@ public class BeanPostCreation implements MethodBeforeAdvice {//InstantiationAwar
 	public Object postProcessBeforeInitialization(Object Bean, String BeanName) throws BeansException {
 		return Bean;
 	}
-
 }
