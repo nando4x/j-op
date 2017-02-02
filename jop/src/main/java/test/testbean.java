@@ -2,10 +2,10 @@ package test;
 
 import com.nandox.jop.bean.JopMonitoring;
 
-@JopMonitoring
 public class testbean {
 	private String message;
 
+	@JopMonitoring
    public void setMessage(String message){
       this.message  = message;
       message = "x";

@@ -51,6 +51,7 @@ public class PageBlock implements RefreshableBlock {
 	private static final String tmp_attr_id = "_jop_tmp_id";
 	private static final String form_selector = "[value^=java{]";
 	private int auto_id_index;
+	private boolean toBeRefresh;
 	protected Element clone;
 	
 	/**
@@ -166,19 +167,23 @@ public class PageBlock implements RefreshableBlock {
 				pe.Execute(Context, val);
 			}
 		}
-		// Reset all value expression 
-		Iterator<PageExpression> bs = this.beans.iterator();
-		while ( bs.hasNext() ) {
-			bs.next().ResetValue();
-		}
+		// Reset all value expression
+		this.resetAllExprValue();
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#SetToBeRefreshed()
 	 */
-	@Override
 	public void SetToBeRefreshed() {
-		// TODO Auto-generated method stub
+		// Reset all value expression
+		this.resetAllExprValue();
+		this.toBeRefresh = true;
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.RefreshableBlock#GetToBeRefresh()
+	 */
+	public boolean GetToBeRefresh() {
+		return this.toBeRefresh;
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
@@ -307,5 +312,14 @@ public class PageBlock implements RefreshableBlock {
 			p = p.parent();
 		}
 		return false;
+	}
+	// Reset all expression value
+	//
+	//
+	private void resetAllExprValue() {
+		Iterator<PageExpression> bs = this.beans.iterator();
+		while ( bs.hasNext() ) {
+			bs.next().ResetValue();
+		}
 	}
 }

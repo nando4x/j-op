@@ -82,7 +82,6 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#GetBeansList()
 	 */
-	@Override
 	public String[] GetBeansList() {
 		return this.invoker.getBeans();
 	}
