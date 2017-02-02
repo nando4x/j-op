@@ -27,7 +27,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @revisor   Fernando Costantino
  */
-public class PageBlock {
+public class PageBlock implements RefreshableBlock {
 	/** Identification bean: jop_bean */
 //	public static final String JOP_BEAN_INI = "jop_bean={";
 	public static final String JOP_EXPR_INI = "{";
@@ -171,6 +171,14 @@ public class PageBlock {
 		while ( bs.hasNext() ) {
 			bs.next().ResetValue();
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.RefreshableBlock#SetToBeRefreshed()
+	 */
+	@Override
+	public void SetToBeRefreshed() {
+		// TODO Auto-generated method stub
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//

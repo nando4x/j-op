@@ -1,6 +1,7 @@
 package com.nandox.jop.core.context;
 
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import com.nandox.jop.bean.JopMonitoring;
+import com.nandox.jop.core.processor.RefreshableBlock;
 
 /**
  * Class to proxy bean.<br>
@@ -27,7 +29,7 @@ import com.nandox.jop.bean.JopMonitoring;
  */
 public class BeanMonitoring {
 	
-	private Map<String,Set<Object>> beans;
+	private Map<String,Set<RefreshableBlock>> beans;
 
 	/**
 	 * Costruttore
@@ -38,7 +40,7 @@ public class BeanMonitoring {
 	 */
 	
 	public BeanMonitoring() {
-		this.beans = new HashMap<String,Set<Object>>();
+		this.beans = new HashMap<String,Set<RefreshableBlock>>();
 	}
 	/** If class bean contain @JopMonitoring annotation create new proxied bean
 	 * @date      26 gen 2017 - 26 gen 2017
@@ -55,15 +57,9 @@ public class BeanMonitoring {
 			// Proxy the bean class
 			Enhancer enhancer = new Enhancer();
 			enhancer.setSuperclass(BeanClass);
-			enhancer.setCallback(new MethodInterceptor() {
-			    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-			    		if ( method.isAnnotationPresent(JopMonitoring.class) || method.getDeclaringClass().isAnnotationPresent(JopMonitoring.class) )
-			    			obj = obj;
-			        	return proxy.invokeSuper(obj, args);
-			    	}
-				}
-			);
-			return enhancer.create();
+			enhancer.setCallback(new Interceptor(BeanName,this));
+			Object b = enhancer.create();
+			return b;
 		}
 		return null;
 	}
@@ -78,14 +74,32 @@ public class BeanMonitoring {
 	 * @exception 
 	 * @return
 	 */
-	public void RegisterRefreshable(String[] BeanName, Object Block) {
+	public void RegisterRefreshable(String[] BeanName, RefreshableBlock Block) {
 		for ( int ix=0; ix<BeanName.length; ix++ ) {
 			if ( this.beans.containsKey(BeanName[ix]) ) {
-				Set<Object> blocks = this.beans.get(BeanName[ix]);
+				Set<RefreshableBlock> blocks = this.beans.get(BeanName[ix]);
 				if ( blocks == null ) 
-					blocks = new HashSet<Object>();
+					blocks = new HashSet<RefreshableBlock>();
 				blocks.add(Block);
 				this.beans.put(BeanName[ix], blocks);
+			}
+		}
+	}
+	
+	/**
+	 * Descrizione
+	 * @date      02 feb 2017 - 02 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	protected void setToBeRefreshed(String BeanName) {
+		Set<RefreshableBlock> b = this.beans.get(BeanName);
+		if ( b != null ) {
+			Iterator<RefreshableBlock> i = b.iterator();
+			while ( i.hasNext() ) {
+				i.next().SetToBeRefreshed();
 			}
 		}
 	}
@@ -101,6 +115,31 @@ public class BeanMonitoring {
 				return true;
 		}
 		return false;
+	}
+	//
+	//
+	//
+	private class Interceptor implements MethodInterceptor {
+		private String beanName;
+		private BeanMonitoring monitor;
+	    /**
+		 * Costruttore
+		 * @date      02 feb 2017 - 02 feb 2017
+		 * @author    Fernando Costantino
+		 * @revisor   Fernando Costantino
+		 * @exception
+		 */
+		protected Interceptor(String BeanName, BeanMonitoring Monitor) {
+			this.beanName = BeanName;
+			this.monitor = Monitor;
+		}
+
+		public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    		if ( method.isAnnotationPresent(JopMonitoring.class) || method.getDeclaringClass().isAnnotationPresent(JopMonitoring.class) ) {
+    			this.monitor.setToBeRefreshed(beanName);
+    		}
+        	return proxy.invokeSuper(obj, args);
+    	}
 	}
 	/**
 	 * @author ee38938
