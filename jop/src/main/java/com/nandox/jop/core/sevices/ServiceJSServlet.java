@@ -1,6 +1,7 @@
 package com.nandox.jop.core.sevices;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.BufferedReader;
 
 import javax.servlet.ServletConfig;
@@ -16,7 +17,8 @@ import org.json.JSONException;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 
 /**
- * Servlet for JavaScript services.<br>
+ * Servlet for JavaScript services and file script.<br>
+ * The script file are downloaded from path jopscript/*.<br> 
  * The services are implemented to exchange json fragment, command and response
  *   
  *   Possible Service:
@@ -39,6 +41,12 @@ import com.nandox.jop.core.dispatcher.Dispatcher;
 public class ServiceJSServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	/** */
+	protected static final String SCRIPT_BASE_PATH = "jsscript"; 
+	/** */
+	protected static final String SCRIPT_REQ = "/jopscript"; 
+	/** */
+	protected static final String SERVICE_REQ = "/jopservices"; 
 
 	protected Dispatcher dsp;
 	
@@ -58,7 +66,12 @@ public class ServiceJSServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		StringBuffer jb = new StringBuffer();
+		// Dispatch the req depend on the path
+		if ( req.getServletPath().equals(SCRIPT_REQ)) {
+			this.readFile(req, resp);
+		} else if ( req.getServletPath().equals(SERVICE_REQ)) {
+		} else {
+		  StringBuffer jb = new StringBuffer();
 		  String line = null;
 		  try {
 		    BufferedReader reader = req.getReader();
@@ -74,12 +87,32 @@ public class ServiceJSServlet extends HttpServlet {
 		    // crash and burn
 		    throw new IOException("Error parsing JSON request string");
 		  }
-
+		}
 		  // Work with the data using methods like...
 		  // int someInt = jsonObject.getInt("intParamName");
 		  // String someString = jsonObject.getString("stringParamName");
 		  // JSONObject nestedObj = jsonObject.getJSONObject("nestedObjName");
 		  // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
 		  // etc...	}
+	}
+	
+	// Read a file script
+	//
+	//
+	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		InputStream i = this.getClass().getResourceAsStream(SCRIPT_BASE_PATH+req.getPathInfo());
+		if ( i != null ) {
+			int len;
+			StringBuffer jb = new StringBuffer();
+			while ((len = i.available()) > 0 ) {
+				byte buff[] = new byte[len]; 
+				i.read(buff);
+				jb.append(new String(buff));
+			}
+			resp.setContentLength(jb.length());
+			resp.setContentType("text/javascript");
+			resp.getWriter().println(jb);
+			resp.getWriter().close();
+		}
 	}
 }

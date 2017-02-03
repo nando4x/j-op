@@ -33,6 +33,10 @@
 		<servlet-name>JopServices Servlet</servlet-name>
 		<url-pattern>/jopservices/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<url-pattern>/jopscript/*</url-pattern>
+	</servlet-mapping>
 
 	<!--filter>
 		<display-name>CsrfPreventionFilter</display-name>
