@@ -70,7 +70,14 @@ public class ServiceJSServlet extends HttpServlet {
 		if ( req.getServletPath().equals(SCRIPT_REQ)) {
 			this.readFile(req, resp);
 		} else if ( req.getServletPath().equals(SERVICE_REQ)) {
+			this.services(req, resp);
 		} else {
+		}
+	}
+	//
+	//
+	//
+	private void services(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		  StringBuffer jb = new StringBuffer();
 		  String line = null;
 		  try {
@@ -87,7 +94,7 @@ public class ServiceJSServlet extends HttpServlet {
 		    // crash and burn
 		    throw new IOException("Error parsing JSON request string");
 		  }
-		}
+		
 		  // Work with the data using methods like...
 		  // int someInt = jsonObject.getInt("intParamName");
 		  // String someString = jsonObject.getString("stringParamName");
@@ -96,7 +103,7 @@ public class ServiceJSServlet extends HttpServlet {
 		  // etc...	}
 	}
 	
-	// Read a file script
+	// Read a file script under package of this servlet
 	//
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

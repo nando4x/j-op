@@ -1,6 +1,17 @@
-  /**
+/**
+ * Base libraries 
  * 
+ * @project   Jop (Java One Page)
+ * 
+ * @module    baselibs.js
+ * 
+ * @date      17 nov 2016 - 17 nov 2016
+ * 
+ * @author    Fernando Costantino
+ * 
+ * @revisor   Fernando Costantino
  */
+
 
 Function.prototype.setScope = function(obj) {
 	var method = this;
