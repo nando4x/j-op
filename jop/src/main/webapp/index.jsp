@@ -33,7 +33,12 @@
 			</tbody>
 		</table>
 	</div>
-	<form jop_id='' action="index.jsp" method="post">
+	<script>
+		function xxx(_this) {
+			alert('xxx');
+		}
+	</script>
+	<form jop_id='' onsubmit="xxx(this);"  action="javascript:xxx(this);" method="post">
 		<input name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>

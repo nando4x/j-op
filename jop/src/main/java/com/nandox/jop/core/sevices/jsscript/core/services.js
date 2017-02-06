@@ -39,7 +39,11 @@ var constant = (function(){
 	this.postBlock = function (jopId) {
 		
 	};
-	function ajax(method,url,async,data) {
+
+	// ajax generic low-level function
+	//
+	//
+	function ajax(method,url,async,data,successCallback,errorCallback) {
 		// create XML http request
 		var xhr;
 		if (window.XMLHttpRequest)
@@ -50,9 +54,12 @@ var constant = (function(){
 		callback = function() {
 			switch (xhr.status) {
 				case 200: // response received
-					xhr.getResponseHeader("Jop-Response-Type");
+					xhr.onreadystatechange = function(){};
+					var type = xhr.getResponseHeader("Jop-Response-Type");
+					successCallback(xhr.responseText,type);
 					break;
 				default:
+					errorCallback(xhr.status,xhr.statusText);
 					break;
 			}
 		} 
@@ -62,9 +69,7 @@ var constant = (function(){
 			try {
 				// set header
 				xhr.setRequestHeader("Content-Type", "text/plain");
-			} catch (e) {
-				//TODO: manage error set header
-			}
+			} catch (e) { //TODO: manage error set header }
 			try {
 				// send data and manage response, immediately if sync
 				xhr.send(data);
@@ -77,14 +82,8 @@ var constant = (function(){
 				} else {
 					xhr.onreadystatechange = callback;
 				}
-			} catch (e) {
-				//TODO: manage error send
-			}
-			
-		} catch (e) {
-			//TODO: manage error open
-		}
-		
+			} catch (e) { //TODO: manage error send }
+		} catch (e) { //TODO: manage error open	}
 	}
 	    
 	}).apply( Jop.core.services );  

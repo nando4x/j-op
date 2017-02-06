@@ -35,6 +35,18 @@ Jop.core.services = Jop.core.services || {};
 		var code = code;
 		var msg = msg;
 	};	
+	/**
+	 * Return the block DOM element of jopId
+	 * @param	  jopId block identifier
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	this.getBlockElement = function(jopId){
+		var block = document.querySelection('[jop_id="'+jopId+'"');
+	}
 	// also introduce a new sub-namespace
 	//this.tools = {};
 	    
