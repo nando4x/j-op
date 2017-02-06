@@ -12,24 +12,30 @@
  * @revisor   Fernando Costantino
  */
 
-
 /*
  *  Create namespaces
  */
 var Jop = Jop || {};
 Jop.core = Jop.core || {};
-Jop.core.Services = Jop.core.Services || {};
+Jop.core.services = Jop.core.services || {};
 
 (function () {
 
-	this.postBlock = function (jopId) {
-	};
-	   
-	  this.setValue = function( newVal ) {
-	      val = newVal;
-	  }
-	      
-	  // also introduce a new sub-namespace
-	  this.tools = {};
+	/**
+	 * General Exception
+	 * @param	  code exception code
+	 * @param	  msg exception message
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	this.excepion = function(code,msg){
+		var code = code;
+		var msg = msg;
+	};	
+	// also introduce a new sub-namespace
+	//this.tools = {};
 	    
-	}).apply( Jop.core.Services );  
+}).apply( Jop.core );  

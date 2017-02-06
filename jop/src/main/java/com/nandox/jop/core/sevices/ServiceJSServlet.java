@@ -72,6 +72,8 @@ public class ServiceJSServlet extends HttpServlet {
 		} else if ( req.getServletPath().equals(SERVICE_REQ)) {
 			this.services(req, resp);
 		} else {
+			System.out.println("query:"+req.getQueryString());
+			this.test(req,resp);
 		}
 	}
 	//
@@ -121,5 +123,25 @@ public class ServiceJSServlet extends HttpServlet {
 			resp.getWriter().println(jb);
 			resp.getWriter().close();
 		}
+	}
+	private void test (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String ret = "["
+				+ "{'id': 0, 'name': 'Alabama0', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 1, 'name': 'Alabama1', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 2, 'name': 'Alabama2', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 3, 'name': 'Alabama3', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 4, 'name': 'Alabama4', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 5, 'name': 'Alabama5', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 6, 'name': 'Alabama6', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 7, 'name': 'Alabama7', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 8, 'name': 'Alabama8', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 9, 'name': 'Alabama9', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"
+				+ "{'id': 10, 'name': 'Alabama10', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'}"
+				+ "]";
+		ret = "{'numRows': 101, 'items': " + ret + ", 'identity':'id'}";
+		resp.setContentLength(ret.length());
+		resp.setContentType("text/json");
+		resp.getWriter().println(ret);
+		resp.getWriter().close();
 	}
 }

@@ -37,6 +37,10 @@
 		<servlet-name>JopServices Servlet</servlet-name>
 		<url-pattern>/jopscript/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<url-pattern>/stores/*</url-pattern>
+	</servlet-mapping>
 
 	<!--filter>
 		<display-name>CsrfPreventionFilter</display-name>
