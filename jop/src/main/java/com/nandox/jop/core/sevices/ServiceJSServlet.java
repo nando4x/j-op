@@ -80,13 +80,18 @@ public class ServiceJSServlet extends HttpServlet {
 	//
 	//
 	private void services(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		  StringBuffer jb = new StringBuffer();
+		String out = "DONE";
+		resp.setContentLength(out.length());
+		resp.setContentType("text/plain");
+		resp.getWriter().println(out);
+		resp.getWriter().close();
+		  /*StringBuffer jb = new StringBuffer();
 		  String line = null;
 		  try {
 		    BufferedReader reader = req.getReader();
 		    while ((line = reader.readLine()) != null)
 		      jb.append(line);
-		  } catch (Exception e) { /*report an error*/ }
+		  } catch (Exception e) {  }
 		  // get service context
 		  String sctx = req.getPathInfo();
 		  
@@ -95,7 +100,7 @@ public class ServiceJSServlet extends HttpServlet {
 		  } catch (JSONException e) {
 		    // crash and burn
 		    throw new IOException("Error parsing JSON request string");
-		  }
+		  }*/
 		
 		  // Work with the data using methods like...
 		  // int someInt = jsonObject.getInt("intParamName");
@@ -109,7 +114,7 @@ public class ServiceJSServlet extends HttpServlet {
 	//
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		InputStream i = this.getClass().getResourceAsStream(SCRIPT_BASE_PATH+req.getPathInfo());
+		InputStream i = this.getClass().getResourceAsStream(SCRIPT_BASE_PATH+"/"+req.getPathInfo());
 		if ( i != null ) {
 			int len;
 			StringBuffer jb = new StringBuffer();

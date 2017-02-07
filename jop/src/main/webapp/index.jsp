@@ -1,6 +1,8 @@
 <html>
 <head>
  <script type="text/javascript" src="jquery-1.12.2.js"/>
+ <script type="text/javascript" src="jopscript/baselibs.js"/>
+ <script type="text/javascript" src="jopscript/core/services.js"/>
 </head>
 <body>
 <script type="javascript">

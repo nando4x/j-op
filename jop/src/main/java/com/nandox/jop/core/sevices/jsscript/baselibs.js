@@ -42,10 +42,16 @@ Jop.core.services = Jop.core.services || {};
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return
+	 * @return	  block DOM element
 	 */
 	this.getBlockElement = function(jopId){
-		var block = document.querySelection('[jop_id="'+jopId+'"');
+		return this.querySelector(document,'[jop_id="'+jopId+'"');
+	}
+	this.querySelector = function(element,query) {
+		return element.querySelector(query);
+	}
+	this.querySelectorAll = function(element,query) {
+		return element.querySelectorAll(query);
 	}
 	// also introduce a new sub-namespace
 	//this.tools = {};
