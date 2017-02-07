@@ -40,12 +40,17 @@ var constant = (function(){
 	this.postBlock = function (jopId) {
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');
-		var request = new FormData;
+		var request = new FormData();
 		request.append(JOP_ID_PARAMETER,jopId); 
 		for ( var ix=0; ix<list.length; ix++ ) {
 			request.append(list[ix].name,list[ix].value); 
 		}
-		ajax("post","jopservices/postblock",true,request,null,null);
+		request = "";
+		request = JOP_ID_PARAMETER+"="+jopId;
+		for ( var ix=0; ix<list.length; ix++ ) {
+			request += "&"+list[ix].name+"="+list[ix].value; 
+		}
+		ajax("POST","jopservices/postblock",true,request,null,null);
 	};
 
 	// ajax generic low-level function
@@ -59,26 +64,34 @@ var constant = (function(){
 		else if (window.ActiveXObject)
 			xhr = window.ActiveXObject( "Microsoft.XMLHTTP" );
 		// define callback
-		callback = function() {
+		callback = function(response) {
+			var end = false;
 			switch (xhr.status) {
 				case 200: // response received
+					if ( xhr.readyState == 4 ) {
 					var type = xhr.getResponseHeader("Jop-Response-Type");
+					var type = xhr.getAllResponseHeaders();
 					if ( successCallback != 'undefined' && successCallback != null )
 						successCallback(xhr.responseText,type);
+					}
+					end = true;
 					break;
 				default:
+					end = true;
 					if ( errorCallback != 'undefined' && errorCallback != null )
 						errorCallback(xhr.status,xhr.statusText);
 					break;
 			}
-			xhr.onreadystatechange = function(){};
+			if ( end )
+				xhr.onreadystatechange = function(){};
 		} 
 		try {
 			// open channel
 			xhr.open(method,url,async);
 			try {
 				// set header
-				xhr.setRequestHeader("Content-Type", "text/plain");
+				//xhr.setRequestHeader("Content-Type", "text/plain");
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			} catch (e) { //TODO: manage error set header 
 			}
 			try {

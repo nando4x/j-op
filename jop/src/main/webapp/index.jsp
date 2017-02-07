@@ -40,7 +40,7 @@
 			alert('xxx');
 		}
 	</script>
-	<form jop_id='' onsubmit="xxx(this);"  action="javascript:xxx(this);" method="post">
+	<form jop_id='' onsubmit="xxx(this);"  action="index.jsp" method="post">
 		<input name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>

@@ -20,6 +20,7 @@ Jop.core = Jop.core || {};
 Jop.core.services = Jop.core.services || {};
 
 (function () {
+	
 
 	/**
 	 * General Exception

@@ -80,7 +80,8 @@ public class ServiceJSServlet extends HttpServlet {
 	//
 	//
 	private void services(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String out = "DONE";
+		String out = "DONE\n\r"
+				+"XXX";
 		resp.setContentLength(out.length());
 		resp.setContentType("text/plain");
 		resp.getWriter().println(out);
@@ -110,13 +111,13 @@ public class ServiceJSServlet extends HttpServlet {
 		  // etc...	}
 	}
 	
-	// Read a file script under package of this servlet
+	// Read a file script under package of this  servlet
 	//
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		InputStream i = this.getClass().getResourceAsStream(SCRIPT_BASE_PATH+"/"+req.getPathInfo());
 		if ( i != null ) {
-			int len;
+			int len = 0;
 			StringBuffer jb = new StringBuffer();
 			while ((len = i.available()) > 0 ) {
 				byte buff[] = new byte[len]; 
