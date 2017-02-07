@@ -19,13 +19,13 @@ import com.nandox.jop.core.dispatcher.Dispatcher;
 /**
  * Servlet for JavaScript services and file script.<br>
  * The script file are downloaded from path jopscript/*.<br> 
- * The services are implemented to exchange json fragment, command and response
+ * The services are implemented to exchange XML fragment, command and response
  *   
  *   Possible Service:
  *   
  *      	/inject		to base inject operation
  *   		Services command:<br>
- *   			GetBlock: { cmd:'getblock', id:'jop id' } - response block html
+ *   			postBlock: { Jop.id:'jop id', .... } - response html of affected blocks
  * 
  * @project   Jop (Java One Page)
  * 
@@ -70,7 +70,7 @@ public class ServiceJSServlet extends HttpServlet {
 		if ( req.getServletPath().equals(SCRIPT_REQ)) {
 			this.readFile(req, resp);
 		} else if ( req.getServletPath().equals(SERVICE_REQ)) {
-			this.services(req, resp);
+			this.servicesDispatcher(req, resp);
 		} else {
 			System.out.println("query:"+req.getQueryString());
 			this.test(req,resp);
@@ -79,7 +79,12 @@ public class ServiceJSServlet extends HttpServlet {
 	//
 	//
 	//
-	private void services(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	private void servicesDispatcher(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// extract service and command
+		String path = req.getPathInfo();
+		if ( path.indexOf("/") > 0 ) {
+			
+		}
 		String out = "DONE\n\r"
 				+"XXX";
 		resp.setContentLength(out.length());

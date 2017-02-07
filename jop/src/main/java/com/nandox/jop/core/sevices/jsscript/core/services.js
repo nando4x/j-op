@@ -29,7 +29,7 @@ var constant = (function(){
 	// private variable and constant
 	var JOP_ID_PARAMETER = "Jop.jopId";
 	/**
-	 * Post form data of one block
+	 * Post form data of one block: use service inkjet/postBlock that return XML list 
 	 * @param	  jopId block identify
 	 * @date      03 feb 2017 - 03 feb 2017
 	 * @author    Fernando Costantino
@@ -40,13 +40,7 @@ var constant = (function(){
 	this.postBlock = function (jopId) {
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');
-		var request = new FormData();
-		request.append(JOP_ID_PARAMETER,jopId); 
-		for ( var ix=0; ix<list.length; ix++ ) {
-			request.append(list[ix].name,list[ix].value); 
-		}
-		request = "";
-		request = JOP_ID_PARAMETER+"="+jopId;
+		var request = JOP_ID_PARAMETER+"="+jopId;
 		for ( var ix=0; ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
@@ -69,12 +63,11 @@ var constant = (function(){
 			switch (xhr.status) {
 				case 200: // response received
 					if ( xhr.readyState == 4 ) {
-					var type = xhr.getResponseHeader("Jop-Response-Type");
-					var type = xhr.getAllResponseHeaders();
-					if ( successCallback != 'undefined' && successCallback != null )
-						successCallback(xhr.responseText,type);
+						var type = xhr.getResponseHeader("Jop-Response-Type");
+						if ( successCallback != 'undefined' && successCallback != null )
+							successCallback(xhr.responseText,type);
+						end = true;
 					}
-					end = true;
 					break;
 				default:
 					end = true;
