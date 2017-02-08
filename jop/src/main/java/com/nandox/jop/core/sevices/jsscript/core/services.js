@@ -44,7 +44,7 @@ var constant = (function(){
 		for ( var ix=0; ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
-		ajax("POST","jopservices/postblock",true,request,null,null);
+		ajax("POST","jopservices/inject/postblock",true,request,null,null);
 	};
 
 	// ajax generic low-level function

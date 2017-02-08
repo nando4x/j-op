@@ -185,6 +185,13 @@ public class PageBlock implements RefreshableBlock {
 	public boolean GetToBeRefresh() {
 		return this.toBeRefresh;
 	}
+	public static String GetPageIdFromJopId(String JopId) {
+		int ini = JopId.indexOf("[");
+		int end = JopId.indexOf("].");
+		if ( ini >= 0 && end > ini )
+			return JopId.substring(ini+1, end);
+		return null;
+	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
 	//

@@ -1,5 +1,9 @@
 package com.nandox.jop.core.sevices;
 
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedReader;
@@ -15,6 +19,7 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 import com.nandox.jop.core.dispatcher.Dispatcher;
+import com.nandox.libraries.utils.Reflection;
 
 /**
  * Servlet for JavaScript services and file script.<br>
@@ -47,8 +52,12 @@ public class ServiceJSServlet extends HttpServlet {
 	protected static final String SCRIPT_REQ = "/jopscript"; 
 	/** */
 	protected static final String SERVICE_REQ = "/jopservices"; 
+	/** */
+	protected static final String SERVICE_NAME_INKJECT = "inkject"; 
 
 	protected Dispatcher dsp;
+	
+	private Map<String,ServiceJSManager> services;
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -57,6 +66,20 @@ public class ServiceJSServlet extends HttpServlet {
 	public void init(ServletConfig Config) throws ServletException {
 		super.init(Config);
 		this.dsp = new Dispatcher();
+		try {
+			Iterator<Class<?>> l = Reflection.getClassesForPackage(this.getClass().getPackage(), ServiceJSManager.class,true).iterator();
+			this.services = new HashMap<String,ServiceJSManager>();
+			while (l.hasNext()) {
+				try {
+					ServiceJSManager s = (ServiceJSManager)l.next().newInstance();
+					this.services.put(s.getIdentifier(), s);
+				} catch(Exception e) {
+					// TODO: manage error on create service manager
+				}
+			}
+		} catch (Exception e) {
+			// TODO: manage error on scan package  
+		}
 	}
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		this.doPost(req, resp);
@@ -70,21 +93,31 @@ public class ServiceJSServlet extends HttpServlet {
 		if ( req.getServletPath().equals(SCRIPT_REQ)) {
 			this.readFile(req, resp);
 		} else if ( req.getServletPath().equals(SERVICE_REQ)) {
-			this.servicesDispatcher(req, resp);
+			this.servicesManager(req, resp);
 		} else {
 			System.out.println("query:"+req.getQueryString());
 			this.test(req,resp);
 		}
 	}
+	// Manage services search them from req path
 	//
 	//
-	//
-	private void servicesDispatcher(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// extract service and command
-		String path = req.getPathInfo();
-		if ( path.indexOf("/") > 0 ) {
-			
+	private void servicesManager(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Extract service and command
+		if ( req.getPathInfo().length() > 0 ) {
+			String path = req.getPathInfo().substring(1);
+			if ( path.indexOf("/") > 0 ) {
+				String service = path.substring(0, path.indexOf("/"));
+				String cmd = path.substring(path.indexOf("/")+1);
+				// Search service manager and execute it 
+				ServiceJSManager serv = this.services.get(service);
+				if ( serv != null  ) {
+					ServiceJSResponse r = serv.execute(this.dsp,cmd,req.getParameterMap());
+					return;
+				}
+			}
 		}
+		// TODO: service unknown
 		String out = "DONE\n\r"
 				+"XXX";
 		resp.setContentLength(out.length());
