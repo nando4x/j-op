@@ -11,7 +11,9 @@ import javax.servlet.ServletException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.ParseException;
+import com.nandox.jop.core.processor.JopId;
 /**
  * Real Dispatcher to process page requested
  * 
@@ -108,17 +110,28 @@ public class Dispatcher {
 		Iterator<String> i = QueryData.keySet().iterator();
 		while (i.hasNext()) {
 			String key = i.next();
-			int ini = key.indexOf("[");
-			int end = key.indexOf("].");
-			if ( ini >= 0 && end > ini ) {
-				String pageId = key.substring(ini+1, end);
-				Map<String,String[]> val = map.get(pageId);
+			JopId id = new JopId(key);
+				Map<String,String[]> val = map.get(id.getPage());
 				if ( val == null ) {
 					val = new HashMap<String,String[]>();
 				}
-				val.put(key.substring(end+2), QueryData.get(key));
-				map.put(pageId, val);
-			}
+				val.put(id.getId(), QueryData.get(key));
+				map.put(id.getPage(), val);
+		}
+		return map;
+	}
+	protected Map<String,Map<String,String[]>> extractParametersByPage(Map<String,String[]> QueryData) {
+		Map<String,Map<String,String[]>> map = new HashMap<String,Map<String,String[]>>();
+		Iterator<String> i = QueryData.keySet().iterator();
+		while (i.hasNext()) {
+			String key = i.next();
+			JopId id = new JopId(key);
+				Map<String,String[]> val = map.get(id.getPage());
+				if ( val == null ) {
+					val = new HashMap<String,String[]>();
+				}
+				val.put(id.getId(), QueryData.get(key));
+				map.put(id.getPage(), val);
 		}
 		return map;
 	}
@@ -144,12 +157,28 @@ public class Dispatcher {
 			
 		}
 	}
+	protected void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
+		Map<String,Map<String,String[]>> map = this.extractParametersByPage(QueryData);
+		Map<String,String[]> par = map.get(Id.getPage());
+		PageApp page;
+		if ( (page = this.appCtx.GetPagesMap().get(Id.getPage())) != null ) {
+			PageBlock pb = page.GetPageBlock(Id.getId());
+			if ( pb != null)
+				pb.Action(this.appCtx, par);
+			else {
+				// TODO: block not exist
+			}
+		}
+		// TODO: manage page not exist
+	}
 	// Init environment: create application context and attach the spring context
 	//
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
-		if ( (this.appCtx = (WebAppContext)ctx.getAttribute(ATTR_APPLCONTEXT)) == null )
+		if ( (this.appCtx = (WebAppContext)ctx.getAttribute(ATTR_APPLCONTEXT)) == null ) {
 			this.appCtx = new WebAppContext();
+			ctx.setAttribute(ATTR_APPLCONTEXT, this.appCtx);
+		}
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));
 
 		// manage parameters

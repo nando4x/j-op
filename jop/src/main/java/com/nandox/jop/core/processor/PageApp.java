@@ -96,6 +96,18 @@ public class PageApp {
 			b.Action(Context, Data);
 		}
 	}
+	/**
+	 * Return the page block corrispond to id
+	 * @param	  BlockId	page block identifier
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public PageBlock GetPageBlock(String BlockId) {
+		return this.blocks.get(BlockId);
+	}
 	// Parsing page content to search and build every block 
 	//
 	//

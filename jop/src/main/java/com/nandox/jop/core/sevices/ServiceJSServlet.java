@@ -18,6 +18,7 @@ import org.json.JSONTokener;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.libraries.utils.Reflection;
 
@@ -43,7 +44,7 @@ import com.nandox.libraries.utils.Reflection;
  * @revisor   Fernando Costantino
  */
 
-public class ServiceJSServlet extends HttpServlet {
+public class ServiceJSServlet extends AbstractServletDispatcher {
 
 	private static final long serialVersionUID = 1L;
 	/** */
@@ -55,9 +56,8 @@ public class ServiceJSServlet extends HttpServlet {
 	/** */
 	protected static final String SERVICE_NAME_INKJECT = "inkject"; 
 
-	protected Dispatcher dsp;
-	
 	private Map<String,ServiceJSManager> services;
+	
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -65,7 +65,6 @@ public class ServiceJSServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig Config) throws ServletException {
 		super.init(Config);
-		this.dsp = new Dispatcher();
 		try {
 			Iterator<Class<?>> l = Reflection.getClassesForPackage(this.getClass().getPackage(), ServiceJSManager.class,true).iterator();
 			this.services = new HashMap<String,ServiceJSManager>();
@@ -118,6 +117,8 @@ public class ServiceJSServlet extends HttpServlet {
 			}
 		}
 		// TODO: service unknown
+		
+		
 		String out = "DONE\n\r"
 				+"XXX";
 		resp.setContentLength(out.length());
