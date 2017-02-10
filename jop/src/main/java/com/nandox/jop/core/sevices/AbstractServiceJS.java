@@ -1,7 +1,6 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
-
 import com.nandox.jop.core.processor.JopId;
 
 /**

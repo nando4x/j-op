@@ -74,14 +74,6 @@ public class Dispatcher {
 	 * @exception ParseException if parsing and check synstax error
 	 * @return	  html rendered
 	 */
-	/**
-	 * Descrizione
-	 * @date      23 gen 2017 - 23 gen 2017
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return
-	 */
 	protected String processPage(String PageId, String PageContent) throws ParseException {
 		// check if page is changed, in this case or if not exist create new
 		PageApp page;
@@ -157,7 +149,17 @@ public class Dispatcher {
 			
 		}
 	}
-	protected void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
+	/**
+	 * Process data submit action of single block
+	 * @param	  JopId block identifier
+	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
+	 * @date      10 feb 2017 - 10 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
 		Map<String,Map<String,String[]>> map = this.extractParametersByPage(QueryData);
 		Map<String,String[]> par = map.get(Id.getPage());
 		PageApp page;

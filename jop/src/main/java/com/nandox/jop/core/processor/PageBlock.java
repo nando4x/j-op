@@ -180,6 +180,12 @@ public class PageBlock implements RefreshableBlock {
 		this.toBeRefresh = true;
 	}
 	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed()
+	 */
+	public void ResetToBeRefreshed() {
+		this.toBeRefresh = false;
+	}
+	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#GetToBeRefresh()
 	 */
 	public boolean GetToBeRefresh() {

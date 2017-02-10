@@ -26,6 +26,15 @@ public interface RefreshableBlock {
 	 */
 	public void SetToBeRefreshed();
 	/**
+	 * Reset that block is to be refreshed
+	 * @date      02 feb 2017 - 02 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public void ResetToBeRefreshed();
+	/**
 	 * Check if block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017
 	 * @author    Fernando Costantino

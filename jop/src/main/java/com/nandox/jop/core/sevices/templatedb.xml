@@ -1,0 +1,34 @@
+<Components>
+	<Centre>
+		<Configuration>id=aaa
+tyepe=hhhh</Configuration>
+	</Centre>
+	<Nodes>
+		<Node dbid="0001">
+			<Configuration>id=aaa
+type=hhhh</Configuration>
+			<Property>NODETYPE=RELAYNODE
+RELAY.NUM=4
+RELAY1.FEEDBACK=Y
+RELAY2.FEEDBACK=Y
+RELAY3.FEEDBACK=Y
+RELAY4.FEEDBACK=Y</Property>
+		</Node>
+		<Node dbid="0002">
+			<Configuration>id=ass
+type=hhhh</Configuration>
+			<Property>NODETYPE=RELAYNODE
+RELAY.NUM=4
+RELAY1.FEEDBACK=Y
+RELAY2.FEEDBACK=Y
+RELAY3.FEEDBACK=Y
+RELAY4.FEEDBACK=Y</Property>
+		</Node>
+	</Nodes>
+</Components>
+<Map>
+	<Resource id="aaa" x="10" y="11">
+	</Resource>
+	<Resource id="aasa" x="10" y="11">
+	</Resource>
+</Map>

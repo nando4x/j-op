@@ -40,5 +40,4 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 		// TODO: manage error command unknow
 		return null;
 	}
-
 }
