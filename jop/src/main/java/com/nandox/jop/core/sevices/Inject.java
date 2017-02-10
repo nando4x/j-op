@@ -1,7 +1,7 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
-
+import java.util.ArrayList;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.JopId;
 
@@ -36,6 +36,17 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 		if ( Cmd.equals(CMD_POSTBLOCK) ) {
 			JopId id = this.GetJopIdFromParams(Params);
 			Dsp.processPageBlockFormAction(id,Params);
+			ServiceJSResponse r = new ServiceJSResponse();
+			ServiceJSDataBlock d = new ServiceJSDataBlock();
+			d.setType("block");
+			d.setNum(1);
+			ServiceJSDataBlock.Block b = new ServiceJSDataBlock.Block();
+			b.id = "1";
+			b.value = "<div>assasasas <span>ddsdd</span></div>";
+			d.setBlock(new ArrayList<ServiceJSDataBlock.Block>());
+			d.getBlock().add(b);
+			String xx =this.transformToXML(d);
+			xx = xx;
 		}
 		// TODO: manage error command unknow
 		return null;

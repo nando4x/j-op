@@ -1,6 +1,10 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
+import java.io.StringWriter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import com.nandox.jop.core.processor.JopId;
 
 /**
@@ -31,6 +35,23 @@ public abstract class AbstractServiceJS {
 		String p[] = Params.get(PARAMS_JOPID);
 		if ( p!= null && p.length > 0 )
 			return new JopId(p[0]);
+		return null;
+	}
+	
+	protected String transformToXML(ServiceJSDataBlock data) {
+		try {
+			StringWriter sw = new StringWriter();
+	        JAXBContext jaxbContext = JAXBContext.newInstance(data.getClass());
+	        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+	        // output pretty printed
+	        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+	        jaxbMarshaller.marshal(data, sw);
+	        return sw.toString();
+	      } catch (JAXBException e) {
+	        e.printStackTrace();
+	      }
 		return null;
 	}
 }
