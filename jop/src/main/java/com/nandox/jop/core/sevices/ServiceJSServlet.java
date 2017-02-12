@@ -21,6 +21,7 @@ import org.json.JSONException;
 import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.libraries.utils.Reflection;
+import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
 /**
  * Servlet for JavaScript services and file script.<br>
@@ -112,6 +113,9 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 				ServiceJSManager serv = this.services.get(service);
 				if ( serv != null  ) {
 					ServiceJSResponse r = serv.execute(this.dsp,cmd,req.getParameterMap());
+					try {
+						this.serviceResponser(r, resp);
+					} catch (Exception e) {}
 					return;
 				}
 			}
@@ -148,6 +152,24 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 		  // JSONObject nestedObj = jsonObject.getJSONObject("nestedObjName");
 		  // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
 		  // etc...	}
+	}
+	
+	// service responser to transform ServiceJSResponse response to http response and send it 
+	//
+	//
+	private void serviceResponser(ServiceJSResponse sresp, HttpServletResponse resp) throws Exception {
+		String ret = "";
+		switch (sresp.getFormat()) {
+			case XML:
+				ret = new GenerateXmlWithCDATA().Generate(sresp.getData());
+				resp.setContentType("text/plain");
+				break;
+			default:
+				break;
+		}
+		resp.setContentLength(ret.length());
+		resp.getWriter().println(ret);
+		resp.getWriter().close();
 	}
 	
 	// Read a file script under package of this  servlet

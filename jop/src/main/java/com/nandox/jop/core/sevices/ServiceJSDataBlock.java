@@ -2,13 +2,13 @@ package com.nandox.jop.core.sevices;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA.AdapterCDATA;
 /**
  * Descrizione classe
  * 
@@ -144,8 +144,9 @@ public class ServiceJSDataBlock {
     })
     public static class Block {
 
-        @XmlValue
-        protected String value;
+        //@XmlValue
+    	@XmlJavaTypeAdapter(AdapterCDATA.class)
+    	protected String value;
         @XmlAttribute(name = "id")
         protected String id;
 

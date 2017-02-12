@@ -1,11 +1,9 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
-import java.io.StringWriter;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import com.nandox.jop.core.processor.JopId;
+import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
 /**
  * Abstract javascript service manager.<br>
@@ -40,18 +38,26 @@ public abstract class AbstractServiceJS {
 	
 	protected String transformToXML(ServiceJSDataBlock data) {
 		try {
-			StringWriter sw = new StringWriter();
+			return new GenerateXmlWithCDATA().Generate(data);
+			/*StringWriter sw = new StringWriter();
 	        JAXBContext jaxbContext = JAXBContext.newInstance(data.getClass());
 	        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
 	        // output pretty printed
 	        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
+	        jaxbMarshaller.setProperty(CharacterEscapeHandler.class.getName(),
+	                new CharacterEscapeHandler() {
+	                    @Override
+	                    public void escape(char[] ac, int i, int j, boolean flag,
+	                            Writer writer) throws IOException {
+	                        writer.write(ac, i, j);
+	                    }
+	                });
 	        jaxbMarshaller.marshal(data, sw);
-	        return sw.toString();
-	      } catch (JAXBException e) {
+	        return sw.toString();*/
+	    } catch (JAXBException e) {
 	        e.printStackTrace();
-	      }
+	    }
 		return null;
 	}
 }

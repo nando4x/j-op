@@ -36,7 +36,6 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 		if ( Cmd.equals(CMD_POSTBLOCK) ) {
 			JopId id = this.GetJopIdFromParams(Params);
 			Dsp.processPageBlockFormAction(id,Params);
-			ServiceJSResponse r = new ServiceJSResponse();
 			ServiceJSDataBlock d = new ServiceJSDataBlock();
 			d.setType("block");
 			d.setNum(1);
@@ -45,10 +44,10 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 			b.value = "<div>assasasas <span>ddsdd</span></div>";
 			d.setBlock(new ArrayList<ServiceJSDataBlock.Block>());
 			d.getBlock().add(b);
-			String xx =this.transformToXML(d);
-			xx = xx;
+			ServiceJSResponse r = new ServiceJSResponse(ServiceJSResponse.Format.XML,d);
+			return r;
 		}
-		// TODO: manage error command unknow
+		// TODO: manage error command unknown
 		return null;
 	}
 }
