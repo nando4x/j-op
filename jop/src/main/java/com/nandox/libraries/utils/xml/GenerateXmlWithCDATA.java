@@ -31,18 +31,16 @@ public class GenerateXmlWithCDATA {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception JAXBException
-	 * @return
+	 * @return    String with XML code
 	 */
 	public String Generate(Object Data) throws JAXBException {
 		try {
 			StringWriter sw = new StringWriter();
 	        JAXBContext jc = JAXBContext.newInstance(Data.getClass());
 	        Marshaller m = jc.createMarshaller();
-
 	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	        m.setProperty(CharacterEscapeHandler.class.getName(),
                 new CharacterEscapeHandler() {
-                    @Override
                     public void escape(char[] ac, int i, int j, boolean flag,
                             Writer writer) throws IOException {
                         writer.write(ac, i, j);

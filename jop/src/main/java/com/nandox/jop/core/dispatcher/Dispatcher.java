@@ -1,8 +1,11 @@
 package com.nandox.jop.core.dispatcher;
 
 import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.ArrayList;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletConfig;
@@ -162,8 +165,8 @@ public class Dispatcher {
 	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
 		Map<String,Map<String,String[]>> map = this.extractParametersByPage(QueryData);
 		Map<String,String[]> par = map.get(Id.getPage());
-		PageApp page;
-		if ( (page = this.appCtx.GetPagesMap().get(Id.getPage())) != null ) {
+		PageApp page = this.getPageApp(Id.getPage());
+		if ( page != null ) {
 			PageBlock pb = page.GetPageBlock(Id.getId());
 			if ( pb != null)
 				pb.Action(this.appCtx, par);
@@ -172,6 +175,28 @@ public class Dispatcher {
 			}
 		}
 		// TODO: manage page not exist
+	}
+	/**
+	 * Return list of page block that changed and to be refresh
+	 * @param	  PageId page identifier
+	 * @date      10 feb 2017 - 10 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public List<PageBlock> getPageBlockToBeRefresh(String PageId) {
+		PageApp page = this.getPageApp(PageId);
+		List<PageBlock> lst = new ArrayList<PageBlock>();
+		if ( page != null ) {
+			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
+			while ( blocks.hasNext() ) {
+				PageBlock b = blocks.next();
+				if ( b.GetToBeRefresh() )
+					lst.add(b);
+			}
+		}
+		return lst;
 	}
 	// Init environment: create application context and attach the spring context
 	//
@@ -189,5 +214,16 @@ public class Dispatcher {
 		// add runtime service servlet
 		//ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);
 		//s.addMapping(DSP_SERVICE_SERVLET_URL);
+	}
+	// get page
+	//
+	//
+	private PageApp getPageApp(String id) {
+		PageApp page;
+		if ( (page = this.appCtx.GetPagesMap().get(id)) != null ) {
+			return page;
+		}
+		// TODO: manage page not exist
+		return null;
 	}
 }

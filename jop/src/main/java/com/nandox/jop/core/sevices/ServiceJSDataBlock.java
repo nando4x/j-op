@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -36,7 +37,7 @@ public class ServiceJSDataBlock {
     @XmlAttribute(name = "num")
     protected Integer num;
 
-    /**
+	/**
      * Gets the value of the block property.
      * 
      * <p>
@@ -116,6 +117,7 @@ public class ServiceJSDataBlock {
      *     {@link Integer }
      *     
      */
+    
     public void setNum(Integer value) {
         this.num = value;
     }
@@ -138,13 +140,11 @@ public class ServiceJSDataBlock {
      * 
      * 
      */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "value"
-    })
+    
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Block {
 
-        //@XmlValue
+    	@XmlValue
     	@XmlJavaTypeAdapter(AdapterCDATA.class)
     	protected String value;
         @XmlAttribute(name = "id")

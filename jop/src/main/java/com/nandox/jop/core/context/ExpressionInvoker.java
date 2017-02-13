@@ -1,6 +1,5 @@
 package com.nandox.jop.core.context;
 
-import java.lang.reflect.Method;
 /**
  * Single Bean Invoker to invoke a specific method of a bean  
  * 
@@ -18,7 +17,6 @@ public class ExpressionInvoker {
 
 	@SuppressWarnings("rawtypes")
 	private Class<ExpressionExecutor> expClass;
-	private Method beanMethod;
 	private String[] beans;
 	/**
 	 * @param	  Clazz class of bean

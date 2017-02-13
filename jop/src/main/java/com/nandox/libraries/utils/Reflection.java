@@ -86,7 +86,8 @@ public class Reflection {
 	    else {
 	        try {
 	            String jarPath = fullPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-	            JarFile jarFile = new JarFile(jarPath);         
+	            @SuppressWarnings("resource")
+				JarFile jarFile = new JarFile(jarPath);         
 	            Enumeration<JarEntry> entries = jarFile.entries();
 	            while(entries.hasMoreElements()) {
 	                JarEntry entry = entries.nextElement();

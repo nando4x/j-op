@@ -12,13 +12,6 @@
  * @revisor   Fernando Costantino
  */
 
-var constant = (function(){
-	var xx = 10;
-	return {
-		init: xx
-	}
-})();
-
 (function () {
 	// Constant definition
 	var i = 0;
@@ -44,6 +37,14 @@ var constant = (function(){
 		for ( var ix=0; ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
+		callback = function(reponse,type) {
+			var num = response.getElementsByTagName('response')[0].attributes.num.value;
+			for (var ix=0; ix<num; ix++) {
+				var data = response.getElementsByTagName('block')[ix].lastChild.data;
+				var id = response.getElementsByTagName('block')[ix].id;
+				Jop.core.injectBlockElement(id, data);
+			}
+		}
 		ajax("POST","jopservices/inject/postblock",true,request,null,null);
 	};
 
@@ -64,8 +65,16 @@ var constant = (function(){
 				case 200: // response received
 					if ( xhr.readyState == 4 ) {
 						var type = xhr.getResponseHeader("Jop-Response-Type");
-						if ( successCallback != 'undefined' && successCallback != null )
-							successCallback(xhr.responseText,type);
+						if ( successCallback != 'undefined' && successCallback != null ) {
+							switch (xhr.getResponseHeader("Content-Type").toLowerCase()) {
+								case "text/xml":
+									successCallback(xhr.responseXML,type);
+									break;
+								default:
+									successCallback(xhr.responseText,type);
+									break;
+							}
+						}
 						end = true;
 					}
 					break;

@@ -52,6 +52,12 @@ public class PageApp {
 		this.hash = ContentPage.hashCode();
 	}
 	/**
+	 * @return the blocks
+	 */
+	public Map<String, PageBlock> getBlocks() {
+		return blocks;
+	}
+	/**
 	 * @return the hash
 	 */
 	public int getHash() {
@@ -157,11 +163,5 @@ public class PageApp {
     		}
     		b[ix].child = child;
     	}
-	}
-	// Generate auto jop_id
-	//
-	//
-	private String computeJopId(Element e) {
-		return (""+e.hashCode()).replace("-", "");
 	}
 }

@@ -1,25 +1,15 @@
 package com.nandox.jop.core.sevices;
 
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONTokener;
-import org.json.JSONObject;
-import org.json.JSONException;
-
 import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
-import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.libraries.utils.Reflection;
 import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
@@ -99,7 +89,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 			this.test(req,resp);
 		}
 	}
-	// Manage services search them from req path
+	// Manage services searching them from req path and then excute
 	//
 	//
 	private void servicesManager(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -129,29 +119,6 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 		resp.setContentType("text/plain");
 		resp.getWriter().println(out);
 		resp.getWriter().close();
-		  /*StringBuffer jb = new StringBuffer();
-		  String line = null;
-		  try {
-		    BufferedReader reader = req.getReader();
-		    while ((line = reader.readLine()) != null)
-		      jb.append(line);
-		  } catch (Exception e) {  }
-		  // get service context
-		  String sctx = req.getPathInfo();
-		  
-		  try {
-			  JSONObject dt = new JSONObject(new JSONTokener(jb.toString()));
-		  } catch (JSONException e) {
-		    // crash and burn
-		    throw new IOException("Error parsing JSON request string");
-		  }*/
-		
-		  // Work with the data using methods like...
-		  // int someInt = jsonObject.getInt("intParamName");
-		  // String someString = jsonObject.getString("stringParamName");
-		  // JSONObject nestedObj = jsonObject.getJSONObject("nestedObjName");
-		  // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
-		  // etc...	}
 	}
 	
 	// service responser to transform ServiceJSResponse response to http response and send it 
@@ -162,7 +129,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 		switch (sresp.getFormat()) {
 			case XML:
 				ret = new GenerateXmlWithCDATA().Generate(sresp.getData());
-				resp.setContentType("text/plain");
+				resp.setContentType("text/xml");
 				break;
 			default:
 				break;
@@ -191,6 +158,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 			resp.getWriter().close();
 		}
 	}
+	
 	private void test (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String ret = "["
 				+ "{'id': 0, 'name': 'Alabama0', 'label':'xxxx', 'abbreviation': 'AL', 'capital':'Montgomery'},"

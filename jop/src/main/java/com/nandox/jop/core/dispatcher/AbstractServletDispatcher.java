@@ -1,7 +1,6 @@
 package com.nandox.jop.core.dispatcher;
 
 import java.util.Map;
-import java.util.Iterator;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

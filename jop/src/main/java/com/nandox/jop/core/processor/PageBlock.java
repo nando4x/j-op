@@ -169,6 +169,7 @@ public class PageBlock implements RefreshableBlock {
 		}
 		// Reset all value expression
 		this.resetAllExprValue();
+		this.toBeRefresh = true;
 	}
 	
 	/* (non-Javadoc)

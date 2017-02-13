@@ -48,9 +48,43 @@ Jop.core.services = Jop.core.services || {};
 	this.getBlockElement = function(jopId){
 		return this.querySelector(document,'[jop_id="'+jopId+'"');
 	}
+	/**
+	 * Return the block DOM element of jopId
+	 * @param	  jopId block identifier
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  block DOM element
+	 */
+	this.injectBlockElement = function(jopId,html){
+		var block = this.querySelector(document,'[jop_id="'+jopId+'"');
+		if ( block != null )
+			block.outerHTML = html;
+	}
+	/**
+	 * General single element CSS query selector 
+	 * @param	  element element to search inside
+	 * @param	  query CSS query
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  block DOM element
+	 */
 	this.querySelector = function(element,query) {
 		return element.querySelector(query);
 	}
+	/**
+	 * General all element CSS query selector 
+	 * @param	  element element to search inside
+	 * @param	  query CSS query
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  block DOM element
+	 */
 	this.querySelectorAll = function(element,query) {
 		return element.querySelectorAll(query);
 	}
