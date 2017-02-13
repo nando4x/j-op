@@ -94,7 +94,9 @@
 				// set header
 				//xhr.setRequestHeader("Content-Type", "text/plain");
 				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			} catch (e) { //TODO: manage error set header 
+			} catch (e) {
+				//TODO: manage error set header
+				throw new Jop.core.exception()
 			}
 			try {
 				// send data and manage response, immediately if sync
