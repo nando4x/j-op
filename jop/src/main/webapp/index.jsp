@@ -41,7 +41,7 @@
 		}
 	</script>
 	<form jop_id='' onsubmit="xxx(this);"  action="index.jsp" method="post">
-		<input name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
+		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>
 		<input  value='xjava{return JopHelper.manageInput($helloWorld,"Message",value);}'>

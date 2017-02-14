@@ -22,7 +22,7 @@ import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
  *   
  *      	/inject		to base inject operation
  *   		Services command:<br>
- *   			postBlock: { Jop.id:'jop id', .... } - response html of affected blocks
+ *   			postBlock: { Jop.id:'jop id', .... } - response xml with affected blocks
  * 
  * @project   Jop (Java One Page)
  * 
