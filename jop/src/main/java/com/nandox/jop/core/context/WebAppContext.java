@@ -94,4 +94,14 @@ public class WebAppContext {
 	public void SetCompilerPath(String Path) {
 		this.bcmpl.setClasspath(Path);
 	}
+	/**
+	 * Return bean monitor
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  Bena Monitor
+	 */
+	public BeanMonitoring getBeanMonitor() {
+		return BeanMonitoring.Utils.GetInstance();
+	}
 }

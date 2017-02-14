@@ -177,7 +177,7 @@ public class Dispatcher {
 		// TODO: manage page not exist
 	}
 	/**
-	 * Return list of page block that changed and to be refresh
+	 * Render and return list of page block that changed and to be refresh
 	 * @param	  PageId page identifier
 	 * @date      10 feb 2017 - 10 feb 2017
 	 * @author    Fernando Costantino
@@ -185,15 +185,15 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	public List<PageBlock> getPageBlockToBeRefresh(String PageId) {
+	public Map<JopId,String> RenderPageBlockToBeRefresh(String PageId) {
 		PageApp page = this.getPageApp(PageId);
-		List<PageBlock> lst = new ArrayList<PageBlock>();
+		Map<JopId,String> lst = new HashMap<JopId,String>();
 		if ( page != null ) {
 			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
 			while ( blocks.hasNext() ) {
 				PageBlock b = blocks.next();
 				if ( b.GetToBeRefresh() )
-					lst.add(b);
+					lst.put(new JopId(PageId,b.getId()), b.Render(this.appCtx));
 			}
 		}
 		return lst;

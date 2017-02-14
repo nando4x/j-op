@@ -35,6 +35,20 @@ public class JopId {
 		// TODO: generate exception if syntax error
 	}
 	/**
+	 * Construnctor
+	 * @param	  PageId page identifier
+	 * @param	  Id block identifier
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public JopId(String PageId, String Id) {
+		this.page = PageId;
+		this.Id = Id;
+	}
+	/**
 	 * @return the page
 	 */
 	public String getPage() {
@@ -45,5 +59,8 @@ public class JopId {
 	 */
 	public String getId() {
 		return Id;
+	}
+	public String composite() {
+		return "["+this.page+"]."+this.Id;
 	}
 }

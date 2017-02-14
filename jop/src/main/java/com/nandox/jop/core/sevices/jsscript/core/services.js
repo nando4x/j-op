@@ -22,7 +22,7 @@
 	// private variable and constant
 	var JOP_ID_PARAMETER = "Jop.jopId";
 	/**
-	 * Post form data of one block: use service inkjet/postBlock that return XML list 
+	 * Post form data of one block: use service inject/postBlock that return XML list 
 	 * @param	  jopId block identify
 	 * @date      03 feb 2017 - 03 feb 2017
 	 * @author    Fernando Costantino
@@ -31,21 +31,27 @@
 	 * @return	  response	  
 	 */
 	this.postBlock = function (jopId) {
+		// get block and its child input
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');
 		var request = JOP_ID_PARAMETER+"="+jopId;
 		for ( var ix=0; ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
-		callback = function(reponse,type) {
-			var num = response.getElementsByTagName('response')[0].attributes.num.value;
-			for (var ix=0; ix<num; ix++) {
-				var data = response.getElementsByTagName('block')[ix].lastChild.data;
-				var id = response.getElementsByTagName('block')[ix].id;
-				Jop.core.injectBlockElement(id, data);
+		// define ajax callback to read XML response and block to refresh
+		callback = function(response) {
+			try {
+				var num = response.getElementsByTagName('response')[0].attributes.num.value;
+				for (var ix=0; ix<num; ix++) {
+					var data = response.getElementsByTagName('block')[ix].lastChild.data;
+					var id = response.getElementsByTagName('block')[ix].id;
+					Jop.core.injectBlockElement(id, data);
+				}
+			} catch (e) {
+				// TODO: manage response error
 			}
 		}
-		ajax("POST","jopservices/inject/postblock",true,request,null,null);
+		ajax("POST","jopservices/inject/postblock",true,request,callback,null);
 	};
 
 	// ajax generic low-level function
@@ -64,17 +70,17 @@
 			switch (xhr.status) {
 				case 200: // response received
 					if ( xhr.readyState == 4 ) {
-						var type = xhr.getResponseHeader("Jop-Response-Type");
 						if ( successCallback != 'undefined' && successCallback != null ) {
 							switch (xhr.getResponseHeader("Content-Type").toLowerCase()) {
 								case "text/xml":
-									successCallback(xhr.responseXML,type);
+									successCallback(xhr.responseXML);
 									break;
 								default:
-									successCallback(xhr.responseText,type);
+									successCallback(xhr.responseText);
 									break;
 							}
-						}
+						} else
+							Jop.core.debugger("ajax success callback undefined")
 						end = true;
 					}
 					break;
@@ -82,6 +88,8 @@
 					end = true;
 					if ( errorCallback != 'undefined' && errorCallback != null )
 						errorCallback(xhr.status,xhr.statusText);
+					else
+						Jop.core.debugger("ajax error callback undefined")
 					break;
 			}
 			if ( end )

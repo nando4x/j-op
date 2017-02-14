@@ -134,6 +134,9 @@ public class BeanMonitoring {
 			this.monitor = Monitor;
 		}
 
+		/* (non-Javadoc)
+		 * @see net.sf.cglib.proxy.MethodInterceptor#intercept(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], net.sf.cglib.proxy.MethodProxy)
+		 */
 		public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
     		if ( method.isAnnotationPresent(JopMonitoring.class) || method.getDeclaringClass().isAnnotationPresent(JopMonitoring.class) ) {
     			this.monitor.setToBeRefreshed(beanName);

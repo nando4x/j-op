@@ -81,6 +81,18 @@ public class PageBlock implements RefreshableBlock {
 		return id;
 	}
 	/**
+	 * Rendering block and return string.<br>
+	 * @param	  Context	Application context
+	 * @date      30 set 2016 - 30 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 * @return	  html in string format
+	 */	
+	public String Render(WebAppContext Context) {
+		return this.RenderAsNode(Context).outerHtml();
+	}
+	/**
 	 * Rendering block.<br>
 	 * First rendering child in depth and when child is finish or not present for self invoke the  
 	 * @param	  Context	Application context
@@ -88,15 +100,16 @@ public class PageBlock implements RefreshableBlock {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
+	 * @return	  
 	 */	
-	public Node Render(WebAppContext Context) {
+	protected Node RenderAsNode(WebAppContext Context) {
 		this.clone = this.domEl.clone();
 		// ### Rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
 			Element e = this.clone.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, c.id).first();
-			e.replaceWith(c.Render(Context));
+			e.replaceWith(c.RenderAsNode(Context));
 		}
 		// check render attribute
 		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
@@ -196,7 +209,7 @@ public class PageBlock implements RefreshableBlock {
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {
-		BeanMonitoring mon = BeanMonitoring.Utils.GetInstance();
+		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
 		// Scan for element that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
 		elems = this.domEl.getAllElements().iterator();
@@ -210,6 +223,7 @@ public class PageBlock implements RefreshableBlock {
 					PageExpression bean;
 					String code = this.parseBean(el);
 					if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
+						// for a new bean add and resister this block to those to refresh 
 						bean = new SimplePageExpression(Context,code);
 						lst.put(bean.getId(), bean);
 						mon.RegisterRefreshable(bean.GetBeansList(), this);
@@ -237,9 +251,11 @@ public class PageBlock implements RefreshableBlock {
 					String a = el.attr("value");
 					String bid = this.parseJavaExpression(a); 
 					if ( bid != null ) {
+						// create new expression and resister this block to those to refresh 
 						PageWriteExpression form;
 						form = new SimplePageExpression(Context,bid);
 						mon.RegisterRefreshable(form.GetBeansList(), this);
+						// if name attributes don't exist add it with auto index
 						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 							el.attr("name",""+this.auto_id_index);
 							auto_id_index++;

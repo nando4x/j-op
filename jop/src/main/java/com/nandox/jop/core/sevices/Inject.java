@@ -1,6 +1,7 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.nandox.jop.core.dispatcher.Dispatcher;
@@ -38,19 +39,20 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 		if ( Cmd.equals(CMD_POSTBLOCK) ) {
 			JopId id = this.GetJopIdFromParams(Params);
 			Dsp.processPageBlockFormAction(id,Params);
-			Iterator<PageBlock> lst = Dsp.getPageBlockToBeRefresh(id.getPage()).iterator();
+			Iterator<Entry<JopId,String>> lst = Dsp.RenderPageBlockToBeRefresh(id.getPage()).entrySet().iterator();
 			ServiceJSDataBlock d = new ServiceJSDataBlock();
-			while ( lst.hasNext() ) {
-				PageBlock block = lst.next();
-				ServiceJSDataBlock.Block b = new ServiceJSDataBlock.Block();
-				b.setValue(block.Render(null).
-			}
-			d.setType("block");
-			d.setNum(1);
-			b.id = "1";
-			b.value = "<div>assasasas <span>ddsdd</span></div>";
 			d.setBlock(new ArrayList<ServiceJSDataBlock.Block>());
-			d.getBlock().add(b);
+			int num = 0;
+			while ( lst.hasNext() ) {
+				Entry<JopId,String> e = lst.next();
+				ServiceJSDataBlock.Block b = new ServiceJSDataBlock.Block();
+				b.setId(e.getKey().composite());
+				b.setValue(e.getValue());
+				d.getBlock().add(b);
+				num++;		
+			}
+			d.setNum(num);
+			d.setType("block");
 			ServiceJSResponse r = new ServiceJSResponse(ServiceJSResponse.Format.XML,d);
 			return r;
 		}
