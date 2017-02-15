@@ -37,7 +37,7 @@ public interface PageExpression {
 	 * @exception 
 	 * @return	  result of method in specific type  
 	 */
-	Object Execute(WebAppContext Context);
+	Object execute(WebAppContext Context);
 
 	/**
 	 * Reset expression return value to null.<br>
@@ -47,7 +47,7 @@ public interface PageExpression {
 	 * @exception 
 	 * @return	    
 	 */
-	void ResetValue();
+	void resetValue();
 	
 	/**
 	 * Return the list of bean managed from expression
@@ -57,6 +57,6 @@ public interface PageExpression {
 	 * @exception 
 	 * @return	  array of bean name
 	 */
-	String[] GetBeansList();
+	String[] getBeansList();
 
 }

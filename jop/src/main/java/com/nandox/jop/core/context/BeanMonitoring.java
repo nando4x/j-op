@@ -14,12 +14,12 @@ import com.nandox.jop.bean.JopMonitoring;
 import com.nandox.jop.core.processor.RefreshableBlock;
 
 /**
- * Class to proxy bean.<br>
- * Beans are proxy to intercept calling of @JopMonitoring method to auto refresh page 
+ * Class to proxy and monitor bean.<br>
+ * Beans are proxy to intercept calling of @JopMonitoring method to mark associated page block as to be refresh 
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    ProxyingBean.java
+ * @module    BeanMonitoring.java
  * 
  * @date      26 gen 2017 - 26 gen 2017
  * 
@@ -29,7 +29,7 @@ import com.nandox.jop.core.processor.RefreshableBlock;
  */
 public class BeanMonitoring {
 	
-	private Map<String,Set<RefreshableBlock>> beans;
+	private Map<String,Set<RefreshableBlock>> beans; // list of bean to monitor and relative block to refresh
 
 	/**
 	 * Costruttore
@@ -38,7 +38,6 @@ public class BeanMonitoring {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	
 	public BeanMonitoring() {
 		this.beans = new HashMap<String,Set<RefreshableBlock>>();
 	}
@@ -49,7 +48,7 @@ public class BeanMonitoring {
 	 * @return	  
 	 * @exception
 	 */
-	public Object ProxyBean(Class<?> BeanClass, String BeanName) {
+	public Object proxyBean(Class<?> BeanClass, String BeanName) {
 		// Check if is to be monitoring 
 		if ( this.hasClassMonitoringAnnotations(BeanClass) ) {
 			// Add bean name on the refreshable list
@@ -74,7 +73,7 @@ public class BeanMonitoring {
 	 * @exception 
 	 * @return
 	 */
-	public void RegisterRefreshable(String[] BeanName, RefreshableBlock Block) {
+	public void registerRefreshable(String[] BeanName, RefreshableBlock Block) {
 		for ( int ix=0; ix<BeanName.length; ix++ ) {
 			if ( this.beans.containsKey(BeanName[ix]) ) {
 				Set<RefreshableBlock> blocks = this.beans.get(BeanName[ix]);
@@ -99,7 +98,7 @@ public class BeanMonitoring {
 		if ( b != null ) {
 			Iterator<RefreshableBlock> i = b.iterator();
 			while ( i.hasNext() ) {
-				i.next().SetToBeRefreshed();
+				i.next().setToBeRefreshed();
 			}
 		}
 	}
@@ -157,7 +156,7 @@ public class BeanMonitoring {
 		 * @return	  
 		 * @exception
 		 */
-		public static BeanMonitoring GetInstance() {
+		public static BeanMonitoring getInstance() {
 			if ( instance == null )
 				instance = new BeanMonitoring();
 			return instance;

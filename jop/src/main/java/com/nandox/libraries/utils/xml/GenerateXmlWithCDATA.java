@@ -33,7 +33,7 @@ public class GenerateXmlWithCDATA {
 	 * @exception JAXBException
 	 * @return    String with XML code
 	 */
-	public String Generate(Object Data) throws JAXBException {
+	public String generate(Object Data) throws JAXBException {
 		try {
 			StringWriter sw = new StringWriter();
 	        JAXBContext jc = JAXBContext.newInstance(Data.getClass());

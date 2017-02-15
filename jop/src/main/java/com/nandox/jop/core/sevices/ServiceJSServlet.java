@@ -128,7 +128,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 		String ret = "";
 		switch (sresp.getFormat()) {
 			case XML:
-				ret = new GenerateXmlWithCDATA().Generate(sresp.getData());
+				ret = new GenerateXmlWithCDATA().generate(sresp.getData());
 				resp.setContentType("text/xml");
 				break;
 			default:

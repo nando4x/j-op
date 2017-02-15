@@ -32,7 +32,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @exception
 	 */
 	public AbstractPageExpression(WebAppContext Context, String Code, Class<E> ReturnClass) throws DomException {
-		this.Id = ComputeId(Code);
+		this.Id = computeId(Code);
 		this.code = Code;
 		//this.makeInvoker(Context, Clazz);
 		this.createInvokerClass(Context, ReturnClass);
@@ -52,11 +52,11 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
-	public abstract E Execute(WebAppContext Context);
+	public abstract E execute(WebAppContext Context);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue
 	 */
-	public void ResetValue () {
+	public void resetValue () {
 		this.value = null;
 	}
 	/**
@@ -69,20 +69,20 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @return	  value on specific type
 	 */
 	@SuppressWarnings("unchecked")
-	protected Object Invoke(WebAppContext Context) {
+	protected Object invoke(WebAppContext Context) {
 		if ( this.value == null )
-			this.value = (E)this.invoker.Invoke(Context);
+			this.value = (E)this.invoker.invoke(Context);
 		return this.value;
 	}
 	@SuppressWarnings("unchecked")
-	protected Object Invoke(WebAppContext Context, E Value, String NativeValue) {
-		this.value = (E)this.invoker.Invoke(Context,Value,NativeValue);
+	protected Object invoke(WebAppContext Context, E Value, String NativeValue) {
+		this.value = (E)this.invoker.invoke(Context,Value,NativeValue);
 		return this.value;
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#GetBeansList()
 	 */
-	public String[] GetBeansList() {
+	public String[] getBeansList() {
 		return this.invoker.getBeans();
 	}
 	/**
@@ -94,7 +94,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @exception 
 	 * @return	  identifier
 	 */
-	static public String ComputeId(String Code) {
+	static public String computeId(String Code) {
 		int i = Code.hashCode(); // get hash code
 		return "Jbean_"+(i<0?i*-1:i); // avoid sign (char '-')
 	}
@@ -103,7 +103,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	//
 	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
 		try {
-			this.invoker = Context.getBeanCompiler().CreateInvoker(Context, this.Id, this.code, RetClass.getName());
+			this.invoker = Context.getBeanCompiler().createInvoker(Context, this.Id, this.code, RetClass.getName());
 		} catch (Exception e) {
 			throw new DomException(e.getMessage());
 		}

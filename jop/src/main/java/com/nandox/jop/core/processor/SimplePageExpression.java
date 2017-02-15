@@ -29,15 +29,15 @@ public class SimplePageExpression extends AbstractPageExpression<String> impleme
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
-	public String Execute(WebAppContext Context) {
-		return (String)this.Invoke(Context);
+	public String execute(WebAppContext Context) {
+		return (String)this.invoke(Context);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String)
 	 */
-	public String Execute(WebAppContext Context, String NativeValue) {
+	public String execute(WebAppContext Context, String NativeValue) {
 		// TODO Auto-generated method stub
-		return (String)this.Invoke(Context,NativeValue,NativeValue);
+		return (String)this.invoke(Context,NativeValue,NativeValue);
 	}
 }

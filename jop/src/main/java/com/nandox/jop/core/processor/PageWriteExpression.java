@@ -24,6 +24,6 @@ public interface PageWriteExpression extends PageExpression {
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
-	Object Execute(WebAppContext Context, String NativeValue);
+	Object execute(WebAppContext Context, String NativeValue);
 
 }

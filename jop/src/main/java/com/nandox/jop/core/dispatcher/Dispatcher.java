@@ -80,16 +80,16 @@ public class Dispatcher {
 	protected String processPage(String PageId, String PageContent) throws ParseException {
 		// check if page is changed, in this case or if not exist create new
 		PageApp page;
-		if ( (page = this.appCtx.GetPagesMap().get(PageId)) != null ) {
+		if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
 			if ( page.getHash() != PageContent.hashCode() )
 				page = null;
 		}
 		if ( page == null ) { // create new
 			page = new PageApp(this.appCtx,PageId,PageContent);
-			this.appCtx.GetPagesMap().put(PageId, page);
+			this.appCtx.getPagesMap().put(PageId, page);
 		}
 		// render page
-		return page.Render(this.appCtx);
+		return page.render(this.appCtx);
 	}
 	/**
 	 * Return Map of query data per page id
@@ -144,8 +144,8 @@ public class Dispatcher {
 		while ( i.hasNext() ) {
 			String pageId = i.next();
 			PageApp page;
-			if ( (page = this.appCtx.GetPagesMap().get(pageId)) != null ) {
-				page.Action(this.appCtx, PageData.get(pageId));
+			if ( (page = this.appCtx.getPagesMap().get(pageId)) != null ) {
+				page.action(this.appCtx, PageData.get(pageId));
 			} else {
 				//TODO: manage error page not exist
 			}
@@ -167,9 +167,9 @@ public class Dispatcher {
 		Map<String,String[]> par = map.get(Id.getPage());
 		PageApp page = this.getPageApp(Id.getPage());
 		if ( page != null ) {
-			PageBlock pb = page.GetPageBlock(Id.getId());
+			PageBlock pb = page.getPageBlock(Id.getId());
 			if ( pb != null)
-				pb.Action(this.appCtx, par);
+				pb.action(this.appCtx, par);
 			else {
 				// TODO: block not exist
 			}
@@ -185,15 +185,15 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	public Map<JopId,String> RenderPageBlockToBeRefresh(String PageId) {
+	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) {
 		PageApp page = this.getPageApp(PageId);
 		Map<JopId,String> lst = new HashMap<JopId,String>();
 		if ( page != null ) {
 			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
 			while ( blocks.hasNext() ) {
 				PageBlock b = blocks.next();
-				if ( b.GetToBeRefresh() )
-					lst.put(new JopId(PageId,b.getId()), b.Render(this.appCtx));
+				if ( b.getToBeRefresh() )
+					lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
 			}
 		}
 		return lst;
@@ -209,7 +209,7 @@ public class Dispatcher {
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));
 
 		// manage parameters
-		this.appCtx.SetCompilerPath(ctx.getInitParameter(INIT_PARAM_COMPILER_DESTPATH));
+		this.appCtx.setCompilerPath(ctx.getInitParameter(INIT_PARAM_COMPILER_DESTPATH));
 		
 		// add runtime service servlet
 		//ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);
@@ -220,7 +220,7 @@ public class Dispatcher {
 	//
 	private PageApp getPageApp(String id) {
 		PageApp page;
-		if ( (page = this.appCtx.GetPagesMap().get(id)) != null ) {
+		if ( (page = this.appCtx.getPagesMap().get(id)) != null ) {
 			return page;
 		}
 		// TODO: manage page not exist

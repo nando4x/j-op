@@ -24,7 +24,7 @@ public interface RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public void SetToBeRefreshed();
+	public void setToBeRefreshed();
 	/**
 	 * Reset that block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017
@@ -33,7 +33,7 @@ public interface RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public void ResetToBeRefreshed();
+	public void resetToBeRefreshed();
 	/**
 	 * Check if block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017
@@ -42,5 +42,5 @@ public interface RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public boolean GetToBeRefresh();
+	public boolean getToBeRefresh();
 }

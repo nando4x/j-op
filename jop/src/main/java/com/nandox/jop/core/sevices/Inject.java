@@ -37,9 +37,9 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 	 */
 	public ServiceJSResponse execute(Dispatcher Dsp, String Cmd, Map<String, String[]> Params) {
 		if ( Cmd.equals(CMD_POSTBLOCK) ) {
-			JopId id = this.GetJopIdFromParams(Params);
+			JopId id = this.getJopIdFromParams(Params);
 			Dsp.processPageBlockFormAction(id,Params);
-			Iterator<Entry<JopId,String>> lst = Dsp.RenderPageBlockToBeRefresh(id.getPage()).entrySet().iterator();
+			Iterator<Entry<JopId,String>> lst = Dsp.renderPageBlockToBeRefresh(id.getPage()).entrySet().iterator();
 			ServiceJSDataBlock d = new ServiceJSDataBlock();
 			d.setBlock(new ArrayList<ServiceJSDataBlock.Block>());
 			int num = 0;

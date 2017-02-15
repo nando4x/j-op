@@ -26,7 +26,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
-	protected static final String DOMPARSER_JOP_SELECTOR = BlockAttribute.GetAttributeSelector();//"["+BlockAttribute.JOP_ATTR_ID+"]";
+	protected static final String DOMPARSER_JOP_SELECTOR = BlockAttribute.getAttributeSelector();//"["+BlockAttribute.JOP_ATTR_ID+"]";
 	private String id;
 	private int hash;
 	private Document dom;
@@ -72,14 +72,14 @@ public class PageApp {
 	 * @revisor   Fernando Costantino
 	 * @return	  HTML of page
 	 */	
-	public String Render(WebAppContext Context) {
+	public String render(WebAppContext Context) {
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		Document d = this.dom.clone();
 		while ( i.hasNext() ) {
 			PageBlock pb = i.next();
 			if ( !pb.isChild ) {
 				Element e = d.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, pb.id).first();
-				e.replaceWith(pb.RenderAsNode(Context));
+				e.replaceWith(pb.renderAsNode(Context));
 			}
 		}
 		return d.html();
@@ -94,12 +94,12 @@ public class PageApp {
 	 * @exception 
 	 * @return
 	 */
-	public void Action(WebAppContext Context, Map<String,String[]> Data) {
+	public void action(WebAppContext Context, Map<String,String[]> Data) {
 		// Scan every block
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		while (i.hasNext() ) {
 			PageBlock b = i.next();
-			b.Action(Context, Data);
+			b.action(Context, Data);
 		}
 	}
 	/**
@@ -111,7 +111,7 @@ public class PageApp {
 	 * @exception 
 	 * @return
 	 */
-	public PageBlock GetPageBlock(String BlockId) {
+	public PageBlock getPageBlock(String BlockId) {
 		return this.blocks.get(BlockId);
 	}
 	// Parsing page content to search and build every block 
@@ -132,13 +132,13 @@ public class PageApp {
     		}
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
-    			throw new ParseException(ErrorsDefine.FormatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
+    			throw new ParseException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
     			// create block and check syntax error
     			try {
     				this.blocks.put(id, new PageBlock(this.appCtx,this.id,el));
     			} catch (Exception e) {
-    				throw new ParseException(ErrorsDefine.FormatDOM(e.getMessage(),el));
+    				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
     			}
     		}
     	}

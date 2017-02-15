@@ -1,7 +1,6 @@
 package com.nandox.jop.bean.spring;
 
 import java.beans.PropertyDescriptor;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
@@ -11,7 +10,9 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import com.nandox.jop.core.context.BeanMonitoring;
 /**
  * Spring Bean post processor.<br>
- * In the post creation attach proxy to bean before initialization 
+ * In the post creation attach proxy to bean before initialization.<br>
+ * Use it in the configuration if you want monitor the beans:<br><br>
+ * 		<bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
  * 
  * @project   Jop (Java One Page)
  * 
@@ -30,8 +31,8 @@ public class BeanPostCreation implements InstantiationAwareBeanPostProcessor, Be
 	 * @see org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation(java.lang.Class, java.lang.String)
 	 */
 	public Object postProcessBeforeInstantiation(Class<?> Bean, String BeanName) throws BeansException {
-		BeanMonitoring bm = BeanMonitoring.Utils.GetInstance();
-		Object b = bm.ProxyBean(Bean, BeanName);
+		BeanMonitoring bm = BeanMonitoring.Utils.getInstance();
+		Object b = bm.proxyBean(Bean, BeanName);
 		if ( b != null )
 			this.bfact.configureBean(b, BeanName);
 		return b;

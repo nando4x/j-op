@@ -26,7 +26,7 @@ public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
-	public Boolean Execute(WebAppContext Context) {
-		return (Boolean)this.Invoke(Context);
+	public Boolean execute(WebAppContext Context) {
+		return (Boolean)this.invoke(Context);
 	}
 }

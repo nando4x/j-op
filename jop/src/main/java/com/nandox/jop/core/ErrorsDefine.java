@@ -27,7 +27,7 @@ public class ErrorsDefine {
 	/** */
 	static final public String JOP_BEAN_NOTFOUND = "Bean used in page expression don't exist";  
 
-	public static String FormatDOM(String Msg, Element Elem) {
+	public static String formatDOM(String Msg, Element Elem) {
 		return Msg+"\r\n\t\t*********************************************************\r\n"+Elem.outerHtml();
 	}
 }

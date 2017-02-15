@@ -78,7 +78,7 @@ public class ExpressionCompiler {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public ExpressionInvoker CreateInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
+	public ExpressionInvoker createInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
 		// Check if invoker already exist
 		if ( !this.invokers.containsKey(BeanName) ) {
 	    	// Composite java code and class path 
@@ -143,7 +143,7 @@ public class ExpressionCompiler {
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			try {
 				beans.add(source.substring(inx_st+1, inx_end));
-				code += "import "+this.epurateClassName(context.GetBeanType(source.substring(inx_st+1, inx_end)).getName())+";";
+				code += "import "+this.epurateClassName(context.getBeanType(source.substring(inx_st+1, inx_end)).getName())+";";
 				source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
 				inx_st = source.indexOf('$', inx_st+1);
 				inx_end = source.indexOf('.',inx_st);
@@ -158,7 +158,7 @@ public class ExpressionCompiler {
 		if ( beans.size() > 0 ) {
 			int ix=0;
 			for ( String bean: beans ) {
-				String bcls = this.epurateClassName(context.GetBeanType(bean).getName());
+				String bcls = this.epurateClassName(context.getBeanType(bean).getName());
 				code += ""+bcls+" "+bean+"=("+bcls+")beans["+ix+"]; ";
 				ix++;
 			}
@@ -174,7 +174,7 @@ public class ExpressionCompiler {
 	private String computeBeansClasspath (WebAppContext context, List<String> beans) {
 		String path = "";
 		for ( String bean: beans ) {
-			path += context.GetBeanType(bean).getClassLoader().getResource("").getPath();//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
+			path += context.getBeanType(bean).getClassLoader().getResource("").getPath();//context.GetBeanType(bean).getProtectionDomain().getCodeSource().getLocation();
 			path += ";";
 		}
 		/*if ( path.isEmpty() ) {

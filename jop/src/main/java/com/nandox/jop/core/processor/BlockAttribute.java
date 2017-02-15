@@ -61,10 +61,10 @@ public class BlockAttribute {
 			ix = 0;
 		this.parse(Context,Code,ix);
 	}
-	public static void CleanDomFromAttribute(Element DomEl) {
+	public static void cleanDomFromAttribute(Element DomEl) {
 		DomEl.removeAttr(JOP_ATTR_RENDERED);
 	}
-	protected static String GetAttributeSelector () {
+	protected static String getAttributeSelector () {
 		String sel = "";
 		Field fld[] = BlockAttribute.class.getDeclaredFields();
 		for ( int ix=0; ix<fld.length; ix++ ) {

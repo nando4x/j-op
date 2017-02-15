@@ -89,8 +89,8 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  html in string format
 	 */	
-	public String Render(WebAppContext Context) {
-		return this.RenderAsNode(Context).outerHtml();
+	public String render(WebAppContext Context) {
+		return this.renderAsNode(Context).outerHtml();
 	}
 	/**
 	 * Rendering block.<br>
@@ -102,24 +102,24 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  
 	 */	
-	protected Node RenderAsNode(WebAppContext Context) {
+	protected Node renderAsNode(WebAppContext Context) {
 		this.clone = this.domEl.clone();
 		// ### Rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
 			Element e = this.clone.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, c.id).first();
-			e.replaceWith(c.RenderAsNode(Context));
+			e.replaceWith(c.renderAsNode(Context));
 		}
 		// check render attribute
-		if ( this.render != null && !(Boolean)this.render.Execute(Context) ) {
+		if ( this.render != null && !(Boolean)this.render.execute(Context) ) {
 			return new TextNode("","");
 		}
 		// ### Fire every own bean and insert into html
 		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
 			PageExpression b = bs.next();
-			String v = (String)b.Execute(Context);
+			String v = (String)b.execute(Context);
 			//this.clone.html(this.clone.html().replace(b.getBeanId(), v));
 			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+b.getId()).iterator().next();
 			TextNode txt = new TextNode(v,"");
@@ -130,7 +130,7 @@ public class PageBlock implements RefreshableBlock {
 		while ( la.hasNext() ) {
 			BlockAttribute ba = la.next();
 			String a = this.domEl.attr(ba.name);
-			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
+			this.clone.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.execute(Context)));
 		}
 		// ### Compute attributes of children
 		la = this.attrs_child.iterator();
@@ -138,14 +138,14 @@ public class PageBlock implements RefreshableBlock {
 			BlockAttribute ba = la.next();
 			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, ba.elem_tmp_id).first();
 			String a = e.attr(ba.name);
-			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.Execute(Context)));
+			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.execute(Context)));
 			e.removeAttr(tmp_attr_id);
 		}
 		// ### Compute forms 
 		Iterator<PageWriteExpression> f = this.forms.iterator();
 		while ( f.hasNext() ) {
 			PageWriteExpression b = f.next();
-			String v = (String)b.Execute(Context);
+			String v = (String)b.execute(Context);
 			Element e = this.clone.getElementsByAttributeValue("name", b.getId()).first();
 			String a = e.attr("value");
 			e.attr("value",a.replace("java"+b.getCode(), v));
@@ -155,7 +155,7 @@ public class PageBlock implements RefreshableBlock {
 		
 		
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
-		BlockAttribute.CleanDomFromAttribute(this.clone);
+		BlockAttribute.cleanDomFromAttribute(this.clone);
 		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
 	}
@@ -169,7 +169,7 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public void Action(WebAppContext Context, Map<String,String[]> Data) {
+	public void action(WebAppContext Context, Map<String,String[]> Data) {
 		// Search form tag with key (name) of the Data
 		Iterator<PageWriteExpression> i = this.forms.iterator();
 		while ( i.hasNext() ) {
@@ -177,7 +177,7 @@ public class PageBlock implements RefreshableBlock {
 			if ( Data.containsKey((pe=i.next()).getId()) ) {
 				// Invoke expression in write mode
 				String val = Data.get(pe.getId())[0]; // get string data
-				pe.Execute(Context, val);
+				pe.execute(Context, val);
 			}
 		}
 		// Reset all value expression
@@ -188,7 +188,7 @@ public class PageBlock implements RefreshableBlock {
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#SetToBeRefreshed()
 	 */
-	public void SetToBeRefreshed() {
+	public void setToBeRefreshed() {
 		// Reset all value expression
 		this.resetAllExprValue();
 		this.toBeRefresh = true;
@@ -196,13 +196,13 @@ public class PageBlock implements RefreshableBlock {
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed()
 	 */
-	public void ResetToBeRefreshed() {
+	public void resetToBeRefreshed() {
 		this.toBeRefresh = false;
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#GetToBeRefresh()
 	 */
-	public boolean GetToBeRefresh() {
+	public boolean getToBeRefresh() {
 		return this.toBeRefresh;
 	}
 	// Parsing Dom Element to search and build beans and attributes
@@ -222,13 +222,13 @@ public class PageBlock implements RefreshableBlock {
 					// build bean and join the same
 					PageExpression bean;
 					String code = this.parseBean(el);
-					if ( !lst.containsKey(AbstractPageExpression.ComputeId(code)) ) {
+					if ( !lst.containsKey(AbstractPageExpression.computeId(code)) ) {
 						// for a new bean add and resister this block to those to refresh 
 						bean = new SimplePageExpression(Context,code);
 						lst.put(bean.getId(), bean);
-						mon.RegisterRefreshable(bean.GetBeansList(), this);
+						mon.registerRefreshable(bean.getBeansList(), this);
 					} else
-						bean = lst.get(AbstractPageExpression.ComputeId(code));
+						bean = lst.get(AbstractPageExpression.computeId(code));
 					this.beans.add(bean);
 					el.attr("id",bean.getId());
 				} else {
@@ -254,7 +254,7 @@ public class PageBlock implements RefreshableBlock {
 						// create new expression and resister this block to those to refresh 
 						PageWriteExpression form;
 						form = new SimplePageExpression(Context,bid);
-						mon.RegisterRefreshable(form.GetBeansList(), this);
+						mon.registerRefreshable(form.getBeansList(), this);
 						// if name attributes don't exist add it with auto index
 						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 							el.attr("name",""+this.auto_id_index);
@@ -292,13 +292,13 @@ public class PageBlock implements RefreshableBlock {
 							this.render = at.expr;
 						else
 							this.attrs.add(at);
-						mon.RegisterRefreshable(at.expr.GetBeansList(), this);
+						mon.registerRefreshable(at.expr.getBeansList(), this);
 					} else {
 						String id = this.pageId + "-" + this.auto_id_index++;
 						at = new BlockAttribute(context,attr.getKey(),bid,id);
 						el.attr(tmp_attr_id,id);
 						this.attrs_child.add(at);
-						mon.RegisterRefreshable(at.expr.GetBeansList(), this);
+						mon.registerRefreshable(at.expr.getBeansList(), this);
 					}
 				}
 			}
@@ -342,7 +342,7 @@ public class PageBlock implements RefreshableBlock {
 	private void resetAllExprValue() {
 		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
-			bs.next().ResetValue();
+			bs.next().resetValue();
 		}
 	}
 }

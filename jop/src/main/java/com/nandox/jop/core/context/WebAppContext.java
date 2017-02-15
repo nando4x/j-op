@@ -42,7 +42,7 @@ public class WebAppContext {
 	 * @return	  Bean instance
 	 * @exception TODO:
 	 */
-	public Object GetBeanInstance(String BeanName) {
+	public Object getBeanInstance(String BeanName) {
 		return this.springCtx.getBean(BeanName);
 	}
 	/**
@@ -54,7 +54,7 @@ public class WebAppContext {
 	 * @return	  Bean class
 	 * @exception TODO:
 	 */
-	public Class<?> GetBeanType(String BeanName) {
+	public Class<?> getBeanType(String BeanName) {
 		return this.springCtx.getType(BeanName);
 	}
 	/**
@@ -74,7 +74,7 @@ public class WebAppContext {
 	 * @revisor   Fernando Costantino
 	 * @return	  pages map
 	 */
-	public HashMap<String,PageApp> GetPagesMap() {
+	public HashMap<String,PageApp> getPagesMap() {
 		return this.pages;
 	}
 	/**
@@ -91,7 +91,7 @@ public class WebAppContext {
 	 * @revisor   Fernando Costantino
 	 * @return	  pages map
 	 */
-	public void SetCompilerPath(String Path) {
+	public void setCompilerPath(String Path) {
 		this.bcmpl.setClasspath(Path);
 	}
 	/**
@@ -102,6 +102,6 @@ public class WebAppContext {
 	 * @return	  Bena Monitor
 	 */
 	public BeanMonitoring getBeanMonitor() {
-		return BeanMonitoring.Utils.GetInstance();
+		return BeanMonitoring.Utils.getInstance();
 	}
 }
