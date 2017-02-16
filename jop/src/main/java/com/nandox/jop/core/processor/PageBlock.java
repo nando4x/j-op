@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
@@ -54,6 +55,16 @@ public class PageBlock implements RefreshableBlock {
 	private boolean toBeRefresh;
 	protected Element clone;
 	
+	private Map<String,PageExpression> expr;
+	private Map<String,PageExpression> bean;
+	private Map<String,PageWriteExpression> form;
+
+	private class AttributeExpr {
+		String name;
+		PageExpression expr;
+	}
+	
+	private Map<String,AttributeExpr> attr;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -72,6 +83,12 @@ public class PageBlock implements RefreshableBlock {
 		this.forms = new ArrayList<PageWriteExpression>();
 		this.attrs = new ArrayList<BlockAttribute>();
 		this.attrs_child = new ArrayList<BlockAttribute>();
+		
+		this.expr = new HashMap<String,PageExpression>();
+		this.bean = new HashMap<String,PageExpression>();
+		this.form = new HashMap<String,PageWriteExpression>();
+		this.attr = new HashMap<String,AttributeExpr>();
+		
 		this.parse(Context);
 	}
 	/**
@@ -115,6 +132,26 @@ public class PageBlock implements RefreshableBlock {
 		if ( this.render != null && !(Boolean)this.render.execute(Context) ) {
 			return new TextNode("","");
 		}
+		
+		Iterator<Entry<String,PageExpression>> beans = this.bean.entrySet().iterator();
+		while (beans.hasNext()) {
+			Entry<String,PageExpression> e = beans.next();
+			PageExpression b = e.getValue();
+			String v = (String)b.execute(Context);
+			Element elem = this.clone.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator().next();
+			TextNode txt = new TextNode(v,"");
+			elem.replaceWith(txt);
+		}
+		
+		Iterator<Entry<String,AttributeExpr>> attrs = this.attr.entrySet().iterator();
+		while (attrs.hasNext()) {
+			Entry<String,AttributeExpr> en = attrs.next();
+			AttributeExpr b = en.getValue();
+			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+			String a = e.attr(b.name);
+			e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+			e.removeAttr(tmp_attr_id);
+		}/*
 		// ### Fire every own bean and insert into html
 		Iterator<PageExpression> bs = this.beans.iterator();
 		while ( bs.hasNext() ) {
@@ -140,7 +177,7 @@ public class PageBlock implements RefreshableBlock {
 			String a = e.attr(ba.name);
 			e.attr(ba.name,a.replace("java"+ba.expr.getCode(), (String)ba.expr.execute(Context)));
 			e.removeAttr(tmp_attr_id);
-		}
+		}*/
 		// ### Compute forms 
 		Iterator<PageWriteExpression> f = this.forms.iterator();
 		while ( f.hasNext() ) {
@@ -217,7 +254,7 @@ public class PageBlock implements RefreshableBlock {
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( this.checkIfParentBlockIsThis(el)) {
-				// check if bean or attributes element 
+			/*	// check if bean or attributes element 
 				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) {
 					// build bean and join the same
 					PageExpression bean;
@@ -231,6 +268,26 @@ public class PageBlock implements RefreshableBlock {
 						bean = lst.get(AbstractPageExpression.computeId(code));
 					this.beans.add(bean);
 					el.attr("id",bean.getId());
+				} else {
+					// Get and process attributes of children block
+					this.parseAttributes(Context, el,mon);
+				}
+*/
+				
+				// check if bean or attributes element #############
+				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) {
+					// build expression and join the same
+					PageExpression exp;
+					String code = this.parseBean(el);
+					if ( !this.expr.containsKey(AbstractPageExpression.computeId(code)) ) {
+						// for a new expression add it and register this block to those to refresh 
+						exp = new SimplePageExpression(Context,code);
+						this.expr.put(exp.getId(), exp);
+						mon.registerRefreshable(exp.getBeansList(), this);
+					} else
+						exp = this.expr.get(AbstractPageExpression.computeId(code));
+					this.bean.put(exp.getId(),exp);
+					el.attr("id",exp.getId());
 				} else {
 					// Get and process attributes of children block
 					this.parseAttributes(Context, el,mon);
@@ -286,7 +343,7 @@ public class PageBlock implements RefreshableBlock {
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
 					BlockAttribute at;
-					if ( el == this.domEl ) {
+					/*if ( el == this.domEl ) {
 						at = new BlockAttribute(context,attr.getKey(),bid);
 						if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) )
 							this.render = at.expr;
@@ -299,6 +356,29 @@ public class PageBlock implements RefreshableBlock {
 						el.attr(tmp_attr_id,id);
 						this.attrs_child.add(at);
 						mon.registerRefreshable(at.expr.getBeansList(), this);
+					}*/
+					
+					//#########
+					if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) ) {
+						at = new BlockAttribute(context,attr.getKey(),bid);
+						this.render = at.expr;
+						mon.registerRefreshable(at.expr.getBeansList(), this);
+					} else {
+						PageExpression exp;
+						String code = this.parseJavaExpression(a); 
+						if ( !this.expr.containsKey(AbstractPageExpression.computeId(code)) ) {
+							// for a new expression add it and register this block to those to refresh 
+							exp = new SimplePageExpression(context,code);
+							this.expr.put(exp.getId(), exp);
+							mon.registerRefreshable(exp.getBeansList(), this);
+						} else
+							exp = this.expr.get(AbstractPageExpression.computeId(code));
+						AttributeExpr ae = new AttributeExpr();
+						ae.expr = exp;
+						ae.name = attr.getKey();
+						String id = ""+this.auto_id_index++;
+						this.attr.put(id, ae);
+						el.attr(tmp_attr_id,id);
 					}
 				}
 			}
