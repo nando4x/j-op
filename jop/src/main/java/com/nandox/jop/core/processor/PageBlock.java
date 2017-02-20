@@ -2,6 +2,7 @@ package com.nandox.jop.core.processor;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -12,6 +13,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanMonitoring;
+import com.nandox.jop.core.processor.attribute.JopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
@@ -59,7 +61,8 @@ public class PageBlock implements RefreshableBlock {
 		PageExpression expr;
 	}
 	
-	private Map<String,AttributeExpr> attrs;
+	private Map<String,AttributeExpr> html_attrs;
+	private List<JopAttribute> attrs;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -78,7 +81,8 @@ public class PageBlock implements RefreshableBlock {
 		this.exprs = new HashMap<String,PageExpression>();
 		this.beans = new HashMap<String,PageExpression>();
 		this.forms = new HashMap<String,PageWriteExpression>();
-		this.attrs = new HashMap<String,AttributeExpr>();
+		this.html_attrs = new HashMap<String,AttributeExpr>();
+		this.attrs = new ArrayList<JopAttribute>();
 		
 		this.parse(Context);
 	}
@@ -136,7 +140,7 @@ public class PageBlock implements RefreshableBlock {
 			}
 		}
 		// ### Compute all html attributes
-		Iterator<Entry<String,AttributeExpr>> attrs = this.attrs.entrySet().iterator();
+		Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
 		while (attrs.hasNext()) {
 			Entry<String,AttributeExpr> en = attrs.next();
 			AttributeExpr b = en.getValue();
@@ -293,6 +297,11 @@ public class PageBlock implements RefreshableBlock {
 				String a = attr.getValue();
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
+					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
+						JopAttribute ja = JopAttribute.Util.create(context,attr.getKey(),bid);
+						this.attrs.add(ja);
+						mon.registerRefreshable(ja.getExpression().getBeansList(), this);
+					}
 					BlockAttribute at;
 					if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) ) {
 						at = new BlockAttribute(context,attr.getKey(),bid);
@@ -314,7 +323,7 @@ public class PageBlock implements RefreshableBlock {
 						ae.expr = exp;
 						ae.name = attr.getKey();
 						String id = ""+this.auto_id_index++;
-						this.attrs.put(id, ae);
+						this.html_attrs.put(id, ae);
 						el.attr(tmp_attr_id,id);
 					}
 				}

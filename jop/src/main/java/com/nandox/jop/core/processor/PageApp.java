@@ -1,5 +1,6 @@
 package com.nandox.jop.core.processor;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.attribute.JopAttribute;
 /**
  * Class of Page application.<br>
  * One page application is composite by PageBlock, every block can contains PageExpression  
@@ -26,7 +28,7 @@ import com.nandox.jop.core.context.WebAppContext;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
-	protected static final String DOMPARSER_JOP_SELECTOR = BlockAttribute.getAttributeSelector();//"["+BlockAttribute.JOP_ATTR_ID+"]";
+	protected static final String DOMPARSER_JOP_SELECTOR = PageApp.getAttributeSelector();
 	private String id;
 	private int hash;
 	private Document dom;
@@ -163,5 +165,16 @@ public class PageApp {
     		}
     		b[ix].child = child;
     	}
+	}
+	// Generate css selector with all possible jop attributes
+	//
+	//
+	static private String getAttributeSelector() {
+		String sel = "["+JopAttribute.JOP_ATTR_ID+"]";
+		String lst[] = JopAttribute.Util.getNameList();
+		for ( int ix=0; ix<lst.length; ix++ ) {
+			sel += ",["+lst[ix]+"]";
+		}
+		return sel;
 	}
 }
