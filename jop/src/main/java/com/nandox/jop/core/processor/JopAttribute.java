@@ -35,7 +35,7 @@ public interface JopAttribute {
 	 * @revisor   Fernando Costantino
 	 * @exception DomException if attribute name not found or syntax error
 	 */
-	public static String getName();
+	public static String preRender();
 	
 	public static class Util {
 		private Map<String,Class<JopAttribute>> attrs;
