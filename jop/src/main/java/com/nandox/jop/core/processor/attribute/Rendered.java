@@ -16,10 +16,4 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	protected BooleanPageExpression computeExpression(WebAppContext Context, String Code) {
-		return new BooleanPageExpression(Context,Code);
-	}
-
 }

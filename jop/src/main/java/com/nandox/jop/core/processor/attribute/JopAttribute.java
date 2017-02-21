@@ -56,9 +56,9 @@ public interface JopAttribute {
 		 */
 		public static JopAttribute create(WebAppContext Context ,String Name, String Value) {
 			init();
-			Class<JopAttribute> c = attrs.get(Name);
+			Class<?> c = attrs.get(Name);
 			try {
-				return c.newInstance();
+				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,String.class,String.class).newInstance(Context,Name,Value);
 			} catch (Exception e) {
 				// TODO: manage instantiate error
 				return null;

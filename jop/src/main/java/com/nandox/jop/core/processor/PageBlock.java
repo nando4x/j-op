@@ -298,6 +298,7 @@ public class PageBlock implements RefreshableBlock {
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
+						//com.nandox.jop.core.processor.attribute.Rendered r = new com.nandox.jop.core.processor.attribute.Rendered(context,attr.getKey(),bid);
 						JopAttribute ja = JopAttribute.Util.create(context,attr.getKey(),bid);
 						this.attrs.add(ja);
 						mon.registerRefreshable(ja.getExpression().getBeansList(), this);

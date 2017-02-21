@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import com.nandox.jop.core.processor.PageExpression;
 import com.nandox.jop.core.processor.AbstractPageExpression;
 import com.nandox.jop.core.context.WebAppContext;
@@ -19,6 +21,7 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public abstract class AbstractJopAttribute<E extends AbstractPageExpression> {
 
+	
 	private E expression;
 	protected String name;
 	protected String value;
@@ -26,12 +29,19 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression> {
 	public AbstractJopAttribute(WebAppContext Context ,String Name, String Value) {
 		this.name = Name;
 		this.value = Value;
-		this.expression = this.computeExpression(Context,Value);
+		this.computeExpression(Context, Value);
 	}
 	
 	public PageExpression getExpression() {
 		return expression;
 	}
 
-	protected abstract E computeExpression(WebAppContext Context, String Code);
+	protected void computeExpression(WebAppContext Context, String Code) {
+		try {
+			Class<E> cl = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+			this.expression = cl.getDeclaredConstructor(WebAppContext.class, String.class).newInstance(Context,Code);
+		} catch (Exception e) {
+			// TODO: manage expression instantation error
+		}
+	}
 }
