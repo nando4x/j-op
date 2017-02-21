@@ -1,6 +1,9 @@
 package com.nandox.jop.core.processor;
 
 import com.nandox.jop.core.context.WebAppContext;
+
+import java.lang.reflect.ParameterizedType;
+
 import com.nandox.jop.core.context.ExpressionInvoker;
 
 /**
@@ -31,11 +34,12 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public AbstractPageExpression(WebAppContext Context, String Code, Class<E> ReturnClass) throws DomException {
+	public AbstractPageExpression(WebAppContext Context, String Code) throws DomException {
 		this.Id = computeId(Code);
 		this.code = Code;
-		//this.makeInvoker(Context, Clazz);
-		this.createInvokerClass(Context, ReturnClass);
+		@SuppressWarnings("unchecked")
+		Class<E> retType = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		this.createInvokerClass(Context, retType);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#getId
@@ -108,35 +112,4 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 			throw new DomException(e.getMessage());
 		}
 	}
-	// Get invoker from applicartion context by class and method
-	// name take from bean identificator
-	//
-	/*private void makeInvoker(WebAppContext Context, Class<E> clazz) throws DomException {
-		int inx_st = this.beanId.indexOf("{");
-		int inx_end = this.beanId.indexOf("}");
-		if ( inx_st >=0 && inx_end > inx_st ) {
-			// get bean name
-			int inx_dot = this.beanId.indexOf(".",inx_st+1);
-			if ( inx_dot > 0 ) {
-				String name = this.beanId.substring(inx_st+1, inx_dot).trim();
-				String method = this.beanId.substring(inx_dot+1, inx_end).trim();
-				int br;
-				if ( (br = method.indexOf("(")) > 0 ) {
-					if ( method.indexOf(")",br) > 0 )
-						method = method.substring(0,br);
-					else // error brachet
-						throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-				} else
-					method = "get"+method.substring(0, 1).toUpperCase()+method.substring(1);
-				try {
-					this.invoker = Context.GetBeanInvoker(name, method);
-				} catch (BeanException e) { throw new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
-				try {
-					this.invoker.CheckCompliance(clazz);
-				} catch (BeanException e) { throw new DomException(ErrorsDefine.JOP_BEAN_NOTFOUND); }
-			} else // error dot
-				throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-		} else // error delimiter
-			throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-	}*/
 }

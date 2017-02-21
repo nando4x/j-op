@@ -34,7 +34,6 @@ import java.util.Arrays;
  * @revisor   Fernando Costantino
  */
 
-@SuppressWarnings("restriction")
 public class ExpressionCompiler {
 	
 	/** package of expression class */

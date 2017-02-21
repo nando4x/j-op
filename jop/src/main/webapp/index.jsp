@@ -30,7 +30,7 @@
 			</thead>
 			<tbody>
 				<!-- <tr rjop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
-					<td>java{return var;}</td>
+					<td><jbean>{return var;}</jbean></td>
 				</tr> -->
 			</tbody>
 		</table>

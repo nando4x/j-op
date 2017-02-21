@@ -134,9 +134,6 @@ public class PageBlock implements RefreshableBlock {
 					break;
 			}
 		}
-		/*if ( this.render != null && !(Boolean)this.render.execute(Context) ) {
-			return new TextNode("","");
-		}*/
 		// ### Fire every own bean and insert into html
 		Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
 		while (beans.hasNext()) {
@@ -309,6 +306,7 @@ public class PageBlock implements RefreshableBlock {
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
+						// block jop attribute
 						JopAttribute ja = JopAttribute.Factory.create(context,attr.getKey(),bid);
 						this.attrs.add(ja);
 						mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);

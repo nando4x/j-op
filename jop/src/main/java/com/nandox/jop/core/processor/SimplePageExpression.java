@@ -22,7 +22,7 @@ public class SimplePageExpression extends AbstractPageExpression<String> impleme
 	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String)
 	 */
 	public SimplePageExpression(WebAppContext Context, String Code) throws DomException {
-		super(Context, Code,String.class);
+		super(Context, Code);
 	}
 
 	/* (non-Javadoc)

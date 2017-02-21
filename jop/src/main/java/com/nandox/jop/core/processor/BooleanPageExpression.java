@@ -19,7 +19,7 @@ import com.nandox.jop.core.context.WebAppContext;
 public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 
 	public BooleanPageExpression(WebAppContext Context, String Code) throws DomException {
-		super(Context, Code,Boolean.class);
+		super(Context, Code);
 	}
 
 	/* (non-Javadoc)
