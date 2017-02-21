@@ -1,6 +1,5 @@
 package com.nandox.jop.core.processor;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -80,7 +79,7 @@ public class PageApp {
 		while ( i.hasNext() ) {
 			PageBlock pb = i.next();
 			if ( !pb.isChild ) {
-				Element e = d.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, pb.id).first();
+				Element e = d.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, pb.id).first();
 				e.replaceWith(pb.renderAsNode(Context));
 			}
 		}
@@ -125,12 +124,12 @@ public class PageApp {
         this.auto_id_index=0;
     	while ( elems.hasNext() ) {
     		Element el = elems.next();
-    		String id = el.attr(BlockAttribute.JOP_ATTR_ID);
+    		String id = el.attr(JopAttribute.JOP_ATTR_ID);
     		// generate auto id if empty
     		if ( id.isEmpty() ) {
         		auto_id_index++;
     			id = ""+auto_id_index;
-    			el.attr(BlockAttribute.JOP_ATTR_ID,id);
+    			el.attr(JopAttribute.JOP_ATTR_ID,id);
     		}
 			// check for double jop id
     		if ( this.blocks.containsKey(id) ) {
@@ -153,10 +152,10 @@ public class PageApp {
         		Element el = elems.next();
         		Element p = el.parent(); 
     			while ( p != null ) {
-    				if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(b[ix].id) ) {
-    						child.add(this.blocks.get(el.attr(BlockAttribute.JOP_ATTR_ID)));
-    						this.blocks.get(el.attr(BlockAttribute.JOP_ATTR_ID)).isChild = true;
+    				if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() ) {
+    					if ( p.attr(JopAttribute.JOP_ATTR_ID).equals(b[ix].id) ) {
+    						child.add(this.blocks.get(el.attr(JopAttribute.JOP_ATTR_ID)));
+    						this.blocks.get(el.attr(JopAttribute.JOP_ATTR_ID)).isChild = true;
     					}
     					break;
     				}
@@ -171,7 +170,7 @@ public class PageApp {
 	//
 	static private String getAttributeSelector() {
 		String sel = "["+JopAttribute.JOP_ATTR_ID+"]";
-		String lst[] = JopAttribute.Util.getNameList();
+		String lst[] = JopAttribute.Factory.getNameList();
 		for ( int ix=0; ix<lst.length; ix++ ) {
 			sel += ",["+lst[ix]+"]";
 		}

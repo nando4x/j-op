@@ -1,9 +1,7 @@
 package com.nandox.jop.core.sevices;
 
 import java.util.Map;
-import javax.xml.bind.JAXBException;
 import com.nandox.jop.core.processor.JopId;
-import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
 /**
  * Abstract javascript service manager.<br>

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.JopId;
-import com.nandox.jop.core.processor.PageBlock;
 
 /**
  * Implementation of inject service manager.<br>

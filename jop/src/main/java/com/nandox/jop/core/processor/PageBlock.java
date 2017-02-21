@@ -14,6 +14,7 @@ import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
+import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
@@ -45,7 +46,6 @@ public class PageBlock implements RefreshableBlock {
 	protected boolean isChild;
 	
 	private String pageId;
-	private PageExpression render;
 	private static final String tmp_attr_id = "_jop_tmp_id";
 	private static final String form_selector = "[value^=java{]";
 	private int auto_id_index;
@@ -76,7 +76,7 @@ public class PageBlock implements RefreshableBlock {
 	public PageBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
 		this.pageId = PageId;
 		this.domEl = DomElement;
-		this.id = this.domEl.attr(BlockAttribute.JOP_ATTR_ID);
+		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
 		
 		this.exprs = new HashMap<String,PageExpression>();
 		this.beans = new HashMap<String,PageExpression>();
@@ -120,13 +120,23 @@ public class PageBlock implements RefreshableBlock {
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
 			PageBlock c = cl.next();
-			Element e = this.clone.getElementsByAttributeValue(BlockAttribute.JOP_ATTR_ID, c.id).first();
+			Element e = this.clone.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
 			e.replaceWith(c.renderAsNode(Context));
 		}
 		// check render attribute
-		if ( this.render != null && !(Boolean)this.render.execute(Context) ) {
-			return new TextNode("","");
+		Iterator<JopAttribute> attr = this.attrs.iterator();
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			switch (ja.preRender(Context,this.clone)) {
+				case NOTRENDER:
+					return new TextNode("","");
+				default:
+					break;
+			}
 		}
+		/*if ( this.render != null && !(Boolean)this.render.execute(Context) ) {
+			return new TextNode("","");
+		}*/
 		// ### Fire every own bean and insert into html
 		Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
 		while (beans.hasNext()) {
@@ -162,8 +172,8 @@ public class PageBlock implements RefreshableBlock {
 		}
 		
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
-		BlockAttribute.cleanDomFromAttribute(this.clone);
-		this.clone.attr(BlockAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
+		this.cleanDomFromAttribute(this.clone);
+		this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
 	}
 	/**
@@ -288,26 +298,20 @@ public class PageBlock implements RefreshableBlock {
 	// Parse attributes element to verify delimiter { }
 	//
 	//
+	@SuppressWarnings("rawtypes")
 	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon) throws DomException {
 		// scan all element's attributes excluding value and jop_id
 		Iterator<Attribute> attrs = el.attributes().iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
+			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
-						//com.nandox.jop.core.processor.attribute.Rendered r = new com.nandox.jop.core.processor.attribute.Rendered(context,attr.getKey(),bid);
-						JopAttribute ja = JopAttribute.Util.create(context,attr.getKey(),bid);
+						JopAttribute ja = JopAttribute.Factory.create(context,attr.getKey(),bid);
 						this.attrs.add(ja);
-						mon.registerRefreshable(ja.getExpression().getBeansList(), this);
-					}
-					BlockAttribute at;
-					if ( attr.getKey().equalsIgnoreCase(BlockAttribute.JOP_ATTR_RENDERED) ) {
-						at = new BlockAttribute(context,attr.getKey(),bid);
-						this.render = at.expr;
-						mon.registerRefreshable(at.expr.getBeansList(), this);
+						mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
 					} else {
 						// html attribute: parse expression and verify if exist
 						PageExpression exp;
@@ -353,8 +357,8 @@ public class PageBlock implements RefreshableBlock {
 		Element p = el.parent(); 
 		while ( p != null ) {
 			// check if tag is in another child block 
-			if ( !p.attr(BlockAttribute.JOP_ATTR_ID).isEmpty() ) {
-				if ( p.attr(BlockAttribute.JOP_ATTR_ID).equals(this.id) )
+			if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() ) {
+				if ( p.attr(JopAttribute.JOP_ATTR_ID).equals(this.id) )
 					return true;
 				else
 					return false;
@@ -371,5 +375,14 @@ public class PageBlock implements RefreshableBlock {
 		while ( exp.hasNext() ) {
 			exp.next().resetValue();
 		}
+	}
+	// Erase all jop attribute from DOM
+	//
+	//
+	private void cleanDomFromAttribute(Element elem) {
+		String attrs[] = JopAttribute.Factory.getNameList();
+		for ( int ix=0; ix<attrs.length; ix++ )
+			elem.removeAttr(attrs[ix]);
+
 	}
 }

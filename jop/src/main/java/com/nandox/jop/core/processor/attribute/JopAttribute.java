@@ -4,18 +4,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.jsoup.nodes.Element;
-import com.nandox.jop.core.processor.PageExpression;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.libraries.utils.Reflection;
 
 
 /**
- * Attribute of page block, it create own bean based on class name specified in attribute list (ATTR_LIST).<br>
- * !!! REMBER...WHEN ADD NEW ATTRIBUTE ADD ITS ITEM IN ATTR_LIST !!! 
+ * Attribute of page block.<br>
+ * Use this interface to implement every jop attribute with preRender and postRender action on rendering of page block,<br>
+ * every action can return an RETURN_ACTION to pilot the rest of rendering.<br>
+ * There is also a subclass Factory to instance an attribute.<br>
+ * <br>
+ * To implement an attribute have to create a Class that implements JopAttribute and extend AbstractJopAttribute.<br>
+ * !!IMPORTANT!! on the class define annotation JopCoreAttribute with attribute name without prefix (jop_) 
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    BlockAttribute.java
+ * @module    JopAttribute.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 
@@ -34,17 +38,32 @@ public interface JopAttribute {
 
 	/**
 	 * Pre rendering action
+	 * @param	  Context	Application context
 	 * @param	  Dom element dom of the block
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public RETURN_ACTION preRender(Element Dom);
-	
-	public PageExpression getExpression();
-	public static class Util {
-		private static Map<String,Class<JopAttribute>> attrs;
+	public RETURN_ACTION preRender(WebAppContext Context, Element Dom);
+	/**
+	 * Post rendering action
+		 * @param	  Context	Application context
+	 * @param	  Dom element dom of the block
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
+	public RETURN_ACTION postRender(WebAppContext Context, Element Dom);
+	/**
+	 * Factory class to instance attribute
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 */
+	public static class Factory {
+		private static Map<String,Class<JopAttribute>> attrs; // map of all attributes
 		/**
 		 * Instance an attribute
 		 * @param	  Context	Application context
@@ -76,8 +95,8 @@ public interface JopAttribute {
 			init();
 			return attrs.keySet().toArray(new String[0]);
 		}
-		//
-		//
+		// initialization of map: scan package to find all classes that implement JopAttribute and extend AbstractJopAttribute and have name with 
+		// JopCoreAttribute annotation
 		//
 		private static void init(){
 			if ( attrs == null ) {
@@ -87,7 +106,7 @@ public interface JopAttribute {
 					while (l.hasNext()) {
 						@SuppressWarnings("unchecked")
 						Class<JopAttribute> c = (Class<JopAttribute>)l.next();
-						if ( c.isAnnotationPresent(JopCoreAttribute.class) ) {
+						if ( c.isAnnotationPresent(JopCoreAttribute.class) && AbstractJopAttribute.class.isAssignableFrom(c) ) {
 							try {
 								attrs.put("jop_"+c.getAnnotation(JopCoreAttribute.class).name(), c);
 							} catch(Exception e) {

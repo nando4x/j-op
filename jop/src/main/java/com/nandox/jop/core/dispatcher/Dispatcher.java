@@ -1,11 +1,8 @@
 package com.nandox.jop.core.dispatcher;
 
 import java.util.Map;
-import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
-import java.util.ArrayList;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletConfig;
