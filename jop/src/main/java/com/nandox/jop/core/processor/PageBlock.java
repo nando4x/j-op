@@ -114,15 +114,15 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  
 	 */	
+	private Node renderer(WebAppContext Context,int inx) {
+		int num = inx;
+		while (num>0) {
+			num--;
+		}
+		return null;
+	}
 	protected Node renderAsNode(WebAppContext Context) {
 		this.clone = this.domEl.clone();
-		// ### Rendering all child in recursive mode
-		Iterator<PageBlock> cl = this.child.iterator();
-		while ( cl.hasNext() ) {
-			PageBlock c = cl.next();
-			Element e = this.clone.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
-			e.replaceWith(c.renderAsNode(Context));
-		}
 		// check render attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
@@ -133,6 +133,13 @@ public class PageBlock implements RefreshableBlock {
 				default:
 					break;
 			}
+		}
+		// ### Rendering all child in recursive mode
+		Iterator<PageBlock> cl = this.child.iterator();
+		while ( cl.hasNext() ) {
+			PageBlock c = cl.next();
+			Element e = this.clone.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
+			e.replaceWith(c.renderAsNode(Context));
 		}
 		// ### Fire every own bean and insert into html
 		Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
