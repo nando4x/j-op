@@ -116,10 +116,57 @@ public class PageBlock implements RefreshableBlock {
 	 */	
 	private Node renderer(WebAppContext Context,int inx) {
 		int num = inx;
+		Element temp = this.clone.clone();
+		temp.html("");
 		while (num>0) {
+			Element item = this.clone.clone();
+			// ### Rendering all child in recursive mode
+			Iterator<PageBlock> cl = this.child.iterator();
+			while ( cl.hasNext() ) {
+				PageBlock c = cl.next();
+				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
+				e.replaceWith(c.renderAsNode(Context));
+			}
+			// ### Fire every own bean and insert into html
+			Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
+			while (beans.hasNext()) {
+				Entry<String,PageExpression> e = beans.next();
+				PageExpression b = e.getValue();
+				String v = (String)b.execute(Context);
+				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
+				while (elem.hasNext()) {
+					TextNode txt = new TextNode(v,"");
+					elem.next().replaceWith(txt);
+				}
+			}
+			// ### Compute all html attributes
+			Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
+			while (attrs.hasNext()) {
+				Entry<String,AttributeExpr> en = attrs.next();
+				AttributeExpr b = en.getValue();
+				Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+				String a = e.attr(b.name);
+				e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+				e.removeAttr(tmp_attr_id);
+			}
+			// ### Compute forms 
+			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
+			while ( f.hasNext() ) {
+				Entry<String,PageWriteExpression> b = f.next();
+				String v = (String)b.getValue().execute(Context);
+				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
+				String a = e.attr("value");
+				e.attr("value",a.replace("java"+b.getValue().getCode(), v));
+				// add page id to name attribute
+				e.attr("name","["+this.pageId+"]."+e.attr("name"));
+			}
+			
+			// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
+			this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
+			temp.append(item.html());
 			num--;
 		}
-		return null;
+		return temp;
 	}
 	protected Node renderAsNode(WebAppContext Context) {
 		this.clone = this.domEl.clone();
