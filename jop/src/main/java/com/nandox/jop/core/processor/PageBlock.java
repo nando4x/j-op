@@ -161,8 +161,8 @@ public class PageBlock implements RefreshableBlock {
 				e.attr("name","["+this.pageId+"]."+e.attr("name"));
 			}
 			
-			// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
-			this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
+			// add page id into jop_id with index
+			this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(inx>1?"+"+(inx-num):""));
 			temp.append(item.html());
 			num--;
 		}
@@ -181,6 +181,7 @@ public class PageBlock implements RefreshableBlock {
 					break;
 			}
 		}
+		/*
 		// ### Rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
 		while ( cl.hasNext() ) {
@@ -222,7 +223,7 @@ public class PageBlock implements RefreshableBlock {
 			e.attr("name","["+this.pageId+"]."+e.attr("name"));
 		}
 		
-		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
+		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id*/
 		this.cleanDomFromAttribute(this.clone);
 		this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
 		return this.clone;
