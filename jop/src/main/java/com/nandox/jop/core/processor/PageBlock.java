@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
@@ -437,5 +438,22 @@ public class PageBlock implements RefreshableBlock {
 		for ( int ix=0; ix<attrs.length; ix++ )
 			elem.removeAttr(attrs[ix]);
 
+	} 
+	private class AttributeComparator implements Comparator<Attribute> {
+		/**
+		 * 
+		 */
+		public AttributeComparator() {
+			// TODO Auto-generated constructor stub
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
+		public int compare(Attribute a2, Attribute a1) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		
 	}
 }

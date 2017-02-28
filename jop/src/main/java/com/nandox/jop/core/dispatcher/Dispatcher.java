@@ -49,6 +49,9 @@ public class Dispatcher {
 		
 		// init environment
 		this.initEnv(config.getServletContext(), null);
+		
+		test.testbean t = new test.testbean();
+		t.getMessage();
 	}
 	/**
 	 * Init used by filter

@@ -9,6 +9,7 @@ public class testbean {
    public void setMessage(String message){
       this.message  = message;
       message = "x";
+      
    }
 	
    public String getMessage(){
@@ -27,4 +28,5 @@ public class testbean {
 	   String r[] = { "a", "b" };
 	   return r;
    }
+   
 }
