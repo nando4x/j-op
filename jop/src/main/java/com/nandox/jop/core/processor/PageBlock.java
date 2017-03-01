@@ -7,11 +7,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import javax.swing.text.html.HTML.Tag;
+
 import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanMonitoring;
@@ -52,7 +56,7 @@ public class PageBlock implements RefreshableBlock {
 	private static final String form_selector = "[value^=java{]";
 	private int auto_id_index;
 	private boolean toBeRefresh;
-	protected Element clone;
+	//private Element clone;
 	
 	private Map<String,PageExpression> exprs;
 	private Map<String,PageExpression> beans;
@@ -116,12 +120,11 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  
 	 */	
-	private Node renderer(WebAppContext Context,int inx) {
+	private Node renderer(WebAppContext Context, Element clone, int inx) {
 		int num = inx;
-		Element temp = this.clone.clone();
-		temp.html("");
+		Element temp = new Element(org.jsoup.parser.Tag.valueOf("div"),"");
 		while (num>0) {
-			Element item = this.clone.clone();
+			Element item = clone.clone();
 			// ### Rendering all child in recursive mode
 			Iterator<PageBlock> cl = this.child.iterator();
 			while ( cl.hasNext() ) {
@@ -164,25 +167,26 @@ public class PageBlock implements RefreshableBlock {
 			}
 			
 			// add page id into jop_id with index
-			this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(inx>1?"+"+(inx-num):""));
-			temp.append(item.html());
+			item.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(inx>1?"+"+(inx-num):""));
+			temp.append(item.outerHtml());
 			num--;
 		}
-		return temp;
+		return Jsoup.parse(temp.html());
 	}
 	protected Node renderAsNode(WebAppContext Context) {
-		this.clone = this.domEl.clone();
+		Element clone = this.domEl.clone();
 		// check render attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
-			switch (ja.preRender(Context,this.clone)) {
+			switch (ja.preRender(Context,clone)) {
 				case NOTRENDER:
 					return new TextNode("","");
 				default:
 					break;
 			}
 		}
+		this.renderer(Context,clone,1);
 		/*
 		// ### Rendering all child in recursive mode
 		Iterator<PageBlock> cl = this.child.iterator();
@@ -226,9 +230,9 @@ public class PageBlock implements RefreshableBlock {
 		}
 		
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id*/
-		this.cleanDomFromAttribute(this.clone);
-		this.clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
-		return this.clone;
+		this.cleanDomFromAttribute(clone);
+		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
+		return clone;
 	}
 	/**
 	 * Perform action submit
@@ -456,7 +460,7 @@ public class PageBlock implements RefreshableBlock {
 				if ( jop_attrs[ix].equalsIgnoreCase(a2.getKey()))
 					i2 = ix;
 			}
-			return i1>i2?1:(i1==i2?0:-1);
+			return i1>i2?-1:(i1==i2?0:1);
 		}
 
 		

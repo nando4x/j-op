@@ -2,7 +2,11 @@ package com.nandox.jop.core.processor.attribute;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.libraries.utils.Reflection;
@@ -102,17 +106,32 @@ public interface JopAttribute {
 			if ( attrs == null ) {
 				try {
 					Iterator<Class<?>> l = Reflection.getClassesForPackage(JopAttribute.class.getPackage(), JopAttribute.class,true).iterator();
-					attrs = new HashMap<String,Class<JopAttribute>>();
+					Map<String,Class<JopAttribute>> map = new HashMap<String,Class<JopAttribute>>();
 					while (l.hasNext()) {
 						@SuppressWarnings("unchecked")
 						Class<JopAttribute> c = (Class<JopAttribute>)l.next();
 						if ( c.isAnnotationPresent(JopCoreAttribute.class) && AbstractJopAttribute.class.isAssignableFrom(c) ) {
 							try {
-								attrs.put("jop_"+c.getAnnotation(JopCoreAttribute.class).name(), c);
+								map.put("jop_"+c.getAnnotation(JopCoreAttribute.class).name(), c);
 							} catch(Exception e) {
 								// TODO: manage error on create service manager
 							}
 						}
+					}
+					// Sort on priority
+					ArrayList<Entry<String,Class<JopAttribute>>> lst = new ArrayList<Entry<String,Class<JopAttribute>>>(map.entrySet());
+					Collections.sort(lst, new Comparator<Entry<String,Class<JopAttribute>>>() {
+						public int compare(Entry<String,Class<JopAttribute>> e1, Entry<String,Class<JopAttribute>> e2) {
+							int i1 = e1.getValue().getAnnotation(JopCoreAttribute.class).priority();
+							int i2 = e2.getValue().getAnnotation(JopCoreAttribute.class).priority();
+							return (i1>i2?1:(i1==i2)?0:-1);
+						}
+					});
+					attrs = new HashMap<String,Class<JopAttribute>>();
+					Iterator<Entry<String,Class<JopAttribute>>> i = lst.iterator();
+					while(i.hasNext()) {
+						Entry<String,Class<JopAttribute>> e = i.next();
+						attrs.put(e.getKey(), e.getValue());
 					}
 				} catch (Exception e) {
 					// TODO: manage error on scan package  
