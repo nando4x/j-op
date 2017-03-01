@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -354,7 +355,9 @@ public class PageBlock implements RefreshableBlock {
 	@SuppressWarnings("rawtypes")
 	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon) throws DomException {
 		// scan all element's attributes excluding value and jop_id
-		Iterator<Attribute> attrs = el.attributes().iterator();
+		List<Attribute> lst = new ArrayList<Attribute>(el.attributes().asList());
+		Collections.sort(lst,new AttributeComparator());
+		Iterator<Attribute> attrs = lst.iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
 			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
@@ -439,19 +442,21 @@ public class PageBlock implements RefreshableBlock {
 			elem.removeAttr(attrs[ix]);
 
 	} 
-	private class AttributeComparator implements Comparator<Attribute> {
-		/**
-		 * 
-		 */
-		public AttributeComparator() {
-			// TODO Auto-generated constructor stub
-		}
+	static private class AttributeComparator implements Comparator<Attribute> {
+		static private final String[] jop_attrs = JopAttribute.Factory.getNameList();
 		/* (non-Javadoc)
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
-		public int compare(Attribute a2, Attribute a1) {
+		public int compare(Attribute a1, Attribute a2) {
 			// TODO Auto-generated method stub
-			return 0;
+			int i1 = -1000, i2 = -1000;
+			for (int ix=0; ix<jop_attrs.length; ix++) {
+				if ( jop_attrs[ix].equalsIgnoreCase(a1.getKey()))
+					i1 = ix;
+				if ( jop_attrs[ix].equalsIgnoreCase(a2.getKey()))
+					i2 = ix;
+			}
+			return i1>i2?1:(i1==i2?0:-1);
 		}
 
 		

@@ -24,4 +24,5 @@ import java.lang.annotation.Target;
 @Target(value={TYPE})
 public @interface JopCoreAttribute {
 	public String name();
+	int priority() default 0;
 }
