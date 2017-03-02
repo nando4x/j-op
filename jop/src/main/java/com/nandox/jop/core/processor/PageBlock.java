@@ -120,7 +120,7 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  
 	 */	
-	private Node renderer(WebAppContext Context, Element clone, int inx) {
+	private void renderer(WebAppContext Context, Element clone, int inx) {
 		int num = inx;
 		Element temp = new Element(org.jsoup.parser.Tag.valueOf("div"),"");
 		while (num>0) {
@@ -171,7 +171,6 @@ public class PageBlock implements RefreshableBlock {
 			temp.append(item.outerHtml());
 			num--;
 		}
-		return Jsoup.parse(temp.html());
 	}
 	protected Node renderAsNode(WebAppContext Context) {
 		Element clone = this.domEl.clone();
