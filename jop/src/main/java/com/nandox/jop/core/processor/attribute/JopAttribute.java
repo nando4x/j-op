@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.libraries.utils.Reflection;
 
 
@@ -77,11 +78,11 @@ public interface JopAttribute {
 		 * @revisor   Fernando Costantino
 		 * @exception 
 		 */
-		public static JopAttribute create(WebAppContext Context ,String Name, String Value) {
+		public static JopAttribute create(WebAppContext Context ,PageBlock Block, String Name, String Value) {
 			init();
 			Class<?> c = attrs.get(Name);
 			try {
-				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,String.class,String.class).newInstance(Context,Name,Value);
+				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,String.class,String.class).newInstance(Context,Block,Name,Value);
 			} catch (Exception e) {
 				// TODO: manage instantiate error
 				return null;

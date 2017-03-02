@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import com.nandox.jop.core.processor.PageExpression;
 import com.nandox.jop.core.processor.AbstractPageExpression;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.PageBlock;
 
 /**
  * Jop Attribute abstract implementation 
@@ -26,6 +27,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	/**
 	 * Constructor
 	 * @param	  Context	Application context
+	 * @param	  Block		Page block
 	 * @param	  Name		Attribute name
 	 * @param	  Value		Attribute value or expression
 	 * @date      30 set 2016 - 30 set 2016
@@ -33,7 +35,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public AbstractJopAttribute(WebAppContext Context ,String Name, String Value) {
+	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, String Name, String Value) {
 		this.name = Name;
 		this.value = Value;
 		this.computeExpression(Context, Value);

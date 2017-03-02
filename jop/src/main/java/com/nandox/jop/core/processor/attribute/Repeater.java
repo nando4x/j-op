@@ -3,12 +3,12 @@ package com.nandox.jop.core.processor.attribute;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.processor.BooleanPageExpression;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.SimplePageExpression;
 
 /**
- * Attribute jop_rendered implementation.<br>
- * CHeck the expression and if false non render block  
+ * Attribute jop_repeater implementation.<br>
+ * Execute the expression and if false non render block  
  * 
  * @project   Jop (Java One Page)
  * 
@@ -20,8 +20,8 @@ import com.nandox.jop.core.processor.PageBlock;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="rendered")
-public class Rendered extends AbstractJopAttribute<BooleanPageExpression> implements JopAttribute {
+@JopCoreAttribute(name="repeater", priority=100)
+public class Repeater extends AbstractJopAttribute<SimplePageExpression> implements JopAttribute {
 
 	/**
 	 * @param Context
@@ -29,8 +29,11 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> implem
 	 * @param Name
 	 * @param Value
 	 */
-	public Rendered(WebAppContext Context, PageBlock Block, String Name, String Value) {
+	public Repeater(WebAppContext Context, PageBlock Block, String Name, String Value) {
 		super(Context, Block, Name, Value);
+		Class<?> cl = this.getExpression().execute(Context).getClass();
+		String vname = Block.getAttributeDefinition("jop_var");
+		Block.addVariable(vname,cl);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)

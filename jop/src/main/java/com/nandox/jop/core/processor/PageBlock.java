@@ -65,6 +65,7 @@ public class PageBlock implements RefreshableBlock {
 	private class AttributeExpr {
 		String name;
 		PageExpression expr;
+		boolean isOwn;
 	}
 	
 	private Map<String,AttributeExpr> html_attrs;
@@ -120,118 +121,8 @@ public class PageBlock implements RefreshableBlock {
 	 * @exception
 	 * @return	  
 	 */	
-	private void renderer(WebAppContext Context, Element clone, int inx) {
-		int num = inx;
-		Element temp = new Element(org.jsoup.parser.Tag.valueOf("div"),"");
-		while (num>0) {
-			Element item = clone.clone();
-			// ### Rendering all child in recursive mode
-			Iterator<PageBlock> cl = this.child.iterator();
-			while ( cl.hasNext() ) {
-				PageBlock c = cl.next();
-				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
-				e.replaceWith(c.renderAsNode(Context));
-			}
-			// ### Fire every own bean and insert into html
-			Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
-			while (beans.hasNext()) {
-				Entry<String,PageExpression> e = beans.next();
-				PageExpression b = e.getValue();
-				String v = (String)b.execute(Context);
-				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
-				while (elem.hasNext()) {
-					TextNode txt = new TextNode(v,"");
-					elem.next().replaceWith(txt);
-				}
-			}
-			// ### Compute all html attributes
-			Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
-			while (attrs.hasNext()) {
-				Entry<String,AttributeExpr> en = attrs.next();
-				AttributeExpr b = en.getValue();
-				Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
-				String a = e.attr(b.name);
-				e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
-				e.removeAttr(tmp_attr_id);
-			}
-			// ### Compute forms 
-			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
-			while ( f.hasNext() ) {
-				Entry<String,PageWriteExpression> b = f.next();
-				String v = (String)b.getValue().execute(Context);
-				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
-				String a = e.attr("value");
-				e.attr("value",a.replace("java"+b.getValue().getCode(), v));
-				// add page id to name attribute
-				e.attr("name","["+this.pageId+"]."+e.attr("name"));
-			}
-			
-			// add page id into jop_id with index
-			item.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(inx>1?"+"+(inx-num):""));
-			temp.append(item.outerHtml());
-			num--;
-		}
-	}
 	protected Node renderAsNode(WebAppContext Context) {
-		Element clone = this.domEl.clone();
-		// check render attribute
-		Iterator<JopAttribute> attr = this.attrs.iterator();
-		while (attr.hasNext()) {
-			JopAttribute ja = attr.next();
-			switch (ja.preRender(Context,clone)) {
-				case NOTRENDER:
-					return new TextNode("","");
-				default:
-					break;
-			}
-		}
-		this.renderer(Context,clone,1);
-		/*
-		// ### Rendering all child in recursive mode
-		Iterator<PageBlock> cl = this.child.iterator();
-		while ( cl.hasNext() ) {
-			PageBlock c = cl.next();
-			Element e = this.clone.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
-			e.replaceWith(c.renderAsNode(Context));
-		}
-		// ### Fire every own bean and insert into html
-		Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
-		while (beans.hasNext()) {
-			Entry<String,PageExpression> e = beans.next();
-			PageExpression b = e.getValue();
-			String v = (String)b.execute(Context);
-			Iterator<Element> elem = this.clone.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
-			while (elem.hasNext()) {
-				TextNode txt = new TextNode(v,"");
-				elem.next().replaceWith(txt);
-			}
-		}
-		// ### Compute all html attributes
-		Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
-		while (attrs.hasNext()) {
-			Entry<String,AttributeExpr> en = attrs.next();
-			AttributeExpr b = en.getValue();
-			Element e = this.clone.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
-			String a = e.attr(b.name);
-			e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
-			e.removeAttr(tmp_attr_id);
-		}
-		// ### Compute forms 
-		Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
-		while ( f.hasNext() ) {
-			Entry<String,PageWriteExpression> b = f.next();
-			String v = (String)b.getValue().execute(Context);
-			Element e = this.clone.getElementsByAttributeValue("name", b.getKey()).first();
-			String a = e.attr("value");
-			e.attr("value",a.replace("java"+b.getValue().getCode(), v));
-			// add page id to name attribute
-			e.attr("name","["+this.pageId+"]."+e.attr("name"));
-		}
-		
-		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id*/
-		this.cleanDomFromAttribute(clone);
-		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id);
-		return clone;
+		return this.renderAsNode(Context,0);
 	}
 	/**
 	 * Perform action submit
@@ -279,6 +170,98 @@ public class PageBlock implements RefreshableBlock {
 	public boolean getToBeRefresh() {
 		return this.toBeRefresh;
 	}
+	// Real final render call 
+	//
+	//
+	private void renderer(WebAppContext Context, Element clone, int repeat, int index) {
+		int num = repeat;
+		Element temp = clone.clone();
+		clone.empty();
+		while (num>0) {
+			Element item = temp.clone();
+			// ### Rendering all child in recursive mode
+			Iterator<PageBlock> cl = this.child.iterator();
+			while ( cl.hasNext() ) {
+				PageBlock c = cl.next();
+				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
+				e.replaceWith(c.renderAsNode(Context,num));
+			}
+			// ### Fire every own bean and insert into html
+			Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
+			while (beans.hasNext()) {
+				Entry<String,PageExpression> e = beans.next();
+				PageExpression b = e.getValue();
+				String v = (String)b.execute(Context);
+				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
+				while (elem.hasNext()) {
+					TextNode txt = new TextNode(v,"");
+					elem.next().replaceWith(txt);
+				}
+			}
+			// ### Compute all html attributes of child
+			Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
+			while (attrs.hasNext()) {
+				Entry<String,AttributeExpr> en = attrs.next();
+				AttributeExpr b = en.getValue();
+				if ( !b.isOwn ) {
+					Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+					String a = e.attr(b.name);
+					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+					e.removeAttr(tmp_attr_id);
+				}
+			}
+			// ### Compute forms 
+			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
+			while ( f.hasNext() ) {
+				Entry<String,PageWriteExpression> b = f.next();
+				String v = (String)b.getValue().execute(Context);
+				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
+				String a = e.attr("value");
+				e.attr("value",a.replace("java"+b.getValue().getCode(), v));
+				// add page id to name attribute
+				e.attr("name","["+this.pageId+"]."+e.attr("name"));
+			}
+			
+			clone.append(item.html());
+			num--;
+		}
+		// ### Compute all own html attributes
+		Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
+		while (attrs.hasNext()) {
+			Entry<String,AttributeExpr> en = attrs.next();
+			AttributeExpr b = en.getValue();
+			if ( b.isOwn ) {
+				String a = clone.attr(b.name);
+				clone.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+				clone.removeAttr(tmp_attr_id);
+			}
+		}
+		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id*/
+		this.cleanDomFromAttribute(clone);
+		// add page id into jop_id with index
+		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
+	}
+	// Real render as node 
+	//
+	//
+	private Node renderAsNode(WebAppContext Context, int index) {
+		Element clone = this.domEl.clone();
+		int num = 1;
+		// check render attribute
+		Iterator<JopAttribute> attr = this.attrs.iterator();
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			switch (ja.preRender(Context,clone)) {
+				case NOTRENDER:
+					return new TextNode("","");
+				default:
+					break;
+			}
+		}
+		// real render
+		this.renderer(Context,clone,num,index);
+		return clone;
+	}
 	// Parsing Dom Element to search and build beans and attributes
 	//
 	//
@@ -306,12 +289,12 @@ public class PageBlock implements RefreshableBlock {
 					el.attr("id",exp.getId());
 				} else {
 					// Get and process attributes of children block
-					this.parseAttributes(Context, el,mon);
+					this.parseAttributes(Context, el,mon,false);
 				}
 			}
 		}
 		// Get and process attributes of this block
-		this.parseAttributes(Context, this.domEl,mon);
+		this.parseAttributes(Context, this.domEl,mon,true);
 		
 		// Get and process value attribute of form tags (es. input)
 		Elements grp = this.domEl.select(form_selector);
@@ -356,7 +339,7 @@ public class PageBlock implements RefreshableBlock {
 	//
 	//
 	@SuppressWarnings("rawtypes")
-	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon) throws DomException {
+	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon, boolean isOwn) throws DomException {
 		// scan all element's attributes excluding value and jop_id
 		List<Attribute> lst = new ArrayList<Attribute>(el.attributes().asList());
 		Collections.sort(lst,new AttributeComparator());
@@ -369,7 +352,7 @@ public class PageBlock implements RefreshableBlock {
 				if ( bid != null ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						// block jop attribute
-						JopAttribute ja = JopAttribute.Factory.create(context,attr.getKey(),bid);
+						JopAttribute ja = JopAttribute.Factory.create(context,this,attr.getKey(),bid);
 						this.attrs.add(ja);
 						mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
 					} else {
@@ -387,6 +370,7 @@ public class PageBlock implements RefreshableBlock {
 						AttributeExpr ae = new AttributeExpr();
 						ae.expr = exp;
 						ae.name = attr.getKey();
+						ae.isOwn = isOwn;
 						String id = ""+this.auto_id_index++;
 						this.html_attrs.put(id, ae);
 						el.attr(tmp_attr_id,id);
