@@ -31,9 +31,7 @@ public class Repeater extends AbstractJopAttribute<SimplePageExpression> impleme
 	 */
 	public Repeater(WebAppContext Context, PageBlock Block, String Name, String Value) {
 		super(Context, Block, Name, Value);
-		Class<?> cl = this.getExpression().execute(Context).getClass();
-		String vname = Block.getAttributeDefinition("jop_var");
-		Block.addVariable(vname,cl);
+		this.registerVariable(Context, Block);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
@@ -49,5 +47,13 @@ public class Repeater extends AbstractJopAttribute<SimplePageExpression> impleme
 	public RETURN_ACTION postRender(WebAppContext Context, Element Dom) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	// Add variable to block context
+	//
+	//
+	private void registerVariable(WebAppContext Context, PageBlock Block) {
+		Class<?> cl = this.getExpression().execute(Context).getClass();
+		String vname = Block.getAttributeDefinition("jop_var");
+		Block.registerVariable(vname,cl);
 	}
 }

@@ -51,7 +51,15 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	public PageExpression getExpression() {
 		return expression;
 	}
-
+	/**
+	 * Create attribute expression 
+	 * @param	  Context	Application context
+	 * @param	  Code		Attribute expression source code
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
 	protected void computeExpression(WebAppContext Context, String Code) {
 		try {
 			@SuppressWarnings("unchecked")

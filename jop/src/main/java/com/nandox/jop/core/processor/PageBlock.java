@@ -170,6 +170,31 @@ public class PageBlock implements RefreshableBlock {
 	public boolean getToBeRefresh() {
 		return this.toBeRefresh;
 	}
+	/**
+	 * Return the attribute definition: the value specified in page source code  
+	 * @param	  Name	Attribute name
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  attribute definition
+	 */
+	public String getAttributeDefinition(String Name) {
+		return "";
+	}
+	/**
+	 * Register variable with name and type class on this block  
+	 * @param	  Name	Variable name
+	 * @param	  Type	Variable name
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  
+	 */
+	public void registerVariable(String Name, Class<?> Type) {
+		
+	}
 	// Real final render call 
 	//
 	//
