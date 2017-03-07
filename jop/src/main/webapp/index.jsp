@@ -29,9 +29,9 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<!-- <tr rjop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
-					<td><jbean>{return var;}</jbean></td>
-				</tr> -->
+				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
+					<td><xxjbean>{return var;}</xxjbean></td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

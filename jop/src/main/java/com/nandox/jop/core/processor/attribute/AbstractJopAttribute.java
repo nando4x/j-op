@@ -1,7 +1,12 @@
 package com.nandox.jop.core.processor.attribute;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Map;
+
+import org.jsoup.nodes.Element;
+
 import com.nandox.jop.core.processor.PageExpression;
+import com.nandox.jop.core.processor.attribute.JopAttribute.RETURN_ACTION;
 import com.nandox.jop.core.processor.AbstractPageExpression;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
@@ -19,7 +24,7 @@ import com.nandox.jop.core.processor.PageBlock;
  * 
  * @revisor   Fernando Costantino
  */
-public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> {
+public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> implements JopAttribute {
 	
 	private E expression;
 	protected String name;
@@ -50,6 +55,22 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 */
 	public PageExpression getExpression() {
 		return expression;
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 */
+	@Override
+	abstract public RETURN_ACTION preRender(WebAppContext Context, Element Dom);
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 */
+	@Override
+	abstract public RETURN_ACTION postRender(WebAppContext Context, Element Dom);
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#setVariables(com.nandox.jop.core.context.WebAppContext, java.util.Map, int)
+	 */
+	@Override
+	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
 	}
 	/**
 	 * Create attribute expression 

@@ -53,7 +53,18 @@ public interface JopAttribute {
 	public RETURN_ACTION preRender(WebAppContext Context, Element Dom);
 	/**
 	 * Post rendering action
-		 * @param	  Context	Application context
+	 * @param	  Context	Application context
+	 * @param	  Vars		variables map
+	 * @param	  Index		iterator index
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
+	public void setVariables(WebAppContext Context, Map<String,Object> Vars, int Index);
+	/**
+	 * Post rendering action
+	 * @param	  Context	Application context
 	 * @param	  Dom element dom of the block
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino

@@ -21,7 +21,7 @@ import com.nandox.jop.core.processor.PageBlock;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="rendered")
-public class Rendered extends AbstractJopAttribute<BooleanPageExpression> implements JopAttribute {
+public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 
 	/**
 	 * @param Context

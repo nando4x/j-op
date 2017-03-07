@@ -1,10 +1,11 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.util.Collection;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.SimplePageExpression;
+import com.nandox.jop.core.processor.CollectionPageExpression;
 
 /**
  * Attribute jop_repeater implementation.<br>
@@ -21,7 +22,7 @@ import com.nandox.jop.core.processor.SimplePageExpression;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="repeater", priority=100)
-public class Repeater extends AbstractJopAttribute<SimplePageExpression> implements JopAttribute {
+public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttribute {
 
 	/**
 	 * @param Context
@@ -52,8 +53,13 @@ public class Repeater extends AbstractJopAttribute<SimplePageExpression> impleme
 	//
 	//
 	private void registerVariable(WebAppContext Context, PageBlock Block) {
-		Class<?> cl = this.getExpression().execute(Context).getClass();
+		Object o = this.getExpression().execute(Context);
+		Class<?> cl = o.getClass();
 		String vname = Block.getAttributeDefinition("jop_var");
+		if ( cl.isArray() )
+			cl = cl.getComponentType();
+		else if ( Collection.class.isAssignableFrom(cl) )
+			cl = ((Collection<?>)o).iterator().next().getClass();
 		Block.registerVariable(vname,cl);
 	}
 }

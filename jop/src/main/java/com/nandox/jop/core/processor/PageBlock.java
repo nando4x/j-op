@@ -122,7 +122,6 @@ public class PageBlock implements RefreshableBlock {
 	 * @return	  
 	 */	
 	protected Node renderAsNode(WebAppContext Context) {
-		this.instanceVariables();
 		return this.renderAsNode(Context,0);
 	}
 	/**
@@ -233,10 +232,11 @@ public class PageBlock implements RefreshableBlock {
 	//
 	//
 	private void renderer(WebAppContext Context, Element clone, int repeat, int index) {
-		int num = repeat;
+		int num = 0;
+		Map<String,Object> vars = this.instanceVariables();
 		Element temp = clone.clone();
 		clone.empty();
-		while (num>0) {
+		while (num<repeat) {
 			Element item = temp.clone();
 			// ### Rendering all child in recursive mode
 			Iterator<PageBlock> cl = this.child.iterator();
@@ -244,6 +244,11 @@ public class PageBlock implements RefreshableBlock {
 				PageBlock c = cl.next();
 				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
 				e.replaceWith(c.renderAsNode(Context,num));
+			}
+			Iterator<JopAttribute> attr = this.attrs.iterator();
+			while (attr.hasNext()) {
+				JopAttribute ja = attr.next();
+				ja.setVariables(Context,vars,num);
 			}
 			// ### Fire every own bean and insert into html
 			Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
@@ -282,7 +287,7 @@ public class PageBlock implements RefreshableBlock {
 			}
 			
 			clone.append(item.html());
-			num--;
+			num++;
 		}
 		// ### Compute all own html attributes
 		Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
