@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import javax.swing.text.html.HTML.Tag;
-
 import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -70,6 +68,7 @@ public class PageBlock implements RefreshableBlock {
 	
 	private Map<String,AttributeExpr> html_attrs;
 	private List<JopAttribute> attrs;
+	private Map<String,Class<?>> vars_definition;
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -90,6 +89,7 @@ public class PageBlock implements RefreshableBlock {
 		this.forms = new HashMap<String,PageWriteExpression>();
 		this.html_attrs = new HashMap<String,AttributeExpr>();
 		this.attrs = new ArrayList<JopAttribute>();
+		this.vars_definition = new HashMap<String,Class<?>>();
 		
 		this.parse(Context);
 	}
@@ -113,7 +113,7 @@ public class PageBlock implements RefreshableBlock {
 	}
 	/**
 	 * Rendering block.<br>
-	 * First rendering child in depth and when child is finish or not present for self invoke the  
+	 * First rendering child in depth and when child is finish or not present for self invoke the ???  
 	 * @param	  Context	Application context
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
@@ -122,6 +122,7 @@ public class PageBlock implements RefreshableBlock {
 	 * @return	  
 	 */	
 	protected Node renderAsNode(WebAppContext Context) {
+		this.instanceVariables();
 		return this.renderAsNode(Context,0);
 	}
 	/**
@@ -193,7 +194,40 @@ public class PageBlock implements RefreshableBlock {
 	 * @return	  
 	 */
 	public void registerVariable(String Name, Class<?> Type) {
-		
+		this.vars_definition.put(Name, Type);
+		// TODO: manage duplicate 
+	}
+	//
+	//
+	//
+	private Map<String,Object> instanceVariables() {
+		Map<String,Object> vars = new HashMap<String,Object>();
+		Iterator<String> v = this.vars_definition.keySet().iterator();
+		while (v.hasNext()) {
+			vars.put(v.next(), null);
+		}
+		return vars;
+	}
+	// Real render as node 
+	//
+	//
+	private Node renderAsNode(WebAppContext Context, int index) {
+		Element clone = this.domEl.clone();
+		int num = 1;
+		// check render attribute
+		Iterator<JopAttribute> attr = this.attrs.iterator();
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			switch (ja.preRender(Context,clone)) {
+				case NOTRENDER:
+					return new TextNode("","");
+				default:
+					break;
+			}
+		}
+		// real render
+		this.renderer(Context,clone,num,index);
+		return clone;
 	}
 	// Real final render call 
 	//
@@ -265,27 +299,6 @@ public class PageBlock implements RefreshableBlock {
 		this.cleanDomFromAttribute(clone);
 		// add page id into jop_id with index
 		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
-	}
-	// Real render as node 
-	//
-	//
-	private Node renderAsNode(WebAppContext Context, int index) {
-		Element clone = this.domEl.clone();
-		int num = 1;
-		// check render attribute
-		Iterator<JopAttribute> attr = this.attrs.iterator();
-		while (attr.hasNext()) {
-			JopAttribute ja = attr.next();
-			switch (ja.preRender(Context,clone)) {
-				case NOTRENDER:
-					return new TextNode("","");
-				default:
-					break;
-			}
-		}
-		// real render
-		this.renderer(Context,clone,num,index);
-		return clone;
 	}
 	// Parsing Dom Element to search and build beans and attributes
 	//

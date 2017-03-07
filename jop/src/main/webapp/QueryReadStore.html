@@ -11,7 +11,7 @@
 	<title>Query read store</title>
 
 	<script type="text/javascript" src="dojoroot/dojo/dojo.js" djConfig="isDebug: true, parseOnLoad: true"></script>
-	<script type="text/javascript" src="query.js"></script>
+	<script type="text/javascript" src="query.js?gg"></script>
 
 	<script type="text/javascript">
 		dojo.require("dijit.form.ComboBox");
@@ -271,7 +271,8 @@ dojo.declare("GridReadStore", test.query, {
 </script>
 <div dojoType="GridReadStore"
 		jsId="store2"
-		url="stores/QueryReadStore.php"
+		url="stores/QueryReadStore.php",
+		rowNum = "200",
 		requestMethod="get"></div>
 	<div dojoType="dojox.grid.EnhancedGrid" id="grid2"
 		data-dojo-props="store:store2, structure:'layout',

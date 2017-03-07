@@ -56,6 +56,7 @@ define("test.query", ["dojo", "dojox", "dojo/data/util/sorter", "dojo/string"], 
 		
 		url:"",
 		requestMethod:"get",
+		rowNum: -1,
 		//useCache:false,
 		
 		// We use the name in the errors, once the name is fixed hardcode it, may be.
@@ -290,6 +291,50 @@ define("test.query", ["dojo", "dojox", "dojo/data/util/sorter", "dojo/string"], 
 			return null; //null
 		},
 		
+		_dwrFetchHandler: function(data, request, fetchHandler, errorHandler){
+			data = this._filterResponse(data);
+			if(data.label){
+				this._labelAttr = data.label;
+			}
+			var numRows = data.numRows || -1;
+
+			this._items = [];
+			// Store a ref to "this" in each item, so we can simply check if an item
+			// really origins form here (idea is from ItemFileReadStore, I just don't know
+			// how efficient the real storage use, garbage collection effort, etc. is).
+			dojo.forEach(data.items,function(e){
+				this._items.push({i:e, r:this});
+			},this);
+			
+			var identifier = data.identifier;
+			this._itemsByIdentity = {};
+			if(identifier){
+				this._identifier = identifier;
+				var i;
+				for(i = 0; i < this._items.length; ++i){
+					var item = this._items[i].i;
+					var identity = item[identifier];
+					if(!this._itemsByIdentity[identity]){
+						this._itemsByIdentity[identity] = item;
+					}else{
+						throw new Error(this._className+":  The json data as specified by: [" + this.url + "] is malformed.  Items within the list have identifier: [" + identifier + "].  Value collided: [" + identity + "]");
+					}
+				}
+			}else{
+				this._identifier = Number;
+				for(i = 0; i < this._items.length; ++i){
+					this._items[i].n = i;
+				}
+			}
+			
+			// TODO actually we should do the same as dojo.data.ItemFileReadStore._getItemsFromLoadedData() to sanitize
+			// (does it really sanititze them) and store the data optimal. should we? for security reasons???
+			numRows = this._numRows = (numRows === -1) ? this._items.length : numRows;
+			if ( this.rowNum > -1 )
+				numRows = this.rowNum;
+			fetchHandler(this._items, request, numRows);
+			this._numRows = numRows;
+		},
 		_xhrFetchHandler: function(data, request, fetchHandler, errorHandler){
 			data = this._filterResponse(data);
 			if(data.label){
@@ -329,11 +374,13 @@ define("test.query", ["dojo", "dojox", "dojo/data/util/sorter", "dojo/string"], 
 			// TODO actually we should do the same as dojo.data.ItemFileReadStore._getItemsFromLoadedData() to sanitize
 			// (does it really sanititze them) and store the data optimal. should we? for security reasons???
 			numRows = this._numRows = (numRows === -1) ? this._items.length : numRows;
+			if ( this.rowNum > -1 )
+				numRows = this.rowNum;
 			fetchHandler(this._items, request, numRows);
 			this._numRows = numRows;
 		},
 		
-		_fetchItems: function(request, fetchHandler, errorHandler){
+		_org_fetchItems: function(request, fetchHandler, errorHandler){
 			// summary:
 			//		The request contains the data as defined in the Read-API.
 			//		Additionally there is following keyword "serverQuery".
@@ -363,6 +410,52 @@ define("test.query", ["dojo", "dojox", "dojo/data/util/sorter", "dojo/string"], 
 			//	|	  // but the query parameter stays untouched, but is not sent to the server!
 			//	|	  // The serverQuery contains more data than the query, so they might differ!
 
+			var serverQuery = request.serverQuery || request.query || {};
+			//Need to add start and count
+			if(!this.doClientPaging){
+				serverQuery.start = request.start || 0;
+				// Count might not be sent if not given.
+				if(request.count){
+					serverQuery.count = request.count;
+				}
+			}
+			if(!this.doClientSorting && request.sort){
+				var sortInfo = [];
+				dojo.forEach(request.sort, function(sort){
+					if(sort && sort.attribute){
+						sortInfo.push((sort.descending ? "-" : "") + sort.attribute);
+					}
+				});
+				serverQuery.sort = sortInfo.join(',');
+			}
+			// Compare the last query and the current query by simply json-encoding them,
+			// so we dont have to do any deep object compare ... is there some dojo.areObjectsEqual()???
+			if(this.doClientPaging && this._lastServerQuery !== null &&
+				dojo.toJson(serverQuery) == dojo.toJson(this._lastServerQuery)
+				){
+				this._numRows = (this._numRows === -1) ? this._items.length : this._numRows;
+				fetchHandler(this._items, request, this._numRows);
+			}else{
+				var xhrFunc = this.requestMethod.toLowerCase() == "post" ? dojo.xhrPost : dojo.xhrGet;
+				var xhrHandler = xhrFunc({url:this.url, handleAs:"json-comment-optional", content:serverQuery, failOk: true});
+				request.abort = function(){
+					xhrHandler.cancel();
+				};
+				xhrHandler.addCallback(dojo.hitch(this, function(data){
+					this._xhrFetchHandler(data, request, fetchHandler, errorHandler);
+				}));
+				xhrHandler.addErrback(function(error){
+					errorHandler(error, request);
+				});
+				// Generate the hash using the time in milliseconds and a randon number.
+				// Since Math.randon() returns something like: 0.23453463, we just remove the "0."
+				// probably just for esthetic reasons :-).
+				this.lastRequestHash = new Date().getTime()+"-"+String(Math.random()).substring(2);
+				this._lastServerQuery = dojo.mixin({}, serverQuery);
+			}
+		},
+
+		_fetchItems: function(request, fetchHandler, errorHandler){
 			var serverQuery = request.serverQuery || request.query || {};
 			//Need to add start and count
 			if(!this.doClientPaging){
