@@ -394,10 +394,12 @@ public class PageBlock implements RefreshableBlock {
 				String bid = this.parseJavaExpression(a); 
 				if ( bid != null ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
-						// block jop attribute
-						JopAttribute ja = JopAttribute.Factory.create(context,this,attr.getKey(),bid);
-						this.attrs.add(ja);
-						mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
+						if ( isOwn ) {
+							// block jop attribute
+							JopAttribute ja = JopAttribute.Factory.create(context,this,attr.getKey(),bid);
+							this.attrs.add(ja);
+							mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
+						}
 					} else {
 						// html attribute: parse expression and verify if exist
 						PageExpression exp;

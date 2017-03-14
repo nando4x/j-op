@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
@@ -120,18 +121,24 @@ public class PageApp {
 	//
 	private void parse() throws ParseException {
 		// Search every jop block into dom and create it
-        Iterator<Element> elems = this.dom.select(DOMPARSER_JOP_SELECTOR).iterator();
+		Elements list = this.dom.select(DOMPARSER_JOP_SELECTOR);
+		// generate auto id if empty
         this.auto_id_index=0;
-    	while ( elems.hasNext() ) {
-    		Element el = elems.next();
+		for ( int ix=0; ix<list.size(); ix++ ) {
+			Element el = list.get(ix);
     		String id = el.attr(JopAttribute.JOP_ATTR_ID);
-    		// generate auto id if empty
     		if ( id.isEmpty() ) {
         		auto_id_index++;
     			id = ""+auto_id_index;
     			el.attr(JopAttribute.JOP_ATTR_ID,id);
     		}
+		}
+		// create blocks
+        Iterator<Element> elems = list.iterator();
+    	while ( elems.hasNext() ) {
+    		Element el = elems.next();
 			// check for double jop id
+    		String id = el.attr(JopAttribute.JOP_ATTR_ID);
     		if ( this.blocks.containsKey(id) ) {
     			throw new ParseException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
