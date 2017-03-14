@@ -180,7 +180,7 @@ public class PageBlock implements RefreshableBlock {
 	 * @return	  attribute definition
 	 */
 	public String getAttributeDefinition(String Name) {
-		return "";
+		return this.domEl.attr(Name);
 	}
 	/**
 	 * Register variable with name and type class on this block  

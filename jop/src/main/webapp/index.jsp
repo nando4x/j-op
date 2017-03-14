@@ -29,7 +29,7 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='var'>
+				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='(String)var'>
 					<td><xxjbean>{return var;}</xxjbean></td>
 				</tr>
 			</tbody>

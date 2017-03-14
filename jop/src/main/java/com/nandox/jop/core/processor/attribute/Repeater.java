@@ -53,13 +53,22 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	//
 	//
 	private void registerVariable(WebAppContext Context, PageBlock Block) {
-		Object o = this.getExpression().execute(Context);
-		Class<?> cl = o.getClass();
+		Class<?> cl = null;
 		String vname = Block.getAttributeDefinition("jop_var");
-		if ( cl.isArray() )
-			cl = cl.getComponentType();
-		else if ( Collection.class.isAssignableFrom(cl) )
-			cl = ((Collection<?>)o).iterator().next().getClass();
+		if ( vname.trim().startsWith("(") && vname.indexOf(")") > 0 ) {
+			try {
+				cl = this.getClass().getClassLoader().loadClass(vname.substring(vname.indexOf("(")+1, vname.indexOf(")")).trim());
+			} catch (Exception e) {
+				// TODO: manage error in class detect
+			}
+		} else {
+			Object o = this.getExpression().execute(Context);
+			cl = o.getClass();
+			if ( cl.isArray() )
+				cl = cl.getComponentType();
+			else if ( Collection.class.isAssignableFrom(cl) )
+				cl = ((Collection<?>)o).iterator().next().getClass();
+		}
 		Block.registerVariable(vname,cl);
 	}
 }
