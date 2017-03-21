@@ -11,7 +11,19 @@
 		a = "ssa";
 	}
 </script>
-	<div jop_id=''>
+		<table jop_id="tab1">
+			<thead>
+				<th>col1</th>
+				<th>col2</th>
+				<th>col3</th>
+			</thead>
+			<tbody>
+				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
+					<td><jbean>{return var;}</jbean></td>
+				</tr>
+			</tbody>
+		</table>
+<!-- 	<div jop_id=''>
 	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
@@ -30,7 +42,7 @@
 			</thead>
 			<tbody>
 				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
-					<td><xxjbean>{return var;}</xxjbean></td>
+					<td><jbean>{return var;}</jbean></td>
 				</tr>
 			</tbody>
 		</table>
@@ -49,9 +61,6 @@
 			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 		</textarea>
 		<select>
-			<!-- <option rjop_repeater='java{return $helloWorld.getArray();}' 
-				rjop_var='var' 
-				value='java{return var;}'>java{return var;}</option> -->
 		</select>
 	<fieldset>
     <legend>Personalia:</legend>
@@ -81,6 +90,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </body>
 </html>

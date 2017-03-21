@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.CollectionPageExpression;
+import com.nandox.jop.core.processor.attribute.JopAttribute.Response;
 
 /**
  * Attribute jop_repeater implementation.<br>
@@ -41,13 +42,18 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
-	public RETURN_ACTION preRender(WebAppContext Context, Element Dom) {
-		return RETURN_ACTION.CONTINUE;
+	public JopAttribute.Response preRender(WebAppContext Context, Element Dom) {
+		int size;
+		if ( this.is_array )
+			size = ((Object[])this.getExpression().execute(Context)).length;
+		else 
+			size = ((Collection<?>)this.getExpression().execute(Context)).size();
+		return new JopAttribute.Response(RETURN_ACTION.CONTINUE,size);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
-	public RETURN_ACTION postRender(WebAppContext Context, Element Dom) {
+	public JopAttribute.Response postRender(WebAppContext Context, Element Dom) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -91,7 +97,7 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 				cl = ((Collection<?>)o).iterator().next().getClass();
 		}
 		Block.registerVariable(vname,cl);
-		this.coll_name = "iterator_"+vname;
+		this.coll_name = "_iterator_"+vname;
 		Block.registerVariable(this.coll_name,null);
 	}
 }

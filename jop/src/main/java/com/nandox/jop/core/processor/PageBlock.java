@@ -222,6 +222,7 @@ public class PageBlock implements RefreshableBlock {
 				case NOTRENDER:
 					return new TextNode("","");
 				default:
+					num = r.getRepater_num();
 					break;
 			}
 		}
@@ -311,6 +312,9 @@ public class PageBlock implements RefreshableBlock {
 	//
 	private void parse(WebAppContext Context) throws DomException {
 		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
+		// Get and process attributes of this block
+		this.parseAttributes(Context, this.domEl,mon,true);
+		
 		// Scan for element that is not inside another child block 
 		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
 		elems = this.domEl.getAllElements().iterator();
@@ -337,8 +341,6 @@ public class PageBlock implements RefreshableBlock {
 				}
 			}
 		}
-		// Get and process attributes of this block
-		this.parseAttributes(Context, this.domEl,mon,true);
 		
 		// Get and process value attribute of form tags (es. input)
 		Elements grp = this.domEl.select(form_selector);

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.processor.PageExpression;
-import com.nandox.jop.core.processor.attribute.JopAttribute.RETURN_ACTION;
 import com.nandox.jop.core.processor.AbstractPageExpression;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
@@ -60,12 +59,12 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	@Override
-	abstract public RETURN_ACTION preRender(WebAppContext Context, Element Dom);
+	abstract public JopAttribute.Response preRender(WebAppContext Context, Element Dom);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	@Override
-	abstract public RETURN_ACTION postRender(WebAppContext Context, Element Dom);
+	abstract public JopAttribute.Response postRender(WebAppContext Context, Element Dom);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#setVariables(com.nandox.jop.core.context.WebAppContext, java.util.Map, int)
 	 */
