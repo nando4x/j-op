@@ -217,7 +217,8 @@ public class PageBlock implements RefreshableBlock {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
-			switch (ja.preRender(Context,clone)) {
+			JopAttribute.Response r = ja.preRender(Context,clone);
+			switch (r.getAction()) {
 				case NOTRENDER:
 					return new TextNode("","");
 				default:

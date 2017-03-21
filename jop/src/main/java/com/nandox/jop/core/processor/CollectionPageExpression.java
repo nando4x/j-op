@@ -30,6 +30,8 @@ public class CollectionPageExpression extends AbstractPageExpression<Object> {
 	@Override
 	public Object execute(WebAppContext Context) {
 		java.util.List<String> l = new java.util.ArrayList<String>();
+		l.add("1");
+		l.add("2");
 		return l;
 	}
 

@@ -1,6 +1,8 @@
 package com.nandox.jop.core.processor.attribute;
 
 import java.util.Collection;
+import java.util.Map;
+
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
@@ -23,7 +25,9 @@ import com.nandox.jop.core.processor.CollectionPageExpression;
  */
 @JopCoreAttribute(name="repeater", priority=100)
 public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttribute {
-
+	private String coll_name;
+	private String vname;
+	private boolean is_array;
 	/**
 	 * @param Context
 	 * @param Block
@@ -38,8 +42,6 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	public RETURN_ACTION preRender(WebAppContext Context, Element Dom) {
-		if ( !(Boolean)this.getExpression().execute(Context) )
-			return RETURN_ACTION.NOTRENDER;
 		return RETURN_ACTION.CONTINUE;
 	}
 	/* (non-Javadoc)
@@ -49,26 +51,47 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 		// TODO Auto-generated method stub
 		return null;
 	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#setVariables(com.nandox.jop.core.context.WebAppContext, java.util.Map, int)
+	 */
+	@Override
+	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
+		if ( Vars.get(this.coll_name) == null )
+			Vars.put(this.coll_name, this.getExpression().execute(Context));
+		if ( this.is_array ) {
+			Object v = ((Object[])Vars.get(this.coll_name))[Index];
+			Vars.put(this.vname,v);
+		} else {
+			Collection<?> c = (Collection<?>)Vars.get(this.coll_name);
+			Object v = c.toArray(new Object[0])[Index];
+			Vars.put(this.vname,v);
+		}
+	}
 	// Add variable to block context
 	//
 	//
 	private void registerVariable(WebAppContext Context, PageBlock Block) {
 		Class<?> cl = null;
-		String vname = Block.getAttributeDefinition("jop_var");
+		vname = Block.getAttributeDefinition("jop_var").trim();
 		if ( vname.trim().startsWith("(") && vname.indexOf(")") > 0 ) {
 			try {
 				cl = this.getClass().getClassLoader().loadClass(vname.substring(vname.indexOf("(")+1, vname.indexOf(")")).trim());
+				vname = vname.substring(vname.indexOf(")")+1).trim();
 			} catch (Exception e) {
 				// TODO: manage error in class detect
 			}
 		} else {
 			Object o = this.getExpression().execute(Context);
 			cl = o.getClass();
-			if ( cl.isArray() )
+			if ( cl.isArray() ) {
 				cl = cl.getComponentType();
+				this.is_array = true;
+			}
 			else if ( Collection.class.isAssignableFrom(cl) )
 				cl = ((Collection<?>)o).iterator().next().getClass();
 		}
 		Block.registerVariable(vname,cl);
+		this.coll_name = "iterator_"+vname;
+		Block.registerVariable(this.coll_name,null);
 	}
 }

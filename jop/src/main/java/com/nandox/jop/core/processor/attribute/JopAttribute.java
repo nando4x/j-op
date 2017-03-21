@@ -50,7 +50,7 @@ public interface JopAttribute {
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public RETURN_ACTION preRender(WebAppContext Context, Element Dom);
+	public Response preRender(WebAppContext Context, Element Dom);
 	/**
 	 * Post rendering action
 	 * @param	  Context	Application context
@@ -71,7 +71,38 @@ public interface JopAttribute {
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public RETURN_ACTION postRender(WebAppContext Context, Element Dom);
+	public Response postRender(WebAppContext Context, Element Dom);
+	/**
+	 * Response class of an attribute
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 */
+	public static class Response {
+		private RETURN_ACTION action;
+		private int repater_num;
+		
+		public Response(RETURN_ACTION Action) {
+			this.action = Action;
+			this.repater_num = 1;
+		}
+		public Response(RETURN_ACTION Action, int Num) {
+			this.action = Action;
+			this.repater_num = Num;
+		}
+		/**
+		 * @return the action
+		 */
+		public RETURN_ACTION getAction() {
+			return action;
+		}
+		/**
+		 * @return the repater_num
+		 */
+		public int getRepater_num() {
+			return repater_num;
+		}
+	}
 	/**
 	 * Factory class to instance attribute
 	 * @date      04 ott 2016 - 04 ott 2016
