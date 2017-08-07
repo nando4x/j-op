@@ -35,7 +35,7 @@
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');
 		var request = JOP_ID_PARAMETER+"="+jopId;
-		for ( var ix=0; ix<list.length; ix++ ) {
+		for ( var ix=0; list!=null&&ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
 		// define ajax callback to read XML response and block to refresh

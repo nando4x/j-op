@@ -8,6 +8,10 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to declare an Jop attribute.<br>
+ * Properties:<br>
+ * 		name to give attribute nae<br>
+ *  	priority (optional) to give a attribute execute priority (execute before attribute with low number priority)<br>
+ *  	nested (optional) to add a more attributes (comma separated) to the same class that are nested to the main attribute   
  * 
  * @project   Jop (Java One Page)
  * 
@@ -25,4 +29,5 @@ import java.lang.annotation.Target;
 public @interface JopCoreAttribute {
 	public String name();
 	int priority() default 0;
+	String nested() default "";
 }

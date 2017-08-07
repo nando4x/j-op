@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-import org.jsoup.Jsoup;
+//import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.BeanMonitoring;
@@ -175,18 +175,6 @@ public class PageBlock implements RefreshableBlock {
 		return this.toBeRefresh;
 	}
 	/**
-	 * Return the attribute definition: the value specified in page source code  
-	 * @param	  Name	Attribute name
-	 * @date      24 gen 2017 - 24 gen 2017
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	  attribute definition
-	 */
-	public String getAttributeDefinition(String Name) {
-		return this.domEl.attr(Name);
-	}
-	/**
 	 * Register variable with name and type class on this block  
 	 * @param	  Name	Variable name
 	 * @param	  Type	Variable name
@@ -283,6 +271,10 @@ public class PageBlock implements RefreshableBlock {
 				AttributeExpr b = en.getValue();
 				if ( !b.isOwn ) {
 					Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+					if ( e == null )
+						continue;
+					if ( repeat > 1 )
+						b.expr.resetValue();
 					String a = e.attr(b.name);
 					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
 					e.removeAttr(tmp_attr_id);
@@ -292,12 +284,22 @@ public class PageBlock implements RefreshableBlock {
 			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
 			while ( f.hasNext() ) {
 				Entry<String,PageWriteExpression> b = f.next();
+				if ( repeat > 1 )
+					b.getValue().resetValue();
 				String v = (String)b.getValue().execute(Context, vars);
 				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
 				String a = e.attr("value");
-				e.attr("value",a.replace("java"+b.getValue().getCode(), v));
+				e.attr("value",a.replace("java"+b.getValue().getCode(), (v!=null?v:"") ));
 				// add page id to name attribute
 				e.attr("name","["+this.pageId+"]."+e.attr("name"));
+				// special case for select option: compute his content
+				if ( e.tagName().equalsIgnoreCase("option") ) {
+					if ( repeat > 1 )
+						this.beans.get(e.text()).resetValue();
+					String c = (String)this.beans.get(e.text()).execute(Context, vars);
+					e.text(c);
+					e.removeAttr("name");
+				}
 			}
 			
 			clone.append(item.html());
@@ -356,31 +358,36 @@ public class PageBlock implements RefreshableBlock {
 		
 		// Get and process value attribute of form tags (es. input)
 		Elements grp = this.domEl.select(form_selector);
-		grp.add(this.domEl); // add self to the list
+		if ( !this.domEl.tag().isFormSubmittable() ) // add self to the list if is not already present 
+			grp.add(this.domEl); 
 		elems = grp.iterator();
 		while ( elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.tag().isFormSubmittable() ) {
 				if ( this.checkIfParentBlockIsThis(el)) {
-					String a = el.attr("value");
-					String code = this.parseJavaExpression(a); 
-					if ( code != null ) {
-						// create new expression and resister this block to those to refresh 
-						PageWriteExpression exp;
-
+					this.computeFormTag(Context, el, mon);
+				}
+				// special case for select tag: scan child option for value attribute expression and content expression
+				else if ( el.tagName().equalsIgnoreCase("select") ) {
+					Iterator<Element> opt = el.select("option").iterator();
+					String base_name = el.attr("name");
+					int inx = 0;
+					while ( opt.hasNext() ) {
+						el = opt.next();
+						el.attr("name",base_name+"_"+inx);
+						this.computeFormTag(Context, el, mon);
+						PageExpression exp;
+						String code = this.parseBean(el);
 						if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
 							// for a new expression add it and register this block to those to refresh 
 							exp = new SimplePageExpression(Context,code,this.vars_definition);
 							this.exprs.put(exp.getId(), exp);
 							mon.registerRefreshable(exp.getBeansList(), this);
 						} else
-							exp = (PageWriteExpression)this.exprs.get(AbstractPageExpression.computeId(code));
-						// if name attributes don't exist add it with auto index
-						if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
-							el.attr("name",""+this.auto_id_index);
-							auto_id_index++;
-						}
-						this.forms.put(el.attr("name"), exp);
+							exp = this.exprs.get(AbstractPageExpression.computeId(code));
+						this.beans.put(exp.getId(),exp);
+						el.text(exp.getId());
+						inx++;
 					}
 				}
 			}
@@ -411,7 +418,7 @@ public class PageBlock implements RefreshableBlock {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						if ( isOwn ) {
 							// block jop attribute
-							JopAttribute ja = JopAttribute.Factory.create(context,this,attr.getKey(),bid);
+							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),bid);
 							this.attrs.add(ja);
 							mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
 						}
@@ -488,14 +495,41 @@ public class PageBlock implements RefreshableBlock {
 		for ( int ix=0; ix<attrs.length; ix++ )
 			elem.removeAttr(attrs[ix]);
 
-	} 
+	}
+	// compute expression for form tag
+	//
+	//
+	private void computeFormTag(WebAppContext Context, Element el, BeanMonitoring mon) throws DomException {
+		String a = el.attr("value");
+		String code = this.parseJavaExpression(a); 
+		if ( code != null ) {
+			// create new expression and register this block to those to refresh 
+			PageWriteExpression exp;
+
+			if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
+				// for a new expression add it and register this block to those to refresh 
+				exp = new SimplePageExpression(Context,code,this.vars_definition);
+				this.exprs.put(exp.getId(), exp);
+				mon.registerRefreshable(exp.getBeansList(), this);
+			} else
+				exp = (PageWriteExpression)this.exprs.get(AbstractPageExpression.computeId(code));
+			// if name attributes don't exist add it with auto index
+			if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
+				el.attr("name",""+this.auto_id_index);
+				auto_id_index++;
+			}
+			this.forms.put(el.attr("name"), exp);
+		}
+	}
+	// Comparator for jop attribute name
+	//
+	//
 	static private class AttributeComparator implements Comparator<Attribute> {
 		static private final String[] jop_attrs = JopAttribute.Factory.getNameList();
 		/* (non-Javadoc)
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
 		public int compare(Attribute a1, Attribute a2) {
-			// TODO Auto-generated method stub
 			int i1 = -1000, i2 = -1000;
 			for (int ix=0; ix<jop_attrs.length; ix++) {
 				if ( jop_attrs[ix].equalsIgnoreCase(a1.getKey()))

@@ -26,13 +26,10 @@ import com.nandox.jop.core.processor.PageBlock;
 public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 
 	/**
-	 * @param Context
-	 * @param Block
-	 * @param Name
-	 * @param Value
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public Rendered(WebAppContext Context, PageBlock Block, String Name, String Value) {
-		super(Context, Block, Name, Value);
+	public Rendered(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
+		super(Context, Block, Node, Name, Value);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
@@ -46,7 +43,6 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	public JopAttribute.Response postRender(WebAppContext Context, Element Dom) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

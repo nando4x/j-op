@@ -32,6 +32,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * Constructor
 	 * @param	  Context	Application context
 	 * @param	  Block		Page block
+	 * @param	  Node		DOM node
 	 * @param	  Name		Attribute name
 	 * @param	  Value		Attribute value or expression
 	 * @date      30 set 2016 - 30 set 2016
@@ -39,7 +40,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, String Name, String Value) {
+	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
 		this.name = Name;
 		this.value = Value;
 		this.computeExpression(Context, Value, Block.getVarsDefinition());

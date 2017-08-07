@@ -1,5 +1,6 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.util.StringTokenizer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -115,17 +116,20 @@ public interface JopAttribute {
 		/**
 		 * Instance an attribute
 		 * @param	  Context	Application context
-		 * @param	  Name attribute name
+		 * @param	  Block		Page block
+		 * @param	  Node		DOM node
+		 * @param	  Name		Attribute name
+		 * @param	  Value		Attribute value or expression
 		 * @date      04 ott 2016 - 04 ott 2016
 		 * @author    Fernando Costantino
 		 * @revisor   Fernando Costantino
 		 * @exception 
 		 */
-		public static JopAttribute create(WebAppContext Context ,PageBlock Block, String Name, String Value) {
+		public static JopAttribute create(WebAppContext Context ,PageBlock Block, Element Node, String Name, String Value) {
 			init();
 			Class<?> c = attrs.get(Name);
 			try {
-				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,String.class,String.class).newInstance(Context,Block,Name,Value);
+				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,Element.class,String.class,String.class).newInstance(Context,Block,Node,Name,Value);
 			} catch (Exception e) {
 				// TODO: manage instantiate error
 				return null;
@@ -157,6 +161,10 @@ public interface JopAttribute {
 						if ( c.isAnnotationPresent(JopCoreAttribute.class) && AbstractJopAttribute.class.isAssignableFrom(c) ) {
 							try {
 								map.put("jop_"+c.getAnnotation(JopCoreAttribute.class).name(), c);
+								StringTokenizer sk = new StringTokenizer(c.getAnnotation(JopCoreAttribute.class).nested(),",");
+								while ( sk.hasMoreTokens()) {
+									map.put("jop_"+sk.nextToken(), null);
+								}
 							} catch(Exception e) {
 								// TODO: manage error on create service manager
 							}
@@ -166,9 +174,14 @@ public interface JopAttribute {
 					ArrayList<Entry<String,Class<JopAttribute>>> lst = new ArrayList<Entry<String,Class<JopAttribute>>>(map.entrySet());
 					Collections.sort(lst, new Comparator<Entry<String,Class<JopAttribute>>>() {
 						public int compare(Entry<String,Class<JopAttribute>> e1, Entry<String,Class<JopAttribute>> e2) {
-							int i1 = e1.getValue().getAnnotation(JopCoreAttribute.class).priority();
-							int i2 = e2.getValue().getAnnotation(JopCoreAttribute.class).priority();
+							int i1 = this.getItem(e1);
+							int i2 = this.getItem(e2);
 							return (i1>i2?1:(i1==i2)?0:-1);
+						}
+						public int getItem(Entry<String,Class<JopAttribute>> item) {
+							try {
+								return item.getValue().getAnnotation(JopCoreAttribute.class).priority();
+							} catch(Exception e) { return -1; }
 						}
 					});
 					attrs = new HashMap<String,Class<JopAttribute>>();

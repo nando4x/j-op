@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.CollectionPageExpression;
-import com.nandox.jop.core.processor.attribute.JopAttribute.Response;
 
 /**
  * Attribute jop_repeater implementation.<br>
@@ -24,20 +23,18 @@ import com.nandox.jop.core.processor.attribute.JopAttribute.Response;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="repeater", priority=100)
+@JopCoreAttribute(name="repeater", priority=100, nested="var")
 public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttribute {
 	private String coll_name;
 	private String vname;
 	private String is_array;
+
 	/**
-	 * @param Context
-	 * @param Block
-	 * @param Name
-	 * @param Value
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public Repeater(WebAppContext Context, PageBlock Block, String Name, String Value) {
-		super(Context, Block, Name, Value);
-		this.registerVariable(Context, Block);
+	public Repeater(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
+		super(Context, Block, Node, Name, Value);
+		this.registerVariable(Context, Block, Node);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
@@ -57,7 +54,6 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	public JopAttribute.Response postRender(WebAppContext Context, Element Dom) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	/* (non-Javadoc)
@@ -79,9 +75,9 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	// Add variable to block context
 	//
 	//
-	private void registerVariable(WebAppContext Context, PageBlock Block) {
+	private void registerVariable(WebAppContext Context, PageBlock Block, Element Node) {
 		Class<?> cl = null;
-		vname = Block.getAttributeDefinition("jop_var").trim();
+		vname = Node.attr("jop_var").trim();//Block.getAttributeDefinition("jop_var").trim();
 		if ( vname.trim().startsWith("(") && vname.indexOf(")") > 0 ) {
 			try {
 				cl = this.getClass().getClassLoader().loadClass(vname.substring(vname.indexOf("(")+1, vname.indexOf(")")).trim());

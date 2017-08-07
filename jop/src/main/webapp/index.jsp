@@ -11,7 +11,7 @@
 		a = "ssa";
 	}
 </script>
-		<table jop_id="xxtab1">
+		<!--<table jop_id="xxtab1">
 			<thead>
 				<th>col1</th>
 				<th>col2</th>
@@ -23,8 +23,14 @@
 					<td><jbean>{return var+"-1";}</jbean></td>
 				</tr>
 			</tbody>
-		</table>
- 	<div jop_id=''>
+		</table>-->
+		<form jop_id="">
+		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var2' value='java{return "";}'
+				class="java{return $helloWorld.getCssClass();} xxxx">
+			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return "choice "+var2;}</jbean></option>
+		</select>
+		</form>
+ 	<!--<div jop_id=''>
 	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
@@ -91,6 +97,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 </body>
 </html>

@@ -62,6 +62,7 @@ Jop.core.services = Jop.core.services || {};
 	 * @return	  block DOM element
 	 */
 	this.injectBlockElement = function(jopId,html){
+		// TODO: execute scripts like jquery ajax and plus script before (if has attribute jop_before)
 		var block = this.querySelector(document,'[jop_id="'+jopId+'"');
 		if ( block != null )
 			block.outerHTML = html;
@@ -79,7 +80,9 @@ Jop.core.services = Jop.core.services || {};
 	 * @return	  block DOM element
 	 */
 	this.querySelector = function(element,query) {
-		return element.querySelector(query);
+		if ( element != null )
+			return element.querySelector(query);
+		return null;
 	}
 	/**
 	 * General all element CSS query selector 
@@ -92,7 +95,9 @@ Jop.core.services = Jop.core.services || {};
 	 * @return	  block DOM element
 	 */
 	this.querySelectorAll = function(element,query) {
-		return element.querySelectorAll(query);
+		if ( element != null )
+			return element.querySelectorAll(query);
+		return null;
 	}
 	/**
 	 * Console formatted message if DEBUG it's true.
