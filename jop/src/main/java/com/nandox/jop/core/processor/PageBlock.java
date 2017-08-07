@@ -245,6 +245,8 @@ public class PageBlock implements RefreshableBlock {
 				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
 				e.replaceWith(c.renderAsNode(Context,num));
 			}
+			// ### Start effective render
+			// set variables
 			Iterator<JopAttribute> attr = this.attrs.iterator();
 			while (attr.hasNext()) {
 				JopAttribute ja = attr.next();
