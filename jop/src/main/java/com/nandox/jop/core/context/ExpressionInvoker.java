@@ -1,5 +1,7 @@
 package com.nandox.jop.core.context;
 
+import java.util.Map;
+
 /**
  * Single Bean Invoker to invoke a specific method of a bean  
  * 
@@ -34,32 +36,33 @@ public class ExpressionInvoker {
 	/**
 	 * Invoke expression class on specific context.<br>
 	 * @param	  Context	Application context
+	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @return	  result of method or null if error  
 	 */
-	public Object invoke(WebAppContext Context) {
+	public Object invoke(WebAppContext Context, Map<String,Object> Vars) {
 		Object ret = null;
 		Object beans[] = new Object[this.beans.length];
 		try {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(beans,null,null);
+			ret = o.invoke(beans,null,null,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}
 		return ret;
 	}
-	public Object invoke(WebAppContext Context, Object Value, String NativeValue) {
+	public Object invoke(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars) {
 		Object ret = null;
 		Object beans[] = new Object[this.beans.length];
 		try {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(beans,Value,NativeValue);
+			ret = o.invoke(beans,Value,NativeValue,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}

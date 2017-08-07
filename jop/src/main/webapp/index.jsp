@@ -11,19 +11,20 @@
 		a = "ssa";
 	}
 </script>
-		<table jop_id="tab1">
+		<table jop_id="xxtab1">
 			<thead>
 				<th>col1</th>
 				<th>col2</th>
 				<th>col3</th>
 			</thead>
-			<tbody>
-				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
+			<tbody jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
+				<tr  >
 					<td><jbean>{return var;}</jbean></td>
+					<td><jbean>{return var+"-1";}</jbean></td>
 				</tr>
 			</tbody>
 		</table>
-<!-- 	<div jop_id=''>
+ 	<div jop_id=''>
 	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
@@ -90,6 +91,6 @@
 				</div>
 			</div>
 		</div>
-	</div> -->
+	</div>
 </body>
 </html>

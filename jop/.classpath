@@ -29,8 +29,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/_Libs/cors-filter-2.4.jar"/>
-	<classpathentry kind="lib" path="/_Libs/java-property-utils-1.9.1.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/eclipse451XFR2/ibm_sdk71/lib/tools.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/eu/eclipse451XFR2/ibm_sdk71/lib/tools.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

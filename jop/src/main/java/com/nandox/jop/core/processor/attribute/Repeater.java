@@ -28,7 +28,7 @@ import com.nandox.jop.core.processor.attribute.JopAttribute.Response;
 public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttribute {
 	private String coll_name;
 	private String vname;
-	private boolean is_array;
+	private String is_array;
 	/**
 	 * @param Context
 	 * @param Block
@@ -40,14 +40,17 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 		this.registerVariable(Context, Block);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
-	public JopAttribute.Response preRender(WebAppContext Context, Element Dom) {
+	public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars) {
 		int size;
-		if ( this.is_array )
-			size = ((Object[])this.getExpression().execute(Context)).length;
+		Object o = this.getExpression().execute(Context,Vars);
+		if ( this.is_array == null )
+			this.setArrayFlag(Context, o);
+		if ( "Y".equals(this.is_array) )
+			size = ((Object[])o).length;
 		else 
-			size = ((Collection<?>)this.getExpression().execute(Context)).size();
+			size = ((Collection<?>)o).size();
 		return new JopAttribute.Response(RETURN_ACTION.CONTINUE,size);
 	}
 	/* (non-Javadoc)
@@ -63,8 +66,8 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	@Override
 	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
 		if ( Vars.get(this.coll_name) == null )
-			Vars.put(this.coll_name, this.getExpression().execute(Context));
-		if ( this.is_array ) {
+			Vars.put(this.coll_name, this.getExpression().execute(Context, Vars));
+		if ( "Y".equals(this.is_array) ) {
 			Object v = ((Object[])Vars.get(this.coll_name))[Index];
 			Vars.put(this.vname,v);
 		} else {
@@ -86,18 +89,34 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 			} catch (Exception e) {
 				// TODO: manage error in class detect
 			}
+			this.setArrayFlag(Context, null);
 		} else {
-			Object o = this.getExpression().execute(Context);
-			cl = o.getClass();
-			if ( cl.isArray() ) {
-				cl = cl.getComponentType();
-				this.is_array = true;
+			Object o = this.getExpression().execute(Context, null);
+			if ( o != null ) {
+				cl = o.getClass();
+				if ( cl.isArray() )
+					cl = cl.getComponentType();
+				else if ( Collection.class.isAssignableFrom(cl) )
+					cl = ((Collection<?>)o).iterator().next().getClass();
+				this.setArrayFlag(Context, o);
 			}
-			else if ( Collection.class.isAssignableFrom(cl) )
-				cl = ((Collection<?>)o).iterator().next().getClass();
 		}
 		Block.registerVariable(vname,cl);
 		this.coll_name = "_iterator_"+vname;
 		Block.registerVariable(this.coll_name,null);
+	}
+	// Check if is an array or collection
+	//
+	//
+	private void setArrayFlag(WebAppContext Context, Object expResult) {
+		Class<?> cl = null;
+		Object o = (expResult==null?this.getExpression().execute(Context, null):expResult);
+		if ( o != null ) {
+			cl = o.getClass();
+			if ( cl.isArray() ) {
+				this.is_array = "Y";
+			} else
+				this.is_array = "N";
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor;
 import com.nandox.jop.core.context.WebAppContext;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Map;
 
 import com.nandox.jop.core.context.ExpressionInvoker;
 
@@ -29,17 +30,18 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	/**
 	 * @param	  Context	Application context
 	 * @param	  Code		expression code
+	 * @param	  Vars 		list of block variables definitions [variable name, class]
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public AbstractPageExpression(WebAppContext Context, String Code) throws DomException {
+	public AbstractPageExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) throws DomException {
 		this.Id = computeId(Code);
 		this.code = Code;
 		@SuppressWarnings("unchecked")
 		Class<E> retType = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		this.createInvokerClass(Context, retType);
+		this.createInvokerClass(Context, retType, Vars);
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#getId
@@ -54,9 +56,9 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		return code;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
-	public abstract E execute(WebAppContext Context);
+	public abstract E execute(WebAppContext Context, Map<String,Object> Vars);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue
 	 */
@@ -66,6 +68,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	/**
 	 * Invoke own ExpressionInvoker only if value is not reset.<br>
 	 * @param	  Context	Application context
+	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -73,14 +76,14 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @return	  value on specific type
 	 */
 	@SuppressWarnings("unchecked")
-	protected Object invoke(WebAppContext Context) {
+	protected Object invoke(WebAppContext Context, Map<String,Object> Vars) {
 		if ( this.value == null )
-			this.value = (E)this.invoker.invoke(Context);
+			this.value = (E)this.invoker.invoke(Context, Vars);
 		return this.value;
 	}
 	@SuppressWarnings("unchecked")
-	protected Object invoke(WebAppContext Context, E Value, String NativeValue) {
-		this.value = (E)this.invoker.invoke(Context,Value,NativeValue);
+	protected Object invoke(WebAppContext Context, E Value, String NativeValue, Map<String,Object> Vars) {
+		this.value = (E)this.invoker.invoke(Context,Value,NativeValue,Vars);
 		return this.value;
 	}
 	/* (non-Javadoc)
@@ -105,9 +108,9 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	// Create and compile invoker class 
 	//
 	//
-	void createInvokerClass(WebAppContext Context, Class<E> RetClass) throws DomException {
+	void createInvokerClass(WebAppContext Context, Class<E> RetClass, Map<String,Class<?>> Vars) throws DomException {
 		try {
-			this.invoker = Context.getBeanCompiler().createInvoker(Context, this.Id, this.code, RetClass.getName());
+			this.invoker = Context.getBeanCompiler().createInvoker(Context, this.Id, this.code, RetClass.getName(), Vars);
 		} catch (Exception e) {
 			throw new DomException(e.getMessage());
 		}

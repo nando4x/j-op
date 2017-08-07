@@ -42,7 +42,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, String Name, String Value) {
 		this.name = Name;
 		this.value = Value;
-		this.computeExpression(Context, Value);
+		this.computeExpression(Context, Value, Block.getVarsDefinition());
 	}
 	/**
 	 * Return expression 
@@ -56,10 +56,10 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 		return expression;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
 	@Override
-	abstract public JopAttribute.Response preRender(WebAppContext Context, Element Dom);
+	abstract public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars);
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
@@ -75,18 +75,20 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * Create attribute expression 
 	 * @param	  Context	Application context
 	 * @param	  Code		Attribute expression source code
+	 * @param	  Vars 		list of block variables definitions [variable name, class]
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	protected void computeExpression(WebAppContext Context, String Code) {
+	protected void computeExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<E> cl = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-			this.expression = cl.getDeclaredConstructor(WebAppContext.class, String.class).newInstance(Context,Code);
+			this.expression = cl.getDeclaredConstructor(WebAppContext.class, String.class, Map.class).newInstance(Context,Code,Vars);
 		} catch (Exception e) {
 			// TODO: manage expression instantation error
+			e = null;
 		}
 	}
 }

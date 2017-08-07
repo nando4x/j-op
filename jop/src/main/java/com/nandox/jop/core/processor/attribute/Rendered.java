@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.util.Map;
+
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
@@ -33,10 +35,10 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 		super(Context, Block, Name, Value);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
-	public JopAttribute.Response preRender(WebAppContext Context, Element Dom) {
-		if ( !(Boolean)this.getExpression().execute(Context) )
+	public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars) {
+		if ( !(Boolean)this.getExpression().execute(Context, Vars) )
 			return new JopAttribute.Response(RETURN_ACTION.NOTRENDER);
 		return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 	}

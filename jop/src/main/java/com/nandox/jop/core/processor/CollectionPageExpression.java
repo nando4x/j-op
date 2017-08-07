@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor;
 
+import java.util.Map;
+
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
@@ -19,20 +21,21 @@ import com.nandox.jop.core.context.WebAppContext;
 public class CollectionPageExpression extends AbstractPageExpression<Object> {
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String)
+	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String,Map<String,Class<?>>)
 	 */
-	public CollectionPageExpression(WebAppContext Context, String Code) throws DomException {
-		super(Context, Code);
+	public CollectionPageExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) throws DomException {
+		super(Context, Code, Vars);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.AbstractPageExpression#execute(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.AbstractPageExpression#execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
 	@Override
-	public Object execute(WebAppContext Context) {
+	public Object execute(WebAppContext Context, Map<String,Object> Vars) {
 		java.util.List<String> l = new java.util.ArrayList<String>();
 		l.add("1");
 		l.add("2");
-		return l;
+		return this.invoke(Context, Vars);
+		//return l;
 	}
 
 }

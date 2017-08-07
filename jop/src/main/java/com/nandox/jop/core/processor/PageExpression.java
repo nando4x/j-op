@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor;
 
+import java.util.Map;
+
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
@@ -31,13 +33,14 @@ public interface PageExpression {
 	 * Execute expression on specific context.<br>
 	 * The context is used to get beans instance if present in expression
 	 * @param	  Context	Application context
+	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return	  result of method in specific type  
 	 */
-	Object execute(WebAppContext Context);
+	Object execute(WebAppContext Context, Map<String,Object> Vars);
 
 	/**
 	 * Reset expression return value to null.<br>

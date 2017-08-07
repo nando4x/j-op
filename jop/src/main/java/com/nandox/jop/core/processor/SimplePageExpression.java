@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor;
 
+import java.util.Map;
+
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
@@ -19,25 +21,25 @@ import com.nandox.jop.core.context.WebAppContext;
 public class SimplePageExpression extends AbstractPageExpression<String> implements PageWriteExpression {
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String)
+	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String,Map<String,Class<?>>)
 	 */
-	public SimplePageExpression(WebAppContext Context, String Code) throws DomException {
-		super(Context, Code);
+	public SimplePageExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) throws DomException {
+		super(Context, Code, Vars);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
 	 */
 	@Override
-	public String execute(WebAppContext Context) {
-		return (String)this.invoke(Context);
+	public String execute(WebAppContext Context, Map<String,Object> Vars) {
+		return (String)this.invoke(Context, Vars);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String)
+	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String, Map<String,Object>)
 	 */
-	public String execute(WebAppContext Context, String NativeValue) {
+	public String execute(WebAppContext Context, String NativeValue, Map<String,Object> Vars) {
 		// TODO Auto-generated method stub
-		return (String)this.invoke(Context,NativeValue,NativeValue);
+		return (String)this.invoke(Context,NativeValue,NativeValue,Vars);
 	}
 }

@@ -34,6 +34,10 @@ import com.nandox.jop.core.ErrorsDefine;
  * 
  * @revisor   Fernando Costantino
  */
+/**
+ * @author EE38938
+ *
+ */
 public class PageBlock implements RefreshableBlock {
 	/** Identification bean: jop_bean */
 //	public static final String JOP_BEAN_INI = "jop_bean={";
@@ -142,7 +146,7 @@ public class PageBlock implements RefreshableBlock {
 			if ( Data.containsKey(pe.getKey()) ) {
 				// Invoke expression in write mode
 				String val = Data.get(pe.getKey())[0]; // get string data
-				pe.getValue().execute(Context, val);
+				pe.getValue().execute(Context, val, null); //TODO: what variables use?
 			}
 		}
 		// Reset all value expression
@@ -196,6 +200,12 @@ public class PageBlock implements RefreshableBlock {
 		this.vars_definition.put(Name, Type);
 		// TODO: manage duplicate 
 	}
+	/**
+	 * @return the vars_definition
+	 */
+	public Map<String, Class<?>> getVarsDefinition() {
+		return vars_definition;
+	}
 	//
 	//
 	//
@@ -217,7 +227,7 @@ public class PageBlock implements RefreshableBlock {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
-			JopAttribute.Response r = ja.preRender(Context,clone);
+			JopAttribute.Response r = ja.preRender(Context,clone,null); //TODO: what variables use?
 			switch (r.getAction()) {
 				case NOTRENDER:
 					return new TextNode("","");
@@ -257,10 +267,12 @@ public class PageBlock implements RefreshableBlock {
 			while (beans.hasNext()) {
 				Entry<String,PageExpression> e = beans.next();
 				PageExpression b = e.getValue();
-				String v = (String)b.execute(Context);
+				if ( repeat > 1 )
+					b.resetValue();
+				String v = (String)b.execute(Context, vars);
 				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
 				while (elem.hasNext()) {
-					TextNode txt = new TextNode(v,"");
+					TextNode txt = new TextNode((v==null?"":v),"");
 					elem.next().replaceWith(txt);
 				}
 			}
@@ -272,7 +284,7 @@ public class PageBlock implements RefreshableBlock {
 				if ( !b.isOwn ) {
 					Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
 					String a = e.attr(b.name);
-					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
 					e.removeAttr(tmp_attr_id);
 				}
 			}
@@ -280,7 +292,7 @@ public class PageBlock implements RefreshableBlock {
 			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
 			while ( f.hasNext() ) {
 				Entry<String,PageWriteExpression> b = f.next();
-				String v = (String)b.getValue().execute(Context);
+				String v = (String)b.getValue().execute(Context, vars);
 				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
 				String a = e.attr("value");
 				e.attr("value",a.replace("java"+b.getValue().getCode(), v));
@@ -298,7 +310,7 @@ public class PageBlock implements RefreshableBlock {
 			AttributeExpr b = en.getValue();
 			if ( b.isOwn ) {
 				String a = clone.attr(b.name);
-				clone.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context)));
+				clone.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
 				clone.removeAttr(tmp_attr_id);
 			}
 		}
@@ -328,7 +340,7 @@ public class PageBlock implements RefreshableBlock {
 					String code = this.parseBean(el);
 					if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
 						// for a new expression add it and register this block to those to refresh 
-						exp = new SimplePageExpression(Context,code);
+						exp = new SimplePageExpression(Context,code,this.vars_definition);
 						this.exprs.put(exp.getId(), exp);
 						mon.registerRefreshable(exp.getBeansList(), this);
 					} else
@@ -358,7 +370,7 @@ public class PageBlock implements RefreshableBlock {
 
 						if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
 							// for a new expression add it and register this block to those to refresh 
-							exp = new SimplePageExpression(Context,code);
+							exp = new SimplePageExpression(Context,code,this.vars_definition);
 							this.exprs.put(exp.getId(), exp);
 							mon.registerRefreshable(exp.getBeansList(), this);
 						} else
@@ -409,7 +421,7 @@ public class PageBlock implements RefreshableBlock {
 						String code = this.parseJavaExpression(a); 
 						if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
 							// for a new expression add it and register this block to those to refresh 
-							exp = new SimplePageExpression(context,code);
+							exp = new SimplePageExpression(context,code,this.vars_definition);
 							this.exprs.put(exp.getId(), exp);
 							mon.registerRefreshable(exp.getBeansList(), this);
 						} else

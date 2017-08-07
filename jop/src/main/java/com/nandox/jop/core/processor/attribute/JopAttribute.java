@@ -45,12 +45,13 @@ public interface JopAttribute {
 	 * Pre rendering action
 	 * @param	  Context	Application context
 	 * @param	  Dom element dom of the block
+	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public Response preRender(WebAppContext Context, Element Dom);
+	public Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars);
 	/**
 	 * Post rendering action
 	 * @param	  Context	Application context

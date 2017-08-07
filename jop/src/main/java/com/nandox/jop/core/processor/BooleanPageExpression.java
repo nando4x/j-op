@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor;
 
+import java.util.Map;
+
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
@@ -18,15 +20,15 @@ import com.nandox.jop.core.context.WebAppContext;
 
 public class BooleanPageExpression extends AbstractPageExpression<Boolean> {
 
-	public BooleanPageExpression(WebAppContext Context, String Code) throws DomException {
-		super(Context, Code);
+	public BooleanPageExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) throws DomException {
+		super(Context, Code, Vars);
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.AbstractPageExpression#Execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
 	@Override
-	public Boolean execute(WebAppContext Context) {
-		return (Boolean)this.invoke(Context);
+	public Boolean execute(WebAppContext Context, Map<String,Object> Vars) {
+		return (Boolean)this.invoke(Context, Vars);
 	}
 }

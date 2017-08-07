@@ -3,6 +3,8 @@
  */
 package com.nandox.jop.core.processor;
 
+import java.util.Map;
+
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
@@ -22,8 +24,8 @@ import com.nandox.jop.core.context.WebAppContext;
 public interface PageWriteExpression extends PageExpression {
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext)
+	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
-	Object execute(WebAppContext Context, String NativeValue);
+	Object execute(WebAppContext Context, String NativeValue, Map<String,Object> Vars);
 
 }

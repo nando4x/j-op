@@ -2,7 +2,9 @@ package com.nandox.jop.core.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.net.URLClassLoader;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
@@ -72,19 +74,20 @@ public class ExpressionCompiler {
 	 * @param	  BeanName name of bean
 	 * @param	  BeanCode java code of bean
 	 * @param	  ReturnClass name of the returned type
+	 * @param	  Vars 	list of block variables definitions [variable name, class]
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public ExpressionInvoker createInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass) throws Exception {
+	public ExpressionInvoker createInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass, Map<String,Class<?>> Vars) throws Exception {
 		// Check if invoker already exist
 		if ( !this.invokers.containsKey(BeanName) ) {
 	    	// Composite java code and class path 
 			String code = "";
 			String path = "";
 			ArrayList<String> l = new ArrayList<String>(); // create list of argumented beans
-			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l);
+			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l, Vars);
 			String beans[] = l.toArray(new String[0]);
 			path = this.computeBeansClasspath(Context, l);
 		    JavaFileObject file = new JavaSourceFromString(package_pfx+BeanName, code);
@@ -134,7 +137,7 @@ public class ExpressionCompiler {
 	// Composite code of expression class
 	//
 	//
-	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans) throws Exception {
+	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans, Map<String,Class<?>> vars) throws Exception {
 		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
@@ -152,8 +155,17 @@ public class ExpressionCompiler {
 		}
 		// wrap code to class that implements ExpressionExecutor interface
 		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke (Object beans[],Object Value, String nativeValue) { ";
+		code += "public "+returnclass+ " invoke (Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
 		code += returnclass+" value = ("+returnclass+")Value;";
+		// add variables declaration if present and have a class definition
+		if ( vars != null && vars.size() > 0 ) {
+			Iterator<String> v = vars.keySet().iterator();
+			while (v.hasNext()) {
+				String k = v.next();
+				if ( vars.get(k) != null )
+					code += " "+vars.get(k).getName()+" "+k+" = (vars!=null&&vars.size()>0?("+vars.get(k).getName()+")vars.get(\""+k+"\"):null);";
+			}
+		}
 		if ( beans.size() > 0 ) {
 			int ix=0;
 			for ( String bean: beans ) {
