@@ -86,7 +86,8 @@ public class BeanMonitoring {
 	}
 	
 	/**
-	 * Descrizione
+	 * Setting the specific bean associated page blocks to refresh
+	 * @param	  BeanName bean name that is changed
 	 * @date      02 feb 2017 - 02 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -115,7 +116,7 @@ public class BeanMonitoring {
 		}
 		return false;
 	}
-	//
+	// Local implementation of cglib interceptor: if bean class has @JopMonitoring set associated block to refresh
 	//
 	//
 	private class Interceptor implements MethodInterceptor {

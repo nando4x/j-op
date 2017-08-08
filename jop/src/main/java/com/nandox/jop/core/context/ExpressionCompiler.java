@@ -42,11 +42,11 @@ public class ExpressionCompiler {
 	public static final String PACKAGE = "";
 	
 	private static final String package_pfx = (PACKAGE.isEmpty()?"":PACKAGE+"."); 
-	private JavaCompiler cmpl;
+	private JavaCompiler cmpl;		// 			
 	private DiagnosticCollector<JavaFileObject> dgn;
 	private String classpath;
 	private ClassLoader classLoader;
-	private HashMap<String,ExpressionInvoker> invokers;
+	private HashMap<String,ExpressionInvoker> invokers; // list of created invoker
 	/**
 	 * @date      17 nov 2016 - 17 nov 2016
 	 * @author    Fernando Costantino

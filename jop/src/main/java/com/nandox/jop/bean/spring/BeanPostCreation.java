@@ -12,7 +12,7 @@ import com.nandox.jop.core.context.BeanMonitoring;
  * Spring Bean post processor.<br>
  * In the post creation attach proxy to bean before initialization.<br>
  * Use it in the configuration if you want monitor the beans:<br><br>
- * 		<bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
+ * &emsp;		<bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
  * 
  * @project   Jop (Java One Page)
  * 

@@ -4,7 +4,7 @@ import java.util.Map;
 import com.nandox.jop.core.processor.JopId;
 
 /**
- * Abstract javascript service manager.<br>
+ * Abstract general javascript service.<br>
  * 
  * @project   Jop (Java One Page)
  * 
@@ -21,6 +21,7 @@ public abstract class AbstractServiceJS {
 	protected static final String PARAMS_JOPID = "Jop.jopId";
 	/**
 	 * Extract JopId from parameters Jop.jopId
+	 * @param	  Params parameter map received from url request query
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino

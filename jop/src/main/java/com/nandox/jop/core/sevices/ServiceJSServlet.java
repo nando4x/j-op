@@ -16,13 +16,13 @@ import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 /**
  * Servlet for JavaScript services and file script.<br>
  * The script file are downloaded from path jopscript/*.<br> 
- * The services are implemented to exchange XML fragment, command and response
- *   
- *   Possible Service:
- *   
- *      	/inject		to base inject operation
- *   		Services command:<br>
- *   			postBlock: { Jop.id:'jop id', .... } - response xml with affected blocks
+ * The services are implemented to exchange XML fragment, command and response<br>
+ * <br>   
+ * &emsp;	Possible Service:<br>
+ * <br>  
+ * &emsp;&emsp;     	/inject		to base inject operation<br>
+ * &emsp;&emsp;  		Services command:<br>
+ * &emsp;&emsp;&emsp;  			postBlock: { Jop.id:'jop id', .... } - response xml with affected blocks<br>
  * 
  * @project   Jop (Java One Page)
  * 

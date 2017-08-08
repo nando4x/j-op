@@ -29,12 +29,12 @@ import com.nandox.jop.core.processor.attribute.JopAttribute;
  */
 public class PageApp {
 	protected static final String DOMPARSER_JOP_SELECTOR = PageApp.getAttributeSelector();
-	private String id;
-	private int hash;
-	private Document dom;
-	private Map<String,PageBlock> blocks;
-	private WebAppContext appCtx;
-	private int auto_id_index;
+	private String id;	// page identifier
+	private int hash;	// page hash code
+	private Document dom;	// html DOM document
+	private Map<String,PageBlock> blocks;	// list of page blocks
+	private WebAppContext appCtx;	// application web context
+	private int auto_id_index;	// auto incremental index of anonymous block 
 	/**
 	 * Constructor: parse page content into DOM
 	 * @param	  Context	Application context

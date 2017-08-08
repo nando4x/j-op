@@ -4,9 +4,20 @@ import java.util.Map;
 
 import com.nandox.jop.core.dispatcher.Dispatcher;
 /**
- * Interface for all service javascript manager.<br>
+ * Interface for all services javascript manager.<br>
  * Every service javascript is loaded from init ServiceJSServlet and have an identifier equal to base path service<br>
- * (es: inject) that is used to identify and execute the manager
+ * (es: inject) that is used to identify and execute the manager.<br>
+ * To implement a new service create a class that implements this interface and into getIdentifier method return the identifier.<br>
+ * es for inject service:<br>
+ * <br>
+ * &emsp;	public Class inject implements ServiceJSManager {<br>
+ * &emsp;&emsp;			public String getIdentifier() {<br>
+ * &emsp;&emsp;&emsp;				return "inject";<br>
+ * &emsp;&emsp;			}<br>
+ * &emsp;&emsp;			...<br>
+ * &emsp;		}<br>
+ * <br>
+ * service is called by url /jopservices/inject
  * 
  * @project   Jop (Java One Page)
  * 
@@ -32,7 +43,7 @@ public interface ServiceJSManager {
 	 * Execute a specific command of service
 	 * @param	  Dsp application dispatcher
 	 * @param	  Cmd command to execute
-	 * @param	  Params parameter map received from request
+	 * @param	  Params parameter map received from url request query
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino

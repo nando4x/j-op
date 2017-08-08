@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * Descrizione classe
+ * Represent a page block refreshable when related monitored bean change 
  * 
  * @project   Jop (Java One Page)
  * 

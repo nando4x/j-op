@@ -8,8 +8,8 @@ import java.util.Map;
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Represent generic page expression.<br>
- * An expression is java (or other) language expression used in page into attribute or jbean tag
+ * Represent write page expression.<br>
+ * An expression that can also manage a value to write in some bean
  * 
  * @project   Jop (Java One Page)
  * 
@@ -23,7 +23,8 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public interface PageWriteExpression extends PageExpression {
 
-	/* (non-Javadoc)
+	/** 
+	 * @param NativeValue	value to write to 
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
 	Object execute(WebAppContext Context, String NativeValue, Map<String,Object> Vars);

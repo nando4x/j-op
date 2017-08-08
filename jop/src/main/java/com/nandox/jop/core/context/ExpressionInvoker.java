@@ -3,7 +3,8 @@ package com.nandox.jop.core.context;
 import java.util.Map;
 
 /**
- * Single Bean Invoker to invoke a specific method of a bean  
+ * Class to execute an expression.<br>
+ * This invoke the runtime class file compiled of an expression on specific web context   
  * 
  * @project   Jop (Java One Page)
  * 
@@ -18,8 +19,8 @@ import java.util.Map;
 public class ExpressionInvoker {
 
 	@SuppressWarnings("rawtypes")
-	private Class<ExpressionExecutor> expClass;
-	private String[] beans;
+	private Class<ExpressionExecutor> expClass;		// expression runtime compiled class
+	private String[] beans;	// bean referenced into expression
 	/**
 	 * @param	  Clazz class of bean
 	 * @param	  Beans list of application bean names 

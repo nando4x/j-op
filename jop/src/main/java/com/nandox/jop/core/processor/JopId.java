@@ -17,7 +17,7 @@ public class JopId {
 	private String page;
 	private String Id;
 	/**
-	 * Construnctor
+	 * Constructor
 	 * @param	  CompositId identifier composit ([page].id)
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
@@ -35,7 +35,7 @@ public class JopId {
 		// TODO: generate exception if syntax error
 	}
 	/**
-	 * Construnctor
+	 * Constructor
 	 * @param	  PageId page identifier
 	 * @param	  Id block identifier
 	 * @date      24 gen 2017 - 24 gen 2017

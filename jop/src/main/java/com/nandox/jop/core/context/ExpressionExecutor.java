@@ -3,7 +3,8 @@ package com.nandox.jop.core.context;
 import java.util.Map;
 
 /**
- * Executor of an page expression
+ * Executor of an page expression.<br>
+ * Basic interface of runtime class file complied associate to expression 
  * 
  * @project   Jop (Java One Page)
  * 

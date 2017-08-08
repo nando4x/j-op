@@ -6,7 +6,7 @@ import com.nandox.jop.core.context.WebAppContext;
 
 /**
  * Represent generic page expression.<br>
- * An expression is java (or other) language expression used in page into attribute or jbean tag
+ * An expression is java (or other) language expression used in page into html attribute or jbean tag
  * 
  * @project   Jop (Java One Page)
  * 
@@ -53,7 +53,7 @@ public interface PageExpression {
 	void resetValue();
 	
 	/**
-	 * Return the list of bean managed from expression
+	 * Return the list of bean referenced into expression
 	 * @date      01 feb 2017 - 01 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino

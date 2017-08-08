@@ -22,7 +22,9 @@ import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
- * This is basic part of a page 
+ * This is basic part of a page.<br>
+ * The Page block is identified by a JopId and can contains some page expressions.<br>
+ * A block before is parsed to create the expressions runtime compiled class and than is rendered to execute previous created expressions
  * 
  * @project   Jop (Java One Page)
  * 
@@ -39,7 +41,6 @@ import com.nandox.jop.core.ErrorsDefine;
  *
  */
 public class PageBlock implements RefreshableBlock {
-	/** Identification bean: jop_bean */
 //	public static final String JOP_BEAN_INI = "jop_bean={";
 	public static final String JOP_EXPR_INI = "{";
 	public static final String JOP_EXPR_END = "}";
@@ -53,26 +54,27 @@ public class PageBlock implements RefreshableBlock {
 	/** true if block is child of another block */
 	protected boolean isChild;
 	
-	private String pageId;
 	private static final String tmp_attr_id = "_jop_tmp_id";
 	private static final String form_selector = "[value^=java{]";
-	private int auto_id_index;
-	private boolean toBeRefresh;
+	private String pageId;	// parent page identifier
+	private int auto_id_index;	// auto incremental index of anonymous form input and for DOM attributes identifiers
+	private boolean toBeRefresh;	// flag to indicate that block is to refresh
 	//private Element clone;
 	
-	private Map<String,PageExpression> exprs;
-	private Map<String,PageExpression> beans;
-	private Map<String,PageWriteExpression> forms;
+	private Map<String,PageExpression> exprs;	// list of all expressions [id, expression created]
+	private Map<String,PageExpression> beans;	// list of all jbean	[bean id, expression reference in exprs list]
+	private Map<String,PageWriteExpression> forms;	// list of all form input expression [input name, expression reference in exprs list]
 
+	// class for DOM attribute expression 
 	private class AttributeExpr {
-		String name;
-		PageExpression expr;
-		boolean isOwn;
+		String name;		// DOM attribute name
+		PageExpression expr;	// expression
+		boolean isOwn;	// true if is an attribute of page block html element
 	}
 	
-	private Map<String,AttributeExpr> html_attrs;
-	private List<JopAttribute> attrs;
-	private Map<String,Class<?>> vars_definition;
+	private Map<String,AttributeExpr> html_attrs;	// list of DOM attribute with an expression [attribute id, attribute expression]
+	private List<JopAttribute> attrs;	// list of Jop Attribute of block
+	private Map<String,Class<?>> vars_definition;	// list of block variables [variable name, variable java class]
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -104,7 +106,7 @@ public class PageBlock implements RefreshableBlock {
 		return id;
 	}
 	/**
-	 * Rendering block and return string.<br>
+	 * Rendering block and return string of its contents.<br>
 	 * @param	  Context	Application context
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
@@ -129,9 +131,9 @@ public class PageBlock implements RefreshableBlock {
 		return this.renderAsNode(Context,0);
 	}
 	/**
-	 * Perform action submit
+	 * Perform action form submit
 	 * @param	  Context	Application context
-	 * @param	  Data	Map with name of tag and data
+	 * @param	  Data	Form data Map [name of input,data]
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -323,7 +325,7 @@ public class PageBlock implements RefreshableBlock {
 		// add page id into jop_id with index
 		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
 	}
-	// Parsing Dom Element to search and build beans and attributes
+	// Parsing Dom Element to search and build beans, attributes and form input
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {

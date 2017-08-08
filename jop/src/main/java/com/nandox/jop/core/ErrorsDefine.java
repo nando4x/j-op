@@ -2,7 +2,7 @@ package com.nandox.jop.core;
 
 import org.jsoup.nodes.Element;
 /**
- * Descrizione classe
+ * Represent errors definition and their messages
  * 
  * @project   Jop (Java One Page)
  * 
@@ -27,6 +27,16 @@ public class ErrorsDefine {
 	/** */
 	static final public String JOP_BEAN_NOTFOUND = "Bean used in page expression don't exist";  
 
+	/**
+	 * Format message error to print
+	 * @param	  Msg	error message
+	 * @param	  Elem	related DOM element
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  formatted string
+	 */
 	public static String formatDOM(String Msg, Element Elem) {
 		return Msg+"\r\n\t\t*********************************************************\r\n"+Elem.outerHtml();
 	}

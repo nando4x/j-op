@@ -1,5 +1,11 @@
+com.nandox.jop.bean
+com.nandox.jop.bean.spring
 com.nandox.jop.core
 com.nandox.jop.core.context
 com.nandox.jop.core.dispatcher
 com.nandox.jop.core.processor
+com.nandox.jop.core.processor.attribute
+com.nandox.jop.core.sevices
+com.nandox.libraries.utils
+com.nandox.libraries.utils.xml
 test

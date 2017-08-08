@@ -18,14 +18,10 @@ import javax.servlet.http.HttpServlet;
  * 
  * @revisor   Fernando Costantino
  */
-
-/**
- * @author Fernando
- *
- */
 public abstract class AbstractServletDispatcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
+	/** Request dispatcher */
 	protected Dispatcher dsp;
 	
 	/* (non-Javadoc)
@@ -52,7 +48,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 		return this.dsp.processPage(PageId, ContentPage);
 	}
 	/**
-	 * Process data query of submit action
+	 * Process data query of submit form action
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
 	 * @date      23 gen 2017 - 23 gen 2017
 	 * @author    Fernando Costantino

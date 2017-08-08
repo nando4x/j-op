@@ -22,10 +22,11 @@ import com.nandox.jop.core.context.ExpressionInvoker;
  */
 public abstract class AbstractPageExpression<E extends Object> implements PageExpression {
 
+	/** expression identifier */
 	protected String Id;
-	private String code;
-	private ExpressionInvoker invoker;
-	private E value;
+	private String code;	// expression source code 
+	private ExpressionInvoker invoker;	// expression invoker of runtime compiled class
+	private E value;	// cached value returned from expression invoker
 
 	/**
 	 * @param	  Context	Application context
@@ -105,7 +106,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		int i = Code.hashCode(); // get hash code
 		return "Jbean_"+(i<0?i*-1:i); // avoid sign (char '-')
 	}
-	// Create and compile invoker class 
+	// Create and compile expression invoker class 
 	//
 	//
 	void createInvokerClass(WebAppContext Context, Class<E> RetClass, Map<String,Class<?>> Vars) throws DomException {

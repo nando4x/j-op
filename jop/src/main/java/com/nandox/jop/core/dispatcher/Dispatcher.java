@@ -15,7 +15,8 @@ import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.ParseException;
 import com.nandox.jop.core.processor.JopId;
 /**
- * Real Dispatcher to process page requested
+ * Real Dispatcher to process page requested.<br>
+ * Search the existing page or create it and than process it 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -128,7 +129,7 @@ public class Dispatcher {
 		return map;
 	}
 	/**
-	 * Process data submit action
+	 * Process data submit form action
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
@@ -150,7 +151,7 @@ public class Dispatcher {
 		}
 	}
 	/**
-	 * Process data submit action of single block
+	 * Process data submit form action of single block
 	 * @param	  JopId block identifier
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
 	 * @date      10 feb 2017 - 10 feb 2017
