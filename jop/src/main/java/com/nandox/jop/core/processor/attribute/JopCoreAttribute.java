@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 /**
  * Annotation to declare an Jop attribute.<br>
  * Properties:<br>
- * 		name to give attribute nae<br>
- *  	priority (optional) to give a attribute execute priority (execute before attribute with low number priority)<br>
- *  	nested (optional) to add a more attributes (comma separated) to the same class that are nested to the main attribute   
+ * &emsp;		name to give attribute nae<br>
+ * &emsp; 	priority (optional) to give a attribute execute priority (execute before attribute with low number priority)<br>
+ * &emsp; 	nested (optional) to add a more attributes (comma separated) to the same class that are nested to the main attribute   
  * 
  * @project   Jop (Java One Page)
  * 

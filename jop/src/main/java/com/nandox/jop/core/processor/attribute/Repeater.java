@@ -11,11 +11,12 @@ import com.nandox.jop.core.processor.CollectionPageExpression;
 
 /**
  * Attribute jop_repeater implementation.<br>
- * Execute the expression and if false non render block  
+ * Execute the collection page expression and for every collection or array item instance result in var (defined by jop_var attribute)<br>
+ * repeat the nested block executing nested expression  
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    AbstractJopAttribute.java
+ * @module    Repeater.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 

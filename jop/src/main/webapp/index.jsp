@@ -30,6 +30,8 @@
 			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return "choice "+var2;}</jbean></option>
 		</select>
 		</form>
+		<div jop_include="page.html">
+		</div>
  	<!--<div jop_id=''>
 	</div>
 	<div 	jop_id='xxw'

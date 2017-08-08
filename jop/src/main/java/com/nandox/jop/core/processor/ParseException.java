@@ -5,7 +5,7 @@ package com.nandox.jop.core.processor;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    DomException.java
+ * @module    ParseException.java
  * 
  * @date      30 set 2016 - 30 set 2016
  * 

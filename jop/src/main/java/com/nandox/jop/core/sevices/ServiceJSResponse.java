@@ -6,7 +6,7 @@ package com.nandox.jop.core.sevices;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    AdapterCDATA.java
+ * @module    ServiceJSResponse.java
  * 
  * @date      10 feb 2017 - 10 feb 2017
  * 

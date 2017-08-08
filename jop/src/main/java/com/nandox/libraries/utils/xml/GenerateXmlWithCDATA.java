@@ -14,7 +14,7 @@ import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    XmlFromClass.java
+ * @module    GenerateXmlWithCDATA.java
  * 
  * @date      10 feb 2017 - 10 feb 2017
  * 

@@ -20,9 +20,9 @@ import com.nandox.jop.core.processor.PageApp;
  */
 public class WebAppContext {
 
-	private ApplicationContext springCtx;
-	private HashMap<String,PageApp> pages;
-	private ExpressionCompiler bcmpl;
+	private ApplicationContext springCtx;	// spring application context
+	private HashMap<String,PageApp> pages;	// list of pages
+	private ExpressionCompiler bcmpl;		// Expression compiler
 	
 	/**
 	 * @date      07 ott 2016 - 07 ott 2016

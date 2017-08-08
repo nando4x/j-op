@@ -418,13 +418,14 @@ public class PageBlock implements RefreshableBlock {
 			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
 				String bid = this.parseJavaExpression(a); 
-				if ( bid != null ) {
+				if ( bid != null || attr.getKey().toLowerCase().startsWith("jop_") ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						if ( isOwn ) {
 							// block jop attribute
-							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),bid);
+							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),(bid!=null?bid:a));
 							this.attrs.add(ja);
-							mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
+							if ( ((AbstractJopAttribute)ja).getExpression() != null )
+								mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
 						}
 					} else {
 						// html attribute: parse expression and verify if exist

@@ -10,11 +10,11 @@ import com.nandox.jop.core.processor.PageBlock;
 
 /**
  * Attribute jop_rendered implementation.<br>
- * CHeck the expression and if false non render block  
+ * Check the expression and if false not render block  
  * 
  * @project   Jop (Java One Page)
  * 
- * @module    AbstractJopAttribute.java
+ * @module    Rendered.java
  * 
  * @date      04 ott 2016 - 04 ott 2016
  * 
