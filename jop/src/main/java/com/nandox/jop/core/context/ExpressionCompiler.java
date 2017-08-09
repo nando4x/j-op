@@ -155,7 +155,7 @@ public class ExpressionCompiler {
 		}
 		// wrap code to class that implements ExpressionExecutor interface
 		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke (Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
+		code += "public "+returnclass+ " invoke (com.nandox.jop.bean.BeanAppContext appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
 		code += returnclass+" value = ("+returnclass+")Value;";
 		// add variables declaration if present and have a class definition
 		if ( vars != null && vars.size() > 0 ) {

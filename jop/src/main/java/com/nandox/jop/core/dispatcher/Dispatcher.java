@@ -10,6 +10,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.context.BeanAppContextImpl;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.ParseException;
@@ -75,19 +76,27 @@ public class Dispatcher {
 	 * @exception ParseException if parsing and check synstax error
 	 * @return	  html rendered
 	 */
-	protected String processPage(String PageId, String PageContent) throws ParseException {
-		// check if page is changed, in this case or if not exist create new
-		PageApp page;
-		if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
-			if ( page.getHash() != PageContent.hashCode() )
-				page = null;
+	public String processPage(String PageId, String PageContent) throws ParseException {
+		try {
+			PageApp page;
+			if ( this.appCtx.getCurrentBeanAppContext() == null )
+				this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(null));
+			else
+				this.appCtx.setCurrentBeanAppContext(this.appCtx.getCurrentBeanAppContext()); // do this because possible of recursive (due to jop_include)
+			// check if page is changed, in this case or if not exist create new
+			if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
+				if ( page.getHash() != PageContent.hashCode() )
+					page = null;
+			}
+			if ( page == null ) { // create new
+				page = new PageApp(this.appCtx,PageId,PageContent);
+				this.appCtx.getPagesMap().put(PageId, page);
+			}
+			// render page
+			return page.render(this.appCtx);
+		} finally {
+			this.appCtx.setCurrentBeanAppContext(null);
 		}
-		if ( page == null ) { // create new
-			page = new PageApp(this.appCtx,PageId,PageContent);
-			this.appCtx.getPagesMap().put(PageId, page);
-		}
-		// render page
-		return page.render(this.appCtx);
 	}
 	/**
 	 * Return Map of query data per page id
@@ -108,22 +117,10 @@ public class Dispatcher {
 				if ( val == null ) {
 					val = new HashMap<String,String[]>();
 				}
-				val.put(id.getId(), QueryData.get(key));
-				map.put(id.getPage(), val);
-		}
-		return map;
-	}
-	protected Map<String,Map<String,String[]>> extractParametersByPage(Map<String,String[]> QueryData) {
-		Map<String,Map<String,String[]>> map = new HashMap<String,Map<String,String[]>>();
-		Iterator<String> i = QueryData.keySet().iterator();
-		while (i.hasNext()) {
-			String key = i.next();
-			JopId id = new JopId(key);
-				Map<String,String[]> val = map.get(id.getPage());
-				if ( val == null ) {
-					val = new HashMap<String,String[]>();
-				}
-				val.put(id.getId(), QueryData.get(key));
+				if ( id.getId() != null )
+					val.put(id.getId(), QueryData.get(key));
+				else // general parameter created with key null
+					val.put(key, QueryData.get(key));
 				map.put(id.getPage(), val);
 		}
 		return map;
@@ -142,12 +139,13 @@ public class Dispatcher {
 		while ( i.hasNext() ) {
 			String pageId = i.next();
 			PageApp page;
+			this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(PageData.get(null)));
 			if ( (page = this.appCtx.getPagesMap().get(pageId)) != null ) {
 				page.action(this.appCtx, PageData.get(pageId));
 			} else {
 				//TODO: manage error page not exist
 			}
-			
+			this.appCtx.detachCurrentBeanAppContext();
 		}
 	}
 	/**
@@ -161,7 +159,7 @@ public class Dispatcher {
 	 * @return
 	 */
 	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
-		Map<String,Map<String,String[]>> map = this.extractParametersByPage(QueryData);
+		Map<String,Map<String,String[]>> map = this.getQueryDataByPage(QueryData);
 		Map<String,String[]> par = map.get(Id.getPage());
 		PageApp page = this.getPageApp(Id.getPage());
 		if ( page != null ) {
@@ -201,7 +199,7 @@ public class Dispatcher {
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
 		if ( (this.appCtx = (WebAppContext)ctx.getAttribute(ATTR_APPLCONTEXT)) == null ) {
-			this.appCtx = new WebAppContext();
+			this.appCtx = new WebAppContext(ctx, this);
 			ctx.setAttribute(ATTR_APPLCONTEXT, this.appCtx);
 		}
 		this.appCtx.setSpringCtx(WebApplicationContextUtils.getWebApplicationContext(ctx));

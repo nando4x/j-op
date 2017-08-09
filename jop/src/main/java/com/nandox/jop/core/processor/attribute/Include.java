@@ -5,15 +5,26 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.SimplePageExpression;
+
 /**
- * @author ee38938
- *
+ * Attribute jop_include implementation.<br>
+ * Execute the collection page expression and for every collection or array item instance result in var (defined by jop_var attribute)<br>
+ * repeat the nested block executing nested expression  
+ * 
+ * @project   Jop (Java One Page)
+ * 
+ * @module    Include.java
+ * 
+ * @date      04 ott 2016 - 04 ott 2016
+ * 
+ * @author    Fernando Costantino
+ * 
+ * @revisor   Fernando Costantino
  */
+@JopCoreAttribute(name="include")
 public class Include extends AbstractJopAttribute<SimplePageExpression> {
-	private PageApp page;	// page to include
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
@@ -25,7 +36,15 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 	 */
 	@Override
 	public Response preRender(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
-		// TODO Auto-generated method stub
+		try {
+			String file = Context.getResource(this.value);
+			String ret = Context.getDispatcher().processPage((this.value.charAt(0)=='/'?this.value.substring(1):this.value), file);
+			Dom.html(ret);
+			return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
+		} catch (Exception e) {
+			//TODO: manage exception
+			e = null;
+		}
 		return null;
 	}
 

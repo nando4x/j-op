@@ -50,7 +50,7 @@ public class ExpressionInvoker {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(beans,null,null,Vars);
+			ret = o.invoke(null,beans,null,null,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}
@@ -63,7 +63,7 @@ public class ExpressionInvoker {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(beans,Value,NativeValue,Vars);
+			ret = o.invoke(null,beans,Value,NativeValue,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}

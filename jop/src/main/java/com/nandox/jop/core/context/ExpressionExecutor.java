@@ -1,6 +1,7 @@
 package com.nandox.jop.core.context;
 
 import java.util.Map;
+import com.nandox.jop.bean.BeanAppContext;
 
 /**
  * Executor of an page expression.<br>
@@ -20,6 +21,7 @@ import java.util.Map;
 public interface ExpressionExecutor<E> {
 	
 	/** Main method to invoke expression
+	 * @param	  appContext Bean of application context
 	 * @param	  Beans array of beans called in expression
 	 * @param	  Value value for writing invoke
 	 * @param	  NativeValue string value for writing invoke
@@ -29,5 +31,5 @@ public interface ExpressionExecutor<E> {
 	 * @revisor   Fernando Costantino
 	 * @exception specific type value
 	 */
-	public E invoke(Object Beans[], Object Value, String NativeValue, Map<String,Object> Vars);
+	public E invoke(BeanAppContext appContext, Object Beans[], Object Value, String NativeValue, Map<String,Object> Vars);
 }

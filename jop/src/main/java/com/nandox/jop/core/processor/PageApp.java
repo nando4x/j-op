@@ -11,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.nandox.jop.core.ErrorsDefine;
-import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 /**
@@ -36,7 +35,6 @@ public class PageApp {
 	private Map<String,PageBlock> blocks;	// list of page blocks
 	private WebAppContext appCtx;	// application web context
 	private int auto_id_index;	// auto incremental index of anonymous block
-	private Dispatcher dsp;	// parent dispatcher
 	
 	/**
 	 * Constructor: parse page content into DOM

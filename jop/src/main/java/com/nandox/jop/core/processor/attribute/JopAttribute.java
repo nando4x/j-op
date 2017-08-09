@@ -38,7 +38,9 @@ public interface JopAttribute {
 	public static final String JOP_ATTR_ID = "jop_id";
 	/** Return action on block render phase */
 	public enum RETURN_ACTION {
+		/** continue rendering */
 		CONTINUE,
+		/** stop rendering: use result as rendering contents */
 		NOTRENDER
 	}
 
@@ -83,14 +85,22 @@ public interface JopAttribute {
 	public static class Response {
 		private RETURN_ACTION action;
 		private int repater_num;
+		private String result;
 		
 		public Response(RETURN_ACTION Action) {
 			this.action = Action;
 			this.repater_num = 1;
+			this.result = "";
 		}
 		public Response(RETURN_ACTION Action, int Num) {
-			this.action = Action;
+			this(Action);
 			this.repater_num = Num;
+			this.result = "";
+		}
+		public Response(RETURN_ACTION Action, String Result) {
+			this(Action);
+			this.repater_num = 1;
+			this.result = Result;
 		}
 		/**
 		 * @return the action
@@ -103,6 +113,12 @@ public interface JopAttribute {
 		 */
 		public int getRepater_num() {
 			return repater_num;
+		}
+		/**
+		 * @return the result
+		 */
+		public String getResult() {
+			return result;
 		}
 	}
 	/**
@@ -146,6 +162,19 @@ public interface JopAttribute {
 		public static String[] getNameList() {
 			init();
 			return attrs.keySet().toArray(new String[0]);
+		}
+		/**
+		 * Check if an known and managed attribute (nested is excluded)
+		 * @param	  Name Atttribute name
+		 * @date      04 ott 2016 - 04 ott 2016
+		 * @author    Fernando Costantino
+		 * @revisor   Fernando Costantino
+		 * @exception
+		 * @return    attributes name array
+		 */
+		public static boolean isKnown(String Name) {
+			init();
+			return (attrs.containsKey(Name) && attrs.get(Name)!=null);
 		}
 		// initialization of map: scan package to find all classes that implement JopAttribute and extend AbstractJopAttribute and have name with 
 		// JopCoreAttribute annotation

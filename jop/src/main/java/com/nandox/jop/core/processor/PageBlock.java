@@ -145,7 +145,7 @@ public class PageBlock implements RefreshableBlock {
 		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
 		while ( i.hasNext() ) {
 			Entry<String,PageWriteExpression> pe = i.next();
-			if ( Data.containsKey(pe.getKey()) ) {
+			if ( Data != null && Data.containsKey(pe.getKey()) ) {
 				// Invoke expression in write mode
 				String val = Data.get(pe.getKey())[0]; // get string data
 				pe.getValue().execute(Context, val, null); //TODO: what variables use?
@@ -220,7 +220,7 @@ public class PageBlock implements RefreshableBlock {
 			JopAttribute.Response r = ja.preRender(Context,clone,null); //TODO: what variables use?
 			switch (r.getAction()) {
 				case NOTRENDER:
-					return new TextNode("","");
+					return new TextNode(r.getResult(),"");
 				default:
 					num = r.getRepater_num();
 					break;
@@ -418,7 +418,7 @@ public class PageBlock implements RefreshableBlock {
 			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
 				String bid = this.parseJavaExpression(a); 
-				if ( bid != null || attr.getKey().toLowerCase().startsWith("jop_") ) {
+				if ( bid != null || ( attr.getKey().toLowerCase().startsWith("jop_") && JopAttribute.Factory.isKnown(attr.getKey()) ) ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						if ( isOwn ) {
 							// block jop attribute

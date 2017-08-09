@@ -88,7 +88,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 			Class<E> cl = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 			this.expression = cl.getDeclaredConstructor(WebAppContext.class, String.class, Map.class).newInstance(Context,Code,Vars);
 		} catch (Exception e) {
-			// TODO: manage expression instantation error
+			// TODO: manage expression instance error
 			e = null;
 		}
 	}
