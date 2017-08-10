@@ -1,5 +1,6 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
@@ -30,6 +31,15 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 	 */
 	public Include(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
 		super(Context, Block, Node, Name, Value);
+		Iterator<Element> elems = Node.getElementsByTag("param").iterator();
+		while (elems.hasNext() ) {
+			Element el = elems.next();
+			if ( el.hasAttr("name") ) {
+				String name = el.attr("name");
+				String val = el.nextSibling().outerHtml();
+				Context.getCurrentBeanAppContext().addParameter(name, val);
+			}
+		}
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)

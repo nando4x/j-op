@@ -12,7 +12,6 @@ import com.nandox.jop.bean.BeanAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.PageApp;
-import com.nandox.jop.core.context.BeanAppContextImpl;
 
 /**
  * Application Context to resolve and invoke bean.<br>
@@ -167,12 +166,9 @@ public class WebAppContext {
 	 */
 	public void setCurrentBeanAppContext(BeanAppContext Bean) {
 		if (Bean == null) {
-			((BeanAppContextImpl)instance.get()).setRecursiveCnt(((BeanAppContextImpl)instance.get()).getRecursiveCnt()-1);
-			if ( ((BeanAppContextImpl)instance.get()).getRecursiveCnt() <= 0 )
-				instance.remove();
+			instance.remove();
 		}else {
 			instance.set(Bean);
-			((BeanAppContextImpl)Bean).setRecursiveCnt(((BeanAppContextImpl)Bean).getRecursiveCnt()+1);
 		}
 	}
 	/**
@@ -186,16 +182,5 @@ public class WebAppContext {
 	 */
 	public BeanAppContext getCurrentBeanAppContext() {
 		return instance.get();
-	}
-	/**
-	 * detach BeanAppContext of current thread bat not reset thread 
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 * @return	  
-	 */
-	public void detachCurrentBeanAppContext() {
-		((BeanAppContextImpl)instance.get()).setRecursiveCnt(((BeanAppContextImpl)instance.get()).getRecursiveCnt()-1);
 	}
 }

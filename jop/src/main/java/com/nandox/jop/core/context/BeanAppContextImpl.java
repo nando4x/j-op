@@ -19,7 +19,6 @@ import com.nandox.jop.bean.BeanAppContext;
  */
 public class BeanAppContextImpl implements BeanAppContext {
 	private Map<String,String[]> params;	// request parameters
-	private int recursiveCnt;	// recursive count to check if  not more referenced
 	/**
 	 * @param	  Context	Application context
 	 * @param	  Code		expression code
@@ -48,16 +47,18 @@ public class BeanAppContextImpl implements BeanAppContext {
 			return this.params.get(Name);
 		return null;
 	}
-	/**
-	 * @return the recursiveCnt
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.bean.BeanAppContext#addParameter(java.lang.String, java.lang.String)
 	 */
-	protected int getRecursiveCnt() {
-		return recursiveCnt;
+	@Override
+	public void addParameter(String Name, String Value) {
+		String v[] = {Value};
+		this.params.put(Name, v);
 	}
 	/**
-	 * @param recursiveCnt the recursiveCnt to set
+	 * @param params the params to set
 	 */
-	protected void setRecursiveCnt(int recursiveCnt) {
-		this.recursiveCnt = recursiveCnt;
+	public void setParameters(Map<String, String[]> params) {
+		this.params = params;
 	}
 }

@@ -67,6 +67,28 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	/**
+	 * Start processing to call before page processing 
+	 * @date      10 feb 2017 - 10 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public void startProcessing() {
+		this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(null));
+	}
+	/**
+	 * End processing to call after page processing 
+	 * @date      10 feb 2017 - 10 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
+	public void endProcessing() {
+		this.appCtx.setCurrentBeanAppContext(null);
+	}
+	/**
 	 * Complete process page: parse check and render
 	 * @param	  PageId	page identificator
 	 * @param	  Page		page content
@@ -77,26 +99,18 @@ public class Dispatcher {
 	 * @return	  html rendered
 	 */
 	public String processPage(String PageId, String PageContent) throws ParseException {
-		try {
-			PageApp page;
-			if ( this.appCtx.getCurrentBeanAppContext() == null )
-				this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(null));
-			else
-				this.appCtx.setCurrentBeanAppContext(this.appCtx.getCurrentBeanAppContext()); // do this because possible of recursive (due to jop_include)
-			// check if page is changed, in this case or if not exist create new
-			if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
-				if ( page.getHash() != PageContent.hashCode() )
-					page = null;
-			}
-			if ( page == null ) { // create new
-				page = new PageApp(this.appCtx,PageId,PageContent);
-				this.appCtx.getPagesMap().put(PageId, page);
-			}
-			// render page
-			return page.render(this.appCtx);
-		} finally {
-			this.appCtx.setCurrentBeanAppContext(null);
+		PageApp page;
+		// check if page is changed, in this case or if not exist create new
+		if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
+			if ( page.getHash() != PageContent.hashCode() )
+				page = null;
 		}
+		if ( page == null ) { // create new
+			page = new PageApp(this.appCtx,PageId,PageContent);
+			this.appCtx.getPagesMap().put(PageId, page);
+		}
+		// render page
+		return page.render(this.appCtx);
 	}
 	/**
 	 * Return Map of query data per page id
@@ -136,16 +150,16 @@ public class Dispatcher {
 	 */
 	protected void processPageFormAction(Map<String,Map<String,String[]>> PageData) {
 		Iterator<String> i = PageData.keySet().iterator();
+		if ( this.appCtx.getCurrentBeanAppContext() != null )
+			((BeanAppContextImpl)this.appCtx.getCurrentBeanAppContext()).setParameters(PageData.get(null));
 		while ( i.hasNext() ) {
 			String pageId = i.next();
 			PageApp page;
-			this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(PageData.get(null)));
 			if ( (page = this.appCtx.getPagesMap().get(pageId)) != null ) {
 				page.action(this.appCtx, PageData.get(pageId));
 			} else {
 				//TODO: manage error page not exist
 			}
-			this.appCtx.detachCurrentBeanAppContext();
 		}
 	}
 	/**

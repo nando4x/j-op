@@ -37,4 +37,15 @@ public interface BeanAppContext {
 	 * @return	  parameter value
 	 */
 	public String[] getParameter(String Name);
+	/**
+	 * Add parameter
+	 * @param	  Name parameter name
+	 * @param	  Value parameter value
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	 
+	 */
+	public void addParameter(String Name, String Value);
 }

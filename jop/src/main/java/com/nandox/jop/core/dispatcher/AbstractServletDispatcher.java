@@ -4,6 +4,7 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Abstract Servlet Dispatcher to instance dispatcher and process page requested
@@ -33,7 +34,29 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 		this.dsp = new Dispatcher();
 		dsp.initFromServlet(Config);
 	}
-
+	/**
+	 * Complete process request: interpreter and render page with form action submit
+	 * @param	  PageId	page identificator
+	 * @param	  ContentPage:	html content of the page
+	 * @param	  Req 		Http request 
+	 * @date      19 set 2016 - 19 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception DomException if dom systax error
+	 * @return	  rendered html
+	 */
+	protected String processRequest(String PageId, String ContentPage, HttpServletRequest Req) throws Exception {
+		try {
+			this.dsp.startProcessing();
+			// if is submit action process query data before
+			if ( !Req.getParameterMap().isEmpty() )
+				this.processDataQuery(Req.getParameterMap());
+			return this.processPage(PageId, ContentPage);
+		} finally {
+			this.dsp.endProcessing();
+		}
+	}
+	 
 	/**
 	 * Complete process of page to interpreter and render it
 	 * @param	  PageId	page identificator
@@ -47,6 +70,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	protected String processPage(String PageId, String ContentPage) throws Exception {
 		return this.dsp.processPage(PageId, ContentPage);
 	}
+
 	/**
 	 * Process data query of submit form action
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
