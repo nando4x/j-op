@@ -1,6 +1,7 @@
 package com.nandox.jop.core.context;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import com.nandox.jop.bean.BeanAppContext;
 
@@ -52,6 +53,8 @@ public class BeanAppContextImpl implements BeanAppContext {
 	 */
 	@Override
 	public void addParameter(String Name, String Value) {
+		if ( this.params == null )
+			this.params = new HashMap<String,String[]>();
 		String v[] = {Value};
 		this.params.put(Name, v);
 	}

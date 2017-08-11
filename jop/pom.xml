@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jop</groupId>
   <artifactId>jop</artifactId>
-  <packaging>war</packaging>
+  <packaging>${packaging.type}</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>jop Maven Webapp</name>
   <url>http://maven.apache.org</url>
@@ -57,6 +57,14 @@
 	    <artifactId>cglib-nodep</artifactId>
 	    <version>2.2</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+	<dependency>
+    	<groupId>com.sun.xml.bind</groupId>
+    	<artifactId>jaxb-impl</artifactId>
+    	<version>2.0.1</version>
+		<scope>provided</scope>
+	</dependency>
+	
   </dependencies>
   <build>
     <finalName>jop</finalName>
@@ -70,4 +78,21 @@
   		</dependency>
   	</dependencies>
   </dependencyManagement>
+  <profiles>
+        <profile>
+            <id>war</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <packaging.type>war</packaging.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>jar</id>
+            <properties>
+                <packaging.type>jar</packaging.type>
+            </properties>
+        </profile>
+  </profiles>
 </project>

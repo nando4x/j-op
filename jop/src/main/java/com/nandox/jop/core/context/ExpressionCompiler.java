@@ -96,7 +96,8 @@ public class ExpressionCompiler {
 		    // Add path with compiler options
 	    	o.add("-classpath");
 		    if ( path.isEmpty() )
-		    	path = this.classpath;
+		    	path = this.classpath+";";
+		    path += this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + ";";
 	    	o.add(System.getProperty("java.class.path")+";"+path);
 		    o.add("-d");
 		    o.add(this.classpath);

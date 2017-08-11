@@ -34,7 +34,6 @@ import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
  * 
  * @revisor   Fernando Costantino
  */
-
 public class ServiceJSServlet extends AbstractServletDispatcher {
 
 	private static final long serialVersionUID = 1L;
