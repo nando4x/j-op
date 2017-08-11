@@ -1,0 +1,54 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  	<display-name>Jop Demo</display-name>
+	<context-param>
+    	<param-name>contextConfigLocation</param-name>
+    	<param-value>/WEB-INF/spring.xml</param-value>
+	</context-param>
+	<listener>
+    	<listener-class>
+        	org.springframework.web.context.ContextLoaderListener
+    	</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>Jop Servlet</servlet-name>
+		<servlet-class>com.nandox.jop.core.dispatcher.ServletDispatcher</servlet-class>
+    <!-- servelt parameters
+		<bean-config>bean-config.xml/.prop</bean-config>
+		<page-config>pagexml/.prop</page-config>
+	-->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jop Servlet</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<servlet-class>com.nandox.jop.core.sevices.ServiceJSServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<url-pattern>/jopservices/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<url-pattern>/jopscript/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JopServices Servlet</servlet-name>
+		<url-pattern>/stores/*</url-pattern>
+	</servlet-mapping>
+
+	<!--filter>
+		<display-name>CsrfPreventionFilter</display-name>
+		<filter-name>CsrfPreventionFilter</filter-name>
+		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CsrfPreventionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping-->
+</web-app>
