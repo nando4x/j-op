@@ -28,7 +28,7 @@ Jop.core.services = Jop.core.services || {};
 	});
 	
 	// private variables
-	var queue = { forms: null };
+	var queue = { forms: [] };
 	/**
 	 * General Exception
 	 * @param	  code exception code
@@ -126,26 +126,71 @@ Jop.core.services = Jop.core.services || {};
 		}
 	}
 	/**
-	 * Register new form submissions.
-	 * Select all jop block forms without action and add event onsubmit to post block 
-	 * @param	  data	html data to scan. if null scan all document
+	 * Document ready function: execute callback when document is ready 
+	 * @param	  callback function to call
 	 * @date      03 feb 2017 - 03 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return	  
 	 */
-	this.registForm = function(data) {
+	this.ready = function(callback) {
+		 if (document.readyState != 'loading') {
+			 callback();
+		 } else if (document.addEventListener) {
+		    document.addEventListener('DOMContentLoaded', callback);
+		 } else {
+		    document.attachEvent('onreadystatechange', function() {
+			    if (document.readyState != 'loading')
+			    	callback();
+				    
+	    	});
+	 	}	
+	}
+	/**
+	 * Register new form submissions.
+	 * Select all jop block forms without action and add event onsubmit to post block 
+	 * @param	  element	element DOM to scan. if null scan all document
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  
+	 */
+	this.registForm = function(element) {
 		var el = document;
-		if ( data != null ) {
-			
-		}
+		if ( element != undefined && element != null )
+			el = element;
+		// scan forms and check if action is defined
 		var forms = el.querySelectorAll('form[jop_id]');
 		for ( var ix=0; forms!=null && ix<forms.length; ix++ ) {
-			
+			var act = forms[ix].getAttribute('action');
+			if ( act == null || act.length > 0 ) {
+				var id = forms[ix].getAttribute('jop_id');
+				// check if already present in queue otherwise add block id in queue and add event to block 
+				if ( queue.forms.indexOf(id) < 0 ) {
+					forms[ix].addEventListener('submit',formSubmitHandler);
+					queue.forms.push(id);
+				}
+			}
 		}
+	}
+	// form submission event handler
+	//
+	//
+	function formSubmitHandler(event) {
+		event.preventDefault();
+		if ( typeof Jop.core.services.postBlock == 'function' )
+			Jop.core.services.postBlock(this.getAttribute('jop_id'));
 	}
 	// also introduce a new sub-namespace
 	//this.tools = {};
 	    
-}).apply( Jop.core );  
+}).apply( Jop.core );
+
+// Attach event for document ready
+//
+//
+Jop.core.ready(function(){
+	Jop.core.registForm(null);
+});

@@ -7,7 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
 
 /**
  * Class to generate XML from a JAXB object with CDATA

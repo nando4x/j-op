@@ -31,6 +31,7 @@
 	 * @return	  response	  
 	 */
 	this.postBlock = function (jopId) {
+		debugger;
 		// get block and its child input
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');

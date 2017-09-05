@@ -144,7 +144,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 	//
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		InputStream i = this.getClass().getResourceAsStream(SCRIPT_BASE_PATH+"/"+req.getPathInfo());
+		InputStream i = this.getClass().getResource(SCRIPT_BASE_PATH+"/"+req.getPathInfo()).openStream();
 		if ( i != null ) {
 			int len = 0;
 			StringBuffer jb = new StringBuffer();

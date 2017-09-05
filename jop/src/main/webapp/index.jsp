@@ -35,7 +35,7 @@
 			<param name="bbb">ccc1</param>
 			<param name="ccc"></param>
 		</div>
- 	<!--<div jop_id=''>
+ 	<div jop_id=''>
 	</div>
 	<div 	jop_id='xxw'
 			jop_rendered="java{
@@ -64,7 +64,7 @@
 			alert('xxx');
 		}
 	</script>
-	<form jop_id='' onsubmit="xxx(this);"  action="index.jsp" method="post">
+	<form jop_id='' onsubmit="xxx(this);"  xaction="index.jsp" method="post">
 		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>
@@ -102,6 +102,6 @@
 				</div>
 			</div>
 		</div>
-	</div>-->
+	</div>
 </body>
 </html>
