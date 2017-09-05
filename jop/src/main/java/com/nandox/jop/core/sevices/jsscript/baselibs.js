@@ -26,6 +26,9 @@ Jop.core.services = Jop.core.services || {};
 	this.const = Object.freeze({
 		"DEBUG": true
 	});
+	
+	// private variables
+	var queue = { forms: null };
 	/**
 	 * General Exception
 	 * @param	  code exception code
@@ -63,7 +66,7 @@ Jop.core.services = Jop.core.services || {};
 	 */
 	this.injectBlockElement = function(jopId,html){
 		// TODO: execute scripts like jquery ajax and plus script before (if has attribute jop_before)
-		var block = this.querySelector(document,'[jop_id="'+jopId+'"');
+		var block = this.querySelector(document,'[jop_id="'+jopId+'"]');
 		if ( block != null )
 			block.outerHTML = html;
 		else 
@@ -120,6 +123,26 @@ Jop.core.services = Jop.core.services || {};
 			if ( arguments.callee.caller != null )
 				msg = "("+arguments.callee.caller.name + ") " + msg;
 			console.log(msg);
+		}
+	}
+	/**
+	 * Register new form submissions.
+	 * Select all jop block forms without action and add event onsubmit to post block 
+	 * @param	  data	html data to scan. if null scan all document
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  
+	 */
+	this.registForm = function(data) {
+		var el = document;
+		if ( data != null ) {
+			
+		}
+		var forms = el.querySelectorAll('form[jop_id]');
+		for ( var ix=0; forms!=null && ix<forms.length; ix++ ) {
+			
 		}
 	}
 	// also introduce a new sub-namespace
