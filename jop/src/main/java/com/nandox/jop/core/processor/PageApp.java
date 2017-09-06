@@ -28,7 +28,10 @@ import com.nandox.jop.core.processor.attribute.JopAttribute;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
+	/** DOM JOP block selector */
 	protected static final String DOMPARSER_JOP_SELECTOR = PageApp.getAttributeSelector();
+	
+	private static final String DOMPARSER_HEAD_TAG = "script[jop_head=\"true\"]";
 	private String id;	// page identifier
 	private int hash;	// page hash code
 	private Document dom;	// html DOM document
@@ -121,8 +124,14 @@ public class PageApp {
 	//
 	//
 	private void parse() throws ParseException {
+		// Search jop head and substitute with script file include
+		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
+		for ( int ix=0; ix<list.size(); ix++ ) {
+			Element el = list.get(ix);
+			this.buildHeadScript(el);
+		}
 		// Search every jop block into dom and create it
-		Elements list = this.dom.select(DOMPARSER_JOP_SELECTOR);
+		list = this.dom.select(DOMPARSER_JOP_SELECTOR);
 		// generate auto id if empty
         this.auto_id_index=0;
 		for ( int ix=0; ix<list.size(); ix++ ) {
@@ -172,6 +181,14 @@ public class PageApp {
     		}
     		b[ix].child = child;
     	}
+	}
+	// Build head scripts inclusion
+	// 
+	//
+	private void buildHeadScript (Element el) {
+		el.before("<script type=\"text/javascript\" src=\"jopscript/baselibs.js\"/>");
+		el.before("<script type=\"text/javascript\" src=\"jopscript/core/services.js\"/>");
+		el.remove();
 	}
 	// Generate css selector with all possible jop attributes
 	//

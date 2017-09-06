@@ -7,7 +7,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+
 
 /**
  * Class to generate XML from a JAXB object with CDATA
@@ -22,7 +23,6 @@ import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
  * 
  * @revisor   Fernando Costantino
  */
-@SuppressWarnings("restriction")
 public class GenerateXmlWithCDATA {
 
 	/**
@@ -39,14 +39,13 @@ public class GenerateXmlWithCDATA {
 	        JAXBContext jc = JAXBContext.newInstance(Data.getClass());
 	        Marshaller m = jc.createMarshaller();
 	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	        m.setProperty(CharacterEscapeHandler.class.getName(),
-                new CharacterEscapeHandler() {
-                    public void escape(char[] ac, int i, int j, boolean flag,
-                            Writer writer) throws IOException {
-                        writer.write(ac, i, j);
-                    }
+	        CharacterEscapeHandler c = new CharacterEscapeHandler() {
+                public void escape(char[] ac, int i, int j, boolean flag,
+                        Writer writer) throws IOException {
+                    writer.write(ac, i, j);
                 }
-	        );
+            };
+	        m.setProperty(CharacterEscapeHandler.class.getName(), c);
 	        m.marshal(Data, sw);
 	        return sw.toString();
 		} catch (JAXBException e) {

@@ -1,8 +1,7 @@
 <html>
 <head>
+ <script jop_head="true"/>
  <script type="text/javascript" src="jquery-1.12.2.js"/>
- <script type="text/javascript" src="jopscript/baselibs.js"/>
- <script type="text/javascript" src="jopscript/core/services.js"/>
 </head>
 <body>
 <script type="javascript">
@@ -64,7 +63,7 @@
 			alert('xxx');
 		}
 	</script>
-	<form jop_id='' onsubmit="xxx(this);"  xaction="index.jsp" method="post">
+	<form jop_id='' xonsubmit="xxx(this);"  xaction="index.jsp" method="post">
 		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld.setMessage(value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>

@@ -106,7 +106,9 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 					this.dsp.endProcessing();
 					try {
 						this.serviceResponser(r, resp);
-					} catch (Exception e) {}
+					} catch (Exception e) {
+						e = null;
+					}
 					return;
 				}
 			}

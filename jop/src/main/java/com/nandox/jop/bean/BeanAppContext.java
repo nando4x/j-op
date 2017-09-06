@@ -3,8 +3,8 @@ package com.nandox.jop.bean;
 import java.util.Map;
 /**
  * Application Context visible in expression.<br>
- * In every expression there is an instance of this interface named appContext, with this in the expression you can get every<br>
- * context information and data   
+ * In each expression there is an instance named appContext of this interface, with this in the expression you can get every<br>
+ * context informations and datas
  * 
  * @project   Jop (Java One Page)
  * 
@@ -34,7 +34,7 @@ public interface BeanAppContext {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return	  parameter value
+	 * @return	  parameter values
 	 */
 	public String[] getParameter(String Name);
 	/**
