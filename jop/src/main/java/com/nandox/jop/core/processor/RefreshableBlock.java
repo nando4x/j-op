@@ -27,13 +27,14 @@ public interface RefreshableBlock {
 	public void setToBeRefreshed();
 	/**
 	 * Reset that block is to be refreshed
+	 * @param	  ResetChild if true reset child too (deep inside)
 	 * @date      02 feb 2017 - 02 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return
 	 */
-	public void resetToBeRefreshed();
+	public void resetToBeRefreshed(boolean ResetChild);
 	/**
 	 * Check if block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017

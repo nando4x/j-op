@@ -15,7 +15,7 @@
 (function () {
 	// Constant definition
 	var i = 0;
-	this.const = Object.freeze({
+	this.CONST = Object.freeze({
 		"RESP_TYPE_BLOCK": i++,
 		"RESP_TYPE_HTML": i++
 	});
@@ -44,11 +44,13 @@
 				var num = response.getElementsByTagName('response')[0].attributes.num.value;
 				for (var ix=0; ix<num; ix++) {
 					var data = response.getElementsByTagName('block')[ix].lastChild.data;
-					var id = response.getElementsByTagName('block')[ix].id;
-					Jop.core.injectBlockElement(id, data);
+					var id = response.getElementsByTagName('block')[ix].getAttribute('id');
+					Jop.core.injectBlockElement(id, data, true);
 				}
+				Jop.core.trigger(Jop.core.EVENT.DOMLOADED);
 			} catch (e) {
 				// TODO: manage response error
+				console.log(e);
 			}
 		}
 		ajax("POST","jopservices/inject/postblock",true,request,callback,null);

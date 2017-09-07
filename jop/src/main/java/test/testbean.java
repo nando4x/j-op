@@ -5,7 +5,7 @@ import com.nandox.jop.bean.JopMonitoring;
 public class testbean {
 	private String message;
 
-	@JopMonitoring
+	//@JopMonitoring
    public void setMessage(String message){
       this.message  = message;
       message = "x";

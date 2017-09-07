@@ -202,8 +202,10 @@ public class Dispatcher {
 			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
 			while ( blocks.hasNext() ) {
 				PageBlock b = blocks.next();
-				if ( b.getToBeRefresh() )
+				if ( b.getToBeRefresh() ) {
 					lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
+					b.resetToBeRefreshed(true); // reset to be refresh for child too
+				}
 			}
 		}
 		return lst;

@@ -82,6 +82,12 @@
   	<label for="male">Male</label>	
 		 <button type="button">Click Me!</button>
 		<input  type="submit">
+	<script jop_before="true">
+		alert('before');
+	</script>
+	<script>
+		alert('after');
+	</script>
 	</form>
 	<div jop_id='id1' onclick="{}">
 		<jbean>{return 

@@ -151,8 +151,6 @@ public class PageBlock implements RefreshableBlock {
 				pe.getValue().execute(Context, val, null); //TODO: what variables use?
 			}
 		}
-		// Reset all value expression
-		this.resetAllExprValue();
 		this.toBeRefresh = true;
 	}
 	
@@ -165,10 +163,16 @@ public class PageBlock implements RefreshableBlock {
 		this.toBeRefresh = true;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed()
+	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
 	 */
-	public void resetToBeRefreshed() {
+	public void resetToBeRefreshed(boolean ResetChild) {
 		this.toBeRefresh = false;
+		if ( ResetChild ) {
+			Iterator<PageBlock> cl = this.child.iterator();
+			while ( cl.hasNext() ) {
+				cl.next().resetToBeRefreshed(ResetChild);;
+			}
+		}
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#GetToBeRefresh()
@@ -211,6 +215,8 @@ public class PageBlock implements RefreshableBlock {
 	//
 	//
 	private Node renderAsNode(WebAppContext Context, int index) {
+		// Reset all value expression
+		this.resetAllExprValue();
 		Element clone = this.domEl.clone();
 		int num = 1;
 		// check render attribute
