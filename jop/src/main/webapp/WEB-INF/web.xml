@@ -13,6 +13,11 @@
         	org.springframework.web.context.ContextLoaderListener
     	</listener-class>
 	</listener>
+	<listener>
+    	<listener-class>
+			org.springframework.web.context.request.RequestContextListener
+    	</listener-class>
+	</listener>
 	<servlet>
 		<servlet-name>Jop Servlet</servlet-name>
 		<servlet-class>com.nandox.jop.core.dispatcher.ServletDispatcher</servlet-class>

@@ -53,6 +53,7 @@ public class ExpressionInvoker {
 			ret = o.invoke(null,beans,null,null,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
+			e = null;
 		}
 		return ret;
 	}
