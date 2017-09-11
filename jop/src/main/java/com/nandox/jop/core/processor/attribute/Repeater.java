@@ -7,10 +7,10 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.CollectionPageExpression;
+import com.nandox.jop.core.processor.expression.CollectionPageExpression;
 
 /**
- * Attribute jop_repeater implementation.<br>
+ * Attribute jop_repeater implementation.<p>
  * Execute the collection page expression and for every collection or array item instance result in var (defined by jop_var attribute)<br>
  * repeat the nested block executing nested expression  
  * 
@@ -33,7 +33,7 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public Repeater(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
+	public Repeater(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
 		super(Context, Block, Node, Name, Value);
 		this.registerVariable(Context, Block, Node);
 	}

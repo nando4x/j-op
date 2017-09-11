@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
- * Real servlet handler to read page file requested and process its content 
+ * Real servlet handler to read page file requested and process its content.<p> 
  * 
  * @project   Jop (Java One Page)
  * 

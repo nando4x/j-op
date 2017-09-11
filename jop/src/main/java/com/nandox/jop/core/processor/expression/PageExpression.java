@@ -1,12 +1,11 @@
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.context.ExpressionValue;
 
 /**
- * Represent generic page expression.<br>
+ * Represent generic page expression.<p>
  * An expression is java (or other) language expression used in page into html attribute or jbean tag
  * 
  * @project   Jop (Java One Page)
@@ -45,13 +44,14 @@ public interface PageExpression {
 
 	/**
 	 * Reset expression return value to null.<br>
+	 * @param	  Context	Application context
 	 * @date      07 ott 2016 - 07 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return	    
 	 */
-	void resetValue();
+	void resetValue(WebAppContext Context);
 	
 	/**
 	 * Return the list of bean referenced into expression
@@ -65,12 +65,11 @@ public interface PageExpression {
 
 	/**
 	 * Instance context value
-	 * @param	  Id expression identifier
 	 * @date      01 feb 2017 - 01 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return	  ExpressionValue instance
 	 */
-	ExpressionValue<?> instanceValue(String Id);
+	ExpressionValue<?> instanceValue();
 }

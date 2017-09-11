@@ -4,7 +4,7 @@ import java.util.Map;
 import com.nandox.jop.core.processor.JopId;
 
 /**
- * Abstract general javascript service.<br>
+ * Abstract general javascript service.<p>
  * 
  * @project   Jop (Java One Page)
  * 

@@ -1,10 +1,10 @@
-package com.nandox.jop.core.context;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 import com.nandox.jop.bean.BeanAppContext;
 
 /**
- * Executor of an page expression.<br>
+ * Executor of an page expression.<p>
  * Basic interface of runtime class file complied associate to expression 
  * 
  * @project   Jop (Java One Page)

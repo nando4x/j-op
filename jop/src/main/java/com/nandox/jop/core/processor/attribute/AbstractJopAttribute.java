@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 
-import com.nandox.jop.core.processor.PageExpression;
-import com.nandox.jop.core.processor.AbstractPageExpression;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.DomException;
+import com.nandox.jop.core.processor.expression.AbstractPageExpression;
+import com.nandox.jop.core.processor.expression.PageExpression;
 
 /**
- * Jop Attribute abstract implementation 
+ * Jop Attribute abstract implementation.<p> 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -40,10 +41,11 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
+	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws DomException {
 		this.name = Name;
 		this.value = Value;
-		this.computeExpression(Context, Value, Block.getVarsDefinition());
+		if ( Value != null )
+			this.computeExpression(Context, Value, Block.getVarsDefinition());
 	}
 	/**
 	 * Return expression 
@@ -82,14 +84,14 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	protected void computeExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) {
+	protected void computeExpression(WebAppContext Context, String Code, Map<String,Class<?>> Vars) throws DomException {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<E> cl = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 			this.expression = cl.getDeclaredConstructor(WebAppContext.class, String.class, Map.class).newInstance(Context,Code,Vars);
 		} catch (Exception e) {
 			// TODO: manage expression instance error
-			e = null;
+			throw new DomException(e.getCause().getMessage());
 		}
 	}
 }

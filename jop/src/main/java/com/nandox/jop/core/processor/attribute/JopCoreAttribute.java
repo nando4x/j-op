@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to declare an Jop attribute.<br>
+ * Annotation to declare an Jop attribute.<p>
  * Properties:<br>
  * &emsp;		name to give attribute nae<br>
  * &emsp; 	priority (optional) to give a attribute execute priority (execute before attribute with low number priority)<br>

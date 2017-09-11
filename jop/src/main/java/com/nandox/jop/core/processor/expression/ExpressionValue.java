@@ -1,7 +1,7 @@
-package com.nandox.jop.core.context;
+package com.nandox.jop.core.processor.expression;
 
 /**
- * Expression context runtime value
+ * Expression context runtime value.<p>
  * 
  * @project   Jop (Java One Page)
  * 

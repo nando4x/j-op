@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * DOM exception thrown in case of syntax error
+ * DOM exception thrown in case of syntax error.<p>
  * 
  * @project   Jop (Java One Page)
  * 

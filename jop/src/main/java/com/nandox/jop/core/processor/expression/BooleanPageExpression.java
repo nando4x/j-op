@@ -1,11 +1,12 @@
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.DomException;
 
 /**
- * Boolean returned Expression Page: used for boolean page block attributes
+ * Boolean returned Expression Page: used for boolean page block attributes.<p>
  * 
  * @project   Jop (Java One Page)
  * 

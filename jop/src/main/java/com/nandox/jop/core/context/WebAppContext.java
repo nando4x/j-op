@@ -8,13 +8,13 @@ import javax.servlet.ServletContext;
 
 import org.springframework.context.ApplicationContext;
 
-import com.nandox.jop.bean.BeanAppContext;
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.expression.ExpressionCompiler;
 
 /**
- * Application Context to resolve and invoke bean.<br>
+ * Application Context to resolve and invoke bean.<p>
  * The bean is search in spring environment
  * 
  * @project   Jop (Java One Page)
@@ -34,7 +34,7 @@ public class WebAppContext {
 	private ExpressionCompiler bcmpl;		// Expression compiler
 	private ServletContext ctx;				// servlet context
 	private Dispatcher dsp;					// dispatcher
-	private static ThreadLocal<BeanAppContext> instance = new ThreadLocal<BeanAppContext>(); // current thread BeanAppContext
+	private static ThreadLocal<RequestContext> instance = new ThreadLocal<RequestContext>(); // current thread RequestContext
 	
 	/**
 	 * @param	  Context Servlet context 
@@ -157,18 +157,18 @@ public class WebAppContext {
 	}
 	/**
 	 * Set BeanAppContext to current thread
-	 * @param	  Bean Bean instance, null to reset current thread
+	 * @param	  ReqCtx request context instance, null to reset current thread
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return	  
 	 */
-	public void setCurrentBeanAppContext(BeanAppContext Bean) {
-		if (Bean == null) {
+	public void setCurrentRequestContext(RequestContext ReqCtx) {
+		if (ReqCtx == null) {
 			instance.remove();
 		}else {
-			instance.set(Bean);
+			instance.set(ReqCtx);
 		}
 	}
 	/**
@@ -178,9 +178,9 @@ public class WebAppContext {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return	  Bean instance
+	 * @return	  Request Context instance
 	 */
-	public BeanAppContext getCurrentBeanAppContext() {
+	static public RequestContext getCurrentRequestContext() {
 		return instance.get();
 	}
 }

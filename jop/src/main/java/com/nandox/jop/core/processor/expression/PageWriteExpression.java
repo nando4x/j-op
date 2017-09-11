@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
 
 /**
- * Represent write page expression.<br>
+ * Represent write page expression.<p>
  * An expression that can also manage a value to write in some bean
  * 
  * @project   Jop (Java One Page)

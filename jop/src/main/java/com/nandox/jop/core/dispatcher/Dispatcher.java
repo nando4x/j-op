@@ -3,6 +3,7 @@ package com.nandox.jop.core.dispatcher;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletConfig;
@@ -10,13 +11,14 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.context.BeanAppContextImpl;
+import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.ParseException;
 import com.nandox.jop.core.processor.JopId;
+import com.nandox.jop.core.processor.RefreshableBlock;
 /**
- * Real Dispatcher to process page requested.<br>
+ * Real Dispatcher to process page requested.<p>
  * Search the existing page or create it and than process it 
  * 
  * @project   Jop (Java One Page)
@@ -75,7 +77,16 @@ public class Dispatcher {
 	 * @return
 	 */
 	public void startProcessing() {
-		this.appCtx.setCurrentBeanAppContext(new BeanAppContextImpl(null));
+		RequestContext rc = new RequestContext(null);
+		this.appCtx.setCurrentRequestContext(rc);
+		// create refreshable block
+		Iterator<Entry<String,PageApp>> i = this.appCtx.getPagesMap().entrySet().iterator();
+		while ( i.hasNext() ) {
+			Entry<String,PageApp> e = i.next();
+			Iterator<String> bid = e.getValue().getBlocks().keySet().iterator();
+			while ( bid.hasNext() )
+				rc.addRefreshableBlock(new JopId(e.getKey(),bid.next()), new RefreshableBlock());
+		}
 	}
 	/**
 	 * End processing to call after page processing 
@@ -86,7 +97,7 @@ public class Dispatcher {
 	 * @return
 	 */
 	public void endProcessing() {
-		this.appCtx.setCurrentBeanAppContext(null);
+		this.appCtx.setCurrentRequestContext(null);
 	}
 	/**
 	 * Complete process page: parse check and render
@@ -150,8 +161,8 @@ public class Dispatcher {
 	 */
 	protected void processPageFormAction(Map<String,Map<String,String[]>> PageData) {
 		Iterator<String> i = PageData.keySet().iterator();
-		if ( this.appCtx.getCurrentBeanAppContext() != null )
-			((BeanAppContextImpl)this.appCtx.getCurrentBeanAppContext()).setParameters(PageData.get(null));
+		if ( WebAppContext.getCurrentRequestContext() != null )
+			WebAppContext.getCurrentRequestContext().setParameters(PageData.get(null));
 		while ( i.hasNext() ) {
 			String pageId = i.next();
 			PageApp page;
@@ -196,13 +207,14 @@ public class Dispatcher {
 	 * @return
 	 */
 	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) {
+		RequestContext rc = WebAppContext.getCurrentRequestContext();
 		PageApp page = this.getPageApp(PageId);
 		Map<JopId,String> lst = new HashMap<JopId,String>();
 		if ( page != null ) {
 			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
 			while ( blocks.hasNext() ) {
 				PageBlock b = blocks.next();
-				if ( b.getToBeRefresh() ) {
+				if ( rc.getRefreshableBlock(new JopId(PageId,b.getId())).getToBeRefresh() ) {
 					lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
 					b.resetToBeRefreshed(true); // reset to be refresh for child too
 				}

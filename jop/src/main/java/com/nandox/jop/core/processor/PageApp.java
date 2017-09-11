@@ -14,7 +14,7 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 /**
- * Class of Page application.<br>
+ * Class of Page application.<p>
  * One page application is composite by PageBlock, every block can contains PageExpression  
  * 
  * @project   Jop (Java One Page)
@@ -35,7 +35,7 @@ public class PageApp {
 	private String id;	// page identifier
 	private int hash;	// page hash code
 	private Document dom;	// html DOM document
-	private Map<String,PageBlock> blocks;	// list of page blocks
+	private Map<String,PageBlock> blocks;	// list of all page blocks
 	private WebAppContext appCtx;	// application web context
 	private int auto_id_index;	// auto incremental index of anonymous block
 	

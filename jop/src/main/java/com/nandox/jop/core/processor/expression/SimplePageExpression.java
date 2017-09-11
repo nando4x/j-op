@@ -1,11 +1,12 @@
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.DomException;
 
 /**
- * Simple page expression that return a string format
+ * Simple page expression that return a string format.<p>
  * 
  * @project   Jop (Java One Page)
  * 

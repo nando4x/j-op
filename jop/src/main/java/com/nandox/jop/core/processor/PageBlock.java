@@ -16,13 +16,18 @@ import org.jsoup.nodes.TextNode;
 //import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
+import com.nandox.jop.core.processor.expression.AbstractPageExpression;
+import com.nandox.jop.core.processor.expression.PageExpression;
+import com.nandox.jop.core.processor.expression.PageWriteExpression;
+import com.nandox.jop.core.processor.expression.SimplePageExpression;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
 /**
- * This is basic part of a page.<br>
+ * This is basic part of a page.<p>
  * The Page block is identified by a JopId and can contains some page expressions.<br>
  * A block before is parsed to create the expressions runtime compiled class and than is rendered to execute previous created expressions
  * 
@@ -40,7 +45,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * @author EE38938
  *
  */
-public class PageBlock implements RefreshableBlock {
+public class PageBlock {
 //	public static final String JOP_BEAN_INI = "jop_bean={";
 	public static final String JOP_EXPR_INI = "{";
 	public static final String JOP_EXPR_END = "}";
@@ -58,7 +63,6 @@ public class PageBlock implements RefreshableBlock {
 	private static final String form_selector = "[value^=java{]";
 	private String pageId;	// parent page identifier
 	private int auto_id_index;	// auto incremental index of anonymous form input and for DOM attributes identifiers
-	private boolean toBeRefresh;	// flag to indicate that block is to refresh
 	//private Element clone;
 	
 	private Map<String,PageExpression> exprs;	// list of all expressions [id, expression created]
@@ -151,34 +155,20 @@ public class PageBlock implements RefreshableBlock {
 				pe.getValue().execute(Context, val, null); //TODO: what variables use?
 			}
 		}
-		this.toBeRefresh = true;
+		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.RefreshableBlock#SetToBeRefreshed()
-	 */
-	public void setToBeRefreshed() {
-		// Reset all value expression
-		this.resetAllExprValue();
-		this.toBeRefresh = true;
-	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
 	 */
 	public void resetToBeRefreshed(boolean ResetChild) {
-		this.toBeRefresh = false;
+		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).resetToBeRefreshed();
 		if ( ResetChild ) {
 			Iterator<PageBlock> cl = this.child.iterator();
 			while ( cl.hasNext() ) {
-				cl.next().resetToBeRefreshed(ResetChild);;
+				cl.next().resetToBeRefreshed(ResetChild);
 			}
 		}
-	}
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.RefreshableBlock#GetToBeRefresh()
-	 */
-	public boolean getToBeRefresh() {
-		return this.toBeRefresh;
 	}
 	/**
 	 * Register variable with name and type class on this block  
@@ -216,7 +206,7 @@ public class PageBlock implements RefreshableBlock {
 	//
 	private Node renderAsNode(WebAppContext Context, int index) {
 		// Reset all value expression
-		this.resetAllExprValue();
+		this.resetAllExprValue(Context);
 		Element clone = this.domEl.clone();
 		int num = 1;
 		// check render attribute
@@ -266,7 +256,7 @@ public class PageBlock implements RefreshableBlock {
 				Entry<String,PageExpression> e = beans.next();
 				PageExpression b = e.getValue();
 				if ( repeat > 1 )
-					b.resetValue();
+					b.resetValue(Context);
 				String v = (String)b.execute(Context, vars);
 				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
 				while (elem.hasNext()) {
@@ -284,7 +274,7 @@ public class PageBlock implements RefreshableBlock {
 					if ( e == null )
 						continue;
 					if ( repeat > 1 )
-						b.expr.resetValue();
+						b.expr.resetValue(Context);
 					String a = e.attr(b.name);
 					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
 					e.removeAttr(tmp_attr_id);
@@ -295,7 +285,7 @@ public class PageBlock implements RefreshableBlock {
 			while ( f.hasNext() ) {
 				Entry<String,PageWriteExpression> b = f.next();
 				if ( repeat > 1 )
-					b.getValue().resetValue();
+					b.getValue().resetValue(Context);
 				String v = (String)b.getValue().execute(Context, vars);
 				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
 				String a = e.attr("value");
@@ -305,7 +295,7 @@ public class PageBlock implements RefreshableBlock {
 				// special case for select option: compute his content
 				if ( e.tagName().equalsIgnoreCase("option") ) {
 					if ( repeat > 1 )
-						this.beans.get(e.text()).resetValue();
+						this.beans.get(e.text()).resetValue(Context);
 					String c = (String)this.beans.get(e.text()).execute(Context, vars);
 					e.text(c);
 					e.removeAttr("name");
@@ -354,7 +344,7 @@ public class PageBlock implements RefreshableBlock {
 						// for a new expression add it and register this block to those to refresh 
 						exp = new SimplePageExpression(Context,code,this.vars_definition);
 						this.exprs.put(exp.getId(), exp);
-						mon.registerRefreshable(exp.getBeansList(), this);
+						mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
 					} else
 						exp = this.exprs.get(AbstractPageExpression.computeId(code));
 					this.beans.put(exp.getId(),exp);
@@ -392,7 +382,7 @@ public class PageBlock implements RefreshableBlock {
 							// for a new expression add it and register this block to those to refresh 
 							exp = new SimplePageExpression(Context,code,this.vars_definition);
 							this.exprs.put(exp.getId(), exp);
-							mon.registerRefreshable(exp.getBeansList(), this);
+							mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
 						} else
 							exp = this.exprs.get(AbstractPageExpression.computeId(code));
 						this.beans.put(exp.getId(),exp);
@@ -431,7 +421,7 @@ public class PageBlock implements RefreshableBlock {
 							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),(bid!=null?bid:a));
 							this.attrs.add(ja);
 							if ( ((AbstractJopAttribute)ja).getExpression() != null )
-								mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), this);
+								mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), new JopId(this.pageId,this.id));
 						}
 					} else {
 						// html attribute: parse expression and verify if exist
@@ -441,7 +431,7 @@ public class PageBlock implements RefreshableBlock {
 							// for a new expression add it and register this block to those to refresh 
 							exp = new SimplePageExpression(context,code,this.vars_definition);
 							this.exprs.put(exp.getId(), exp);
-							mon.registerRefreshable(exp.getBeansList(), this);
+							mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
 						} else
 							exp = this.exprs.get(AbstractPageExpression.computeId(code));
 						// add attribute to map and identify element with temp id
@@ -492,10 +482,10 @@ public class PageBlock implements RefreshableBlock {
 	// Reset all expression value
 	//
 	//
-	private void resetAllExprValue() {
+	private void resetAllExprValue(WebAppContext context) {
 		Iterator<PageExpression> exp = this.exprs.values().iterator();
 		while ( exp.hasNext() ) {
-			exp.next().resetValue();
+			exp.next().resetValue(context);
 		}
 	}
 	// Erase all jop attribute from DOM
@@ -521,7 +511,7 @@ public class PageBlock implements RefreshableBlock {
 				// for a new expression add it and register this block to those to refresh 
 				exp = new SimplePageExpression(Context,code,this.vars_definition);
 				this.exprs.put(exp.getId(), exp);
-				mon.registerRefreshable(exp.getBeansList(), this);
+				mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
 			} else
 				exp = (PageWriteExpression)this.exprs.get(AbstractPageExpression.computeId(code));
 			// if name attributes don't exist add it with auto index

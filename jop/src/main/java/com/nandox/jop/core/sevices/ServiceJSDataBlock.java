@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA.AdapterCDATA;
 /**
- * Represent JAXB schema of response Data block
+ * Represent JAXB schema of response Data block.<p>
  * 
  * @project   Jop (Java One Page)
  * 

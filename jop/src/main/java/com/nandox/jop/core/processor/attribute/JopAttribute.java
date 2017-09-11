@@ -11,11 +11,12 @@ import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.DomException;
 import com.nandox.libraries.utils.Reflection;
 
 
 /**
- * Attribute of page block.<br>
+ * Attribute of page block.<p>
  * Use this interface to implement every jop attribute with preRender and postRender action on rendering of page block,<br>
  * every action can return an RETURN_ACTION to pilot the rest of rendering.<br>
  * There is also a subclass Factory to instance an attribute.<br>
@@ -141,14 +142,15 @@ public interface JopAttribute {
 		 * @revisor   Fernando Costantino
 		 * @exception 
 		 */
-		public static JopAttribute create(WebAppContext Context ,PageBlock Block, Element Node, String Name, String Value) {
+		public static JopAttribute create(WebAppContext Context ,PageBlock Block, Element Node, String Name, String Value) throws DomException {
 			init();
 			Class<?> c = attrs.get(Name);
 			try {
 				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,Element.class,String.class,String.class).newInstance(Context,Block,Node,Name,Value);
 			} catch (Exception e) {
 				// TODO: manage instantiate error
-				return null;
+				//return null;
+				throw new DomException(e.getCause().getMessage());
 			}
 		}
 		/**

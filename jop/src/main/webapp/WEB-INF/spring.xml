@@ -6,7 +6,7 @@
 	<!--bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" >
 	</bean-->
 
-   <bean id="helloWorld" class="test.testbean" scope="request">
+   <bean id="helloWorld" class="test.testbean" scope="session">
        <property name="message" value="Hello World!"/>
    </bean>
 	<bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>

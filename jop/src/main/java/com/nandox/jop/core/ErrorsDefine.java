@@ -2,7 +2,7 @@ package com.nandox.jop.core;
 
 import org.jsoup.nodes.Element;
 /**
- * Represent errors definition and their messages
+ * Represent errors definition and their messages.<p>
  * 
  * @project   Jop (Java One Page)
  * 

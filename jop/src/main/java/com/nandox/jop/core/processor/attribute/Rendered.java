@@ -5,11 +5,11 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.processor.BooleanPageExpression;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.expression.BooleanPageExpression;
 
 /**
- * Attribute jop_rendered implementation.<br>
+ * Attribute jop_rendered implementation.<p>
  * Check the expression and if false not render block  
  * 
  * @project   Jop (Java One Page)
@@ -28,7 +28,7 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public Rendered(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
+	public Rendered(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
 		super(Context, Block, Node, Name, Value);
 	}
 	/* (non-Javadoc)

@@ -1,4 +1,4 @@
-package com.nandox.jop.core.context;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +14,16 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 
+import com.nandox.jop.bean.BeanAppContext;
 import com.nandox.jop.core.ErrorsDefine;
+import com.nandox.jop.core.context.WebAppContext;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.Arrays;
 /**
- * Compile a java expression.<br>
+ * Compile a java expression.<p>
  * Compile and create the invoker class of an expression, if already exist an invoker for the same expression<br>
  * return it 
  * 
@@ -119,13 +121,12 @@ public class ExpressionCompiler {
 			    // TODO: manage error compile
 			    StringWriter writer = new StringWriter();
 			    PrintWriter out = new PrintWriter(writer);
+			    int offset = code.indexOf(BeanCode);
 			    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
-			    	out.println(diagnostic.getCode());
-			    	out.println(diagnostic.getKind());
-			    	out.println(diagnostic.getPosition());
-				    out.println(diagnostic.getStartPosition());
-				    out.println(diagnostic.getEndPosition());
-				    out.println(diagnostic.getSource());
+			    	out.println(diagnostic.getCode() + " - " + diagnostic.getKind() +
+			    			" in "+(diagnostic.getPosition()-offset)+","+(diagnostic.getStartPosition()-offset)+","+(diagnostic.getEndPosition()-offset)
+			    			);
+				    //out.println(diagnostic.getSource());
 				    out.println(diagnostic.getMessage(null));
 			    }
 				throw new Exception(writer.toString());
@@ -156,7 +157,7 @@ public class ExpressionCompiler {
 		}
 		// wrap code to class that implements ExpressionExecutor interface
 		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke (com.nandox.jop.bean.BeanAppContext appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
+		code += "public "+returnclass+ " invoke ("+BeanAppContext.class.getName()+" appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
 		code += returnclass+" value = ("+returnclass+")Value;";
 		// add variables declaration if present and have a class definition
 		if ( vars != null && vars.size() > 0 ) {

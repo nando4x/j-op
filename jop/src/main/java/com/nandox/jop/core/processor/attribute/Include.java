@@ -7,10 +7,10 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.SimplePageExpression;
+import com.nandox.jop.core.processor.expression.SimplePageExpression;
 
 /**
- * Attribute jop_include implementation.<br>
+ * Attribute jop_include implementation.<p>
  * Execute the collection page expression and for every collection or array item instance result in var (defined by jop_var attribute)<br>
  * repeat the nested block executing nested expression  
  * 
@@ -29,15 +29,16 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public Include(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) {
-		super(Context, Block, Node, Name, Value);
+	public Include(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
+		super(Context, Block, Node, Name, null);
+		this.value = Value;
 		Iterator<Element> elems = Node.getElementsByTag("param").iterator();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.hasAttr("name") ) {
 				String name = el.attr("name");
 				String val = el.nextSibling().outerHtml();
-				Context.getCurrentBeanAppContext().addParameter(name, val);
+				WebAppContext.getCurrentRequestContext().addParameter(name, val);
 			}
 		}
 	}
@@ -63,7 +64,6 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 	 */
 	@Override
 	public Response postRender(WebAppContext Context, Element Dom) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

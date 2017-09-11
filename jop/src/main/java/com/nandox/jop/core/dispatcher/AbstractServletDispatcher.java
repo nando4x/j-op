@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Abstract Servlet Dispatcher to instance dispatcher and process page requested
+ * Abstract Servlet Dispatcher to instance dispatcher and process page requested.<p>
  * 
  * @project   Jop (Java One Page)
  * 

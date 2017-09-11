@@ -1,7 +1,7 @@
 package com.nandox.jop.core.sevices;
 
 /**
- * Javascript Service response.<br>
+ * Javascript Service response.<p>
  * The response can be different format: xml, json.<br> 
  * 
  * @project   Jop (Java One Page)

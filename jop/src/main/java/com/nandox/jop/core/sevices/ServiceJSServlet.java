@@ -14,7 +14,7 @@ import com.nandox.libraries.utils.Reflection;
 import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
 /**
- * Servlet for JavaScript services and file script.<br>
+ * Servlet for JavaScript services and file script.<p>
  * The script file are downloaded from path jopscript/*.<br> 
  * The services are implemented to exchange XML fragment, command and response<br>
  * <br>   
@@ -88,7 +88,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 			this.test(req,resp);
 		}
 	}
-	// Manage services searching them from req path and then excute
+	// Manage services searching them from req path and then execute
 	//
 	//
 	private void servicesManager(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

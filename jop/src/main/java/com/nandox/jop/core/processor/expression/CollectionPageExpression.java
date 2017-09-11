@@ -1,11 +1,12 @@
-package com.nandox.jop.core.processor;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.DomException;
 
 /**
- * Page expression that return a data collection.<br>
+ * Page expression that return a data collection.<p>
  * The collection can be an native array or some implementation of java Collection
  * 
  * @project   Jop (Java One Page)

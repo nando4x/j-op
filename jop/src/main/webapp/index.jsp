@@ -52,7 +52,7 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr  jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
+				<tr  jop_repeater='java{xappContext = null; appContext.getParameter(""); return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
 					<td><jbean>{return var;}</jbean></td>
 				</tr>
 			</tbody>
@@ -60,7 +60,7 @@
 	</div>
 	<script>
 		function xxx(_this) {
-			alert('xxx');
+			//alert('xxx');
 		}
 	</script>
 	<form jop_id='' xonsubmit="xxx(this);"  xaction="index.jsp" method="post">
@@ -83,10 +83,10 @@
 		 <button type="button">Click Me!</button>
 		<input  type="submit">
 	<script jop_before="true">
-		alert('before');
+		//alert('before');
 	</script>
 	<script>
-		alert('after');
+		//alert('after');
 	</script>
 	</form>
 	<div jop_id='id1' onclick="{}">

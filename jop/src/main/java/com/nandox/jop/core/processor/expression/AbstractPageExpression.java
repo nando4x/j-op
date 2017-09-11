@@ -1,15 +1,14 @@
-package com.nandox.jop.core.processor;
-
-import com.nandox.jop.core.context.WebAppContext;
+package com.nandox.jop.core.processor.expression;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
-import com.nandox.jop.core.context.ExpressionInvoker;
-import com.nandox.jop.core.context.ExpressionValue;
+import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.DomException;
+import com.nandox.jop.core.context.RequestContext;
 
 /**
- * Abstract implementation for page expression 
+ * Abstract implementation for page expression.<p> 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -27,7 +26,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	protected String Id;
 	private String code;	// expression source code 
 	private ExpressionInvoker invoker;	// expression invoker of runtime compiled class
-	private E value;	// cached value returned from expression invoker
+	//private E value;	// cached value returned from expression invoker
 
 	/**
 	 * @param	  Context	Application context
@@ -62,17 +61,18 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 */
 	public abstract E execute(WebAppContext Context, Map<String,Object> Vars);
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue
+	 * @see com.nandox.jop.core.processor.PageExpression#ResetValue(com.nandox.jop.core.context.WebAppContext)
 	 */
-	public void resetValue () {
-		this.value = null;
+	public void resetValue (WebAppContext Context) {
+		ExpressionValue<E> ev = this.initExpValue(Context); 
+		ev.setValue(null);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageExpression#instanceValue(java.lang.String)
+	 * @see com.nandox.jop.core.processor.PageExpression#instanceValue()
 	 */
 	@Override
-	public ExpressionValue<?> instanceValue(String Id) {
-		return new ExpressionValue<E>(Id);
+	public ExpressionValue<E> instanceValue() {
+		return new ExpressionValue<E>(this.Id);
 	}
 	/**
 	 * Invoke own ExpressionInvoker only if value is not reset.<br>
@@ -86,14 +86,16 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 */
 	@SuppressWarnings("unchecked")
 	protected Object invoke(WebAppContext Context, Map<String,Object> Vars) {
-		if ( this.value == null )
-			this.value = (E)this.invoker.invoke(Context, Vars);
-		return this.value;
+		ExpressionValue<E> ev = this.initExpValue(Context); 
+		if ( ev.getValue() == null )
+			ev.setValue((E)this.invoker.invoke(Context, Vars));
+		return ev.getValue();
 	}
 	@SuppressWarnings("unchecked")
 	protected Object invoke(WebAppContext Context, E Value, String NativeValue, Map<String,Object> Vars) {
-		this.value = (E)this.invoker.invoke(Context,Value,NativeValue,Vars);
-		return this.value;
+		ExpressionValue<E> ev = this.initExpValue(Context); 
+		ev.setValue((E)this.invoker.invoke(Context,Value,NativeValue,Vars));
+		return ev.getValue();
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#GetBeansList()
@@ -123,5 +125,16 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		} catch (Exception e) {
 			throw new DomException(e.getMessage());
 		}
+	}
+	//
+	//
+	//
+	@SuppressWarnings("unchecked")
+	private ExpressionValue<E> initExpValue(WebAppContext context) {
+		RequestContext rc = WebAppContext.getCurrentRequestContext();
+		ExpressionValue<E> ev = (ExpressionValue<E>)rc.getExpressionValue(this.Id); 
+		if ( ev == null )
+			rc.addExpressionValue(ev=this.instanceValue());
+		return ev;
 	}
 }

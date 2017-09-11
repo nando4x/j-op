@@ -11,10 +11,10 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import com.nandox.jop.bean.JopMonitoring;
-import com.nandox.jop.core.processor.RefreshableBlock;
+import com.nandox.jop.core.processor.JopId;
 
 /**
- * Class to proxy and monitor bean.<br>
+ * Class to proxy and monitor beans.<p>
  * Beans are proxy to intercept calling of @JopMonitoring method to mark associated page block as to be refresh 
  * 
  * @project   Jop (Java One Page)
@@ -29,7 +29,7 @@ import com.nandox.jop.core.processor.RefreshableBlock;
  */
 public class BeanMonitoring {
 	
-	private Map<String,Set<RefreshableBlock>> beans; // list of bean to monitor and relative block to refresh
+	private Map<String,Set<JopId>> beans; // list of bean to monitor and relative block to refresh
 
 	/**
 	 * Costruttore
@@ -39,7 +39,7 @@ public class BeanMonitoring {
 	 * @exception
 	 */
 	public BeanMonitoring() {
-		this.beans = new HashMap<String,Set<RefreshableBlock>>();
+		this.beans = new HashMap<String,Set<JopId>>();
 	}
 	/** If class bean contain @JopMonitoring annotation create new proxied bean
 	 * @date      26 gen 2017 - 26 gen 2017
@@ -52,7 +52,7 @@ public class BeanMonitoring {
 		// Check if is to be monitoring 
 		if ( this.hasClassMonitoringAnnotations(BeanClass) ) {
 			// Add bean name on the refreshable list
-			this.beans.put(BeanName, null);
+			//???? this.beans.put(BeanName, null);
 			// Proxy the bean class
 			Enhancer enhancer = new Enhancer();
 			enhancer.setSuperclass(BeanClass);
@@ -67,21 +67,21 @@ public class BeanMonitoring {
 	 * Register the refreshable block associated to a bean
 	 * @date      01 feb 2017 - 01 feb 2017
 	 * @param	  BeanName array of bean name
-	 * @param	  Block refreshable block
+	 * @param	  Id refreshable block jop identifier
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return
 	 */
-	public void registerRefreshable(String[] BeanName, RefreshableBlock Block) {
+	public void registerRefreshable(String[] BeanName, JopId Id) {
 		for ( int ix=0; ix<BeanName.length; ix++ ) {
-			if ( this.beans.containsKey(BeanName[ix]) ) {
-				Set<RefreshableBlock> blocks = this.beans.get(BeanName[ix]);
+			//if ( this.beans.containsKey(BeanName[ix]) ) {
+				Set<JopId> blocks = this.beans.get(BeanName[ix]);
 				if ( blocks == null ) 
-					blocks = new HashSet<RefreshableBlock>();
-				blocks.add(Block);
+					blocks = new HashSet<JopId>();
+				blocks.add(Id);
 				this.beans.put(BeanName[ix], blocks);
-			}
+			//}
 		}
 	}
 	
@@ -95,11 +95,14 @@ public class BeanMonitoring {
 	 * @return
 	 */
 	protected void setToBeRefreshed(String BeanName) {
-		Set<RefreshableBlock> b = this.beans.get(BeanName);
-		if ( b != null ) {
-			Iterator<RefreshableBlock> i = b.iterator();
+		RequestContext rc = WebAppContext.getCurrentRequestContext();
+		Set<JopId> b = this.beans.get(BeanName);
+		if ( rc != null && b != null ) {
+			Iterator<JopId> i = b.iterator();
 			while ( i.hasNext() ) {
-				i.next().setToBeRefreshed();
+				JopId id = i.next();
+				if ( rc.getRefreshableBlock(id) != null )
+					rc.getRefreshableBlock(id).setToBeRefreshed();
 			}
 		}
 	}

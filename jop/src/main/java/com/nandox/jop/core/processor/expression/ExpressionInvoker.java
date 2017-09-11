@@ -1,9 +1,11 @@
-package com.nandox.jop.core.context;
+package com.nandox.jop.core.processor.expression;
 
 import java.util.Map;
 
+import com.nandox.jop.core.context.WebAppContext;
+
 /**
- * Class to execute an expression.<br>
+ * Class to execute an expression.<p>
  * This invoke the runtime class file compiled of an expression on specific web context   
  * 
  * @project   Jop (Java One Page)
@@ -50,7 +52,7 @@ public class ExpressionInvoker {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(null,beans,null,null,Vars);
+			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,null,null,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 			e = null;
@@ -64,7 +66,7 @@ public class ExpressionInvoker {
 			ExpressionExecutor<?> o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
-			ret = o.invoke(null,beans,Value,NativeValue,Vars);
+			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,Value,NativeValue,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
 		}

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.nandox.jop.core.dispatcher.Dispatcher;
 /**
- * Interface for all services javascript manager.<br>
+ * Interface for all services javascript manager.<p>
  * Every service javascript is loaded from init ServiceJSServlet and have an identifier equal to base path service<br>
  * (es: inject) that is used to identify and execute the manager.<br>
  * To implement a new service create a class that implements this interface and into getIdentifier method return the identifier.<br>

@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * Represent a page block refreshable when related monitored bean change 
+ * Represent a page block refreshable when related monitored bean change.<p> 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -14,7 +14,8 @@ package com.nandox.jop.core.processor;
  * @revisor   Fernando Costantino
  */
 
-public interface RefreshableBlock {
+public class RefreshableBlock {
+	private boolean toBeRefresh;	// flag to indicate that block is to refresh
 
 	/**
 	 * Set that block is to be refreshed
@@ -24,17 +25,20 @@ public interface RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public void setToBeRefreshed();
+	public void setToBeRefreshed() {
+		this.toBeRefresh = true;
+	}
 	/**
 	 * Reset that block is to be refreshed
-	 * @param	  ResetChild if true reset child too (deep inside)
 	 * @date      02 feb 2017 - 02 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return
 	 */
-	public void resetToBeRefreshed(boolean ResetChild);
+	public void resetToBeRefreshed() {
+		this.toBeRefresh = false;
+	}
 	/**
 	 * Check if block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017
@@ -43,5 +47,7 @@ public interface RefreshableBlock {
 	 * @exception 
 	 * @return
 	 */
-	public boolean getToBeRefresh();
+	public boolean getToBeRefresh() {
+		return this.toBeRefresh;
+	}
 }

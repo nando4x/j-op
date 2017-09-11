@@ -1,7 +1,7 @@
 package com.nandox.jop.core.processor;
 
 /**
- * Class that represents an Jop Identifier 
+ * Class that represents an Jop Identifier.<p> 
  * 
  * @project   Jop (Java One Page)
  * 

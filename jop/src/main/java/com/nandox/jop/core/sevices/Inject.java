@@ -8,7 +8,7 @@ import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.JopId;
 
 /**
- * Implementation of inject service manager.<br>
+ * Implementation of inject service manager.<p>
  * 
  * @project   Jop (Java One Page)
  * 
