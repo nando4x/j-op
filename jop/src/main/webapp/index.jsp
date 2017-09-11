@@ -52,7 +52,7 @@
 				<th>col3</th>
 			</thead>
 			<tbody>
-				<tr  jop_repeater='java{xappContext = null; appContext.getParameter(""); return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
+				<tr  jop_repeater='java{appContext = null; appContext.getParameter(""); return $helloWorld.getArray();}' jop_var='(java.lang.String)var'>
 					<td><jbean>{return var;}</jbean></td>
 				</tr>
 			</tbody>

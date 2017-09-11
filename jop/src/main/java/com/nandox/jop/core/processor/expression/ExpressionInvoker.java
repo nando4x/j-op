@@ -55,7 +55,8 @@ public class ExpressionInvoker {
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,null,null,Vars);
 		} catch (Exception e) {
 			// TODO: gestire erroe
-			e = null;
+			//e = null;
+			throw new RuntimeException(e.getMessage());
 		}
 		return ret;
 	}

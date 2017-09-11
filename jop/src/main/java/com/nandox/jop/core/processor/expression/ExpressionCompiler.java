@@ -88,8 +88,11 @@ public class ExpressionCompiler {
 	    	// Composite java code and class path 
 			String code = "";
 			String path = "";
+			
 			ArrayList<String> l = new ArrayList<String>(); // create list of argumented beans
-			code = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l, Vars);
+			Object or[] = this.compositeCode(Context, BeanName, ReturnClass, BeanCode, l, Vars);
+			code = (String)or[0];
+			int offset = (Integer)or[1];
 			String beans[] = l.toArray(new String[0]);
 			path = this.computeBeansClasspath(Context, l);
 		    JavaFileObject file = new JavaSourceFromString(package_pfx+BeanName, code);
@@ -121,7 +124,6 @@ public class ExpressionCompiler {
 			    // TODO: manage error compile
 			    StringWriter writer = new StringWriter();
 			    PrintWriter out = new PrintWriter(writer);
-			    int offset = code.indexOf(BeanCode);
 			    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
 			    	out.println(diagnostic.getCode() + " - " + diagnostic.getKind() +
 			    			" in "+(diagnostic.getPosition()-offset)+","+(diagnostic.getStartPosition()-offset)+","+(diagnostic.getEndPosition()-offset)
@@ -139,7 +141,7 @@ public class ExpressionCompiler {
 	// Composite code of expression class
 	//
 	//
-	private String compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans, Map<String,Class<?>> vars) throws Exception {
+	private Object[] compositeCode (WebAppContext context, String classname, String returnclass, String source, List<String> beans, Map<String,Class<?>> vars) throws Exception {
 		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
@@ -176,10 +178,12 @@ public class ExpressionCompiler {
 				ix++;
 			}
 		}
+		int offset = code.length();
 		code += source;
 		code += "}";
 		code += "}";
-		return code;
+		Object ret[] = {code,offset};
+		return ret;
 	}
 	// Compute path getting classe path of bean used as argument
 	//
