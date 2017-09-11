@@ -20,6 +20,7 @@ import com.nandox.jop.bean.BeanAppContext;
  */
 public class BeanAppContextImpl implements BeanAppContext {
 	private Map<String,String[]> params;	// request parameters
+	private Map<String,ExpressionValue<?>> eval;
 	/**
 	 * @param	  Context	Application context
 	 * @param	  Code		expression code
@@ -31,6 +32,7 @@ public class BeanAppContextImpl implements BeanAppContext {
 	 */
 	public BeanAppContextImpl (Map<String,String[]> Params) {
 		this.params = Params;
+		this.eval = new HashMap<String,ExpressionValue<?>>();
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.bean.BeanAppContext#getParameters()
@@ -63,5 +65,18 @@ public class BeanAppContextImpl implements BeanAppContext {
 	 */
 	public void setParameters(Map<String, String[]> params) {
 		this.params = params;
+	}
+	/**
+	 * Add parameter
+	 * @param	  Name parameter name
+	 * @param	  Value parameter value
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	 
+	 */
+	public void addExpressionValue(ExpressionValue<?> ExpVal) {
+		this.eval.put(ExpVal.getId(), ExpVal);
 	}
 }

@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor;
 import java.util.Map;
 
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.context.ExpressionValue;
 
 /**
  * Represent generic page expression.<br>
@@ -62,4 +63,14 @@ public interface PageExpression {
 	 */
 	String[] getBeansList();
 
+	/**
+	 * Instance context value
+	 * @param	  Id expression identifier
+	 * @date      01 feb 2017 - 01 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  ExpressionValue instance
+	 */
+	ExpressionValue<?> instanceValue(String Id);
 }

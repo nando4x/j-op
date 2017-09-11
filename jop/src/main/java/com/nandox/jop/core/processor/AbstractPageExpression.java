@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
 import com.nandox.jop.core.context.ExpressionInvoker;
+import com.nandox.jop.core.context.ExpressionValue;
 
 /**
  * Abstract implementation for page expression 
@@ -65,6 +66,13 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 */
 	public void resetValue () {
 		this.value = null;
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.PageExpression#instanceValue(java.lang.String)
+	 */
+	@Override
+	public ExpressionValue<?> instanceValue(String Id) {
+		return new ExpressionValue<E>(Id);
 	}
 	/**
 	 * Invoke own ExpressionInvoker only if value is not reset.<br>

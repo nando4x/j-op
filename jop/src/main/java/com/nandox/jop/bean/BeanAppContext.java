@@ -1,6 +1,7 @@
 package com.nandox.jop.bean;
 
 import java.util.Map;
+
 /**
  * Application Context visible in expression.<br>
  * In each expression there is an instance named appContext of this interface, with this in the expression you can get every<br>
