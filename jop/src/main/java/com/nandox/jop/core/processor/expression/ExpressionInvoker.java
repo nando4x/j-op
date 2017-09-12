@@ -54,9 +54,7 @@ public class ExpressionInvoker {
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,null,null,Vars);
 		} catch (Exception e) {
-			// TODO: gestire erroe
-			//e = null;
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.toString() + ": " + e.getMessage());
 		}
 		return ret;
 	}
@@ -69,7 +67,7 @@ public class ExpressionInvoker {
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,Value,NativeValue,Vars);
 		} catch (Exception e) {
-			// TODO: gestire erroe
+			throw new RuntimeException(e.toString() + ": " + e.getMessage());
 		}
 		return ret;
 	}

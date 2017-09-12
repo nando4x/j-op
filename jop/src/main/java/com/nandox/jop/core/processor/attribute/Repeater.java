@@ -84,7 +84,7 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 				cl = this.getClass().getClassLoader().loadClass(vname.substring(vname.indexOf("(")+1, vname.indexOf(")")).trim());
 				vname = vname.substring(vname.indexOf(")")+1).trim();
 			} catch (Exception e) {
-				// TODO: manage error in class detect
+				throw new RuntimeException(e.toString() + ": " + e.getMessage());
 			}
 			this.setArrayFlag(Context, null);
 		} else {

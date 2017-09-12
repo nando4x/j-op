@@ -118,22 +118,19 @@ public class ExpressionCompiler {
 			    	this.invokers.put(BeanName, i);
 			    	return i;
 			    } catch (Exception e) {
-			    	//TODO: gestire errore
+					throw e;
 			    }
 		    } else {
-			    // TODO: manage error compile
 			    StringWriter writer = new StringWriter();
 			    PrintWriter out = new PrintWriter(writer);
 			    for (Diagnostic<?> diagnostic : this.dgn.getDiagnostics()) {
 			    	out.println(diagnostic.getCode() + " - " + diagnostic.getKind() +
 			    			" in "+(diagnostic.getPosition()-offset)+","+(diagnostic.getStartPosition()-offset)+","+(diagnostic.getEndPosition()-offset)
 			    			);
-				    //out.println(diagnostic.getSource());
 				    out.println(diagnostic.getMessage(null));
 			    }
 				throw new Exception(writer.toString());
 		    }
-		    return null;
 		} else
 			return this.invokers.get(BeanName);
 	}

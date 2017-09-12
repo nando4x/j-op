@@ -251,33 +251,42 @@ public class PageBlock {
 				ja.setVariables(Context,vars,num);
 			}
 			// ### Fire every own bean and insert into html
-			Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
-			while (beans.hasNext()) {
-				Entry<String,PageExpression> e = beans.next();
-				PageExpression b = e.getValue();
-				if ( repeat > 1 )
-					b.resetValue(Context);
-				String v = (String)b.execute(Context, vars);
-				Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
-				while (elem.hasNext()) {
-					TextNode txt = new TextNode((v==null?"":v),"");
-					elem.next().replaceWith(txt);
+			try {
+				Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
+				while (beans.hasNext()) {
+					Entry<String,PageExpression> e = beans.next();
+					PageExpression b = e.getValue();
+					if ( repeat > 1 )
+						b.resetValue(Context);
+					String v = (String)b.execute(Context, vars);
+					Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
+					while (elem.hasNext()) {
+						TextNode txt = new TextNode((v==null?"":v),"");
+						elem.next().replaceWith(txt);
+					}
 				}
+			} catch (Exception e) {
+				throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),this.domEl));
 			}
+
 			// ### Compute all html attributes of child
 			Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
 			while (attrs.hasNext()) {
 				Entry<String,AttributeExpr> en = attrs.next();
 				AttributeExpr b = en.getValue();
 				if ( !b.isOwn ) {
-					Element e = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
-					if ( e == null )
-						continue;
-					if ( repeat > 1 )
-						b.expr.resetValue(Context);
-					String a = e.attr(b.name);
-					e.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
-					e.removeAttr(tmp_attr_id);
+					Element elem = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+					try {
+						if ( elem == null )
+							continue;
+						if ( repeat > 1 )
+							b.expr.resetValue(Context);
+						String a = elem.attr(b.name);
+						elem.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
+						elem.removeAttr(tmp_attr_id);
+					} catch (Exception e) {
+						throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),elem));
+					}
 				}
 			}
 			// ### Compute forms 
@@ -320,6 +329,7 @@ public class PageBlock {
 		this.cleanDomFromAttribute(clone);
 		// add page id into jop_id with index
 		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
+		// TODO: gestire eccezzione esecuzione espressioni
 	}
 	// Parsing Dom Element to search and build beans, attributes and form input
 	//
