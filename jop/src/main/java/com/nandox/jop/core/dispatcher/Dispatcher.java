@@ -9,6 +9,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.context.RequestContext;
@@ -69,15 +71,16 @@ public class Dispatcher {
 		this.initEnv(config.getServletContext(), null);
 	}
 	/**
-	 * Start processing to call before page processing 
+	 * Start processing to call before page processing
+	 * @param	  Request	standard http request
 	 * @date      10 feb 2017 - 10 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return
 	 */
-	public void startProcessing() {
-		RequestContext rc = new RequestContext(null);
+	public void startProcessing(HttpServletRequest Request) {
+		RequestContext rc = new RequestContext(Request,null);
 		this.appCtx.setCurrentRequestContext(rc);
 		// create refreshable block
 		Iterator<Entry<String,PageApp>> i = this.appCtx.getPagesMap().entrySet().iterator();

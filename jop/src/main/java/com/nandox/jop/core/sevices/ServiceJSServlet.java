@@ -101,7 +101,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 				// Search service manager and execute it 
 				ServiceJSManager serv = this.services.get(service);
 				if ( serv != null  ) {
-					this.dsp.startProcessing();
+					this.dsp.startProcessing(req);
 					ServiceJSResponse r = serv.execute(this.dsp,cmd,req.getParameterMap());
 					this.dsp.endProcessing();
 					try {

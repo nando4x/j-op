@@ -2,6 +2,8 @@ package com.nandox.jop.core.context;
 
 import java.util.Map;
 import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.nandox.jop.bean.BeanAppContext;
 import com.nandox.jop.core.processor.RefreshableBlock;
@@ -23,22 +25,28 @@ import com.nandox.jop.core.processor.JopId;
  * @revisor   Fernando Costantino
  */
 public class RequestContext implements BeanAppContext {
+	private Session session;	// session
 	private Map<String,String[]> params;	// request parameters
 	private Map<String,ExpressionValue<?>> eval;	// expression values
 	private Map<String,RefreshableBlock> rblock;	// refreshable block
 	/**
-	 * @param	  Context	Application context
-	 * @param	  Code		expression code
-	 * @param	  Vars 		list of block variables definitions [variable name, class]
+	 * @param	  Request	standard http request
+	 * @param	  Params	standard http request parameters
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	public RequestContext (Map<String,String[]> Params) {
+	public RequestContext (HttpServletRequest Request, Map<String,String[]> Params) {
 		this.params = Params;
 		this.eval = new HashMap<String,ExpressionValue<?>>();
 		this.rblock = new HashMap<String,RefreshableBlock>();
+		HttpSession sess = Request.getSession();
+		if ( sess.isNew() )
+			this.session = new Session(sess);
+		else {
+			this.session = (Session)sess.getAttribute("jopsession");
+		}
 	}
 	/**
 	 * Return current BeanAppContext 
@@ -49,6 +57,16 @@ public class RequestContext implements BeanAppContext {
 	 */
 	public BeanAppContext getBeanAppContext() {
 		return this;
+	}
+	/**
+	 * Return current Session 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  Bean instance
+	 */
+	public Session getSession() {
+		return session;
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.bean.BeanAppContext#getParameters()

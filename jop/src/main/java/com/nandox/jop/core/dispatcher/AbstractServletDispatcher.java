@@ -47,7 +47,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 */
 	protected String processRequest(String PageId, String ContentPage, HttpServletRequest Req) throws Exception {
 		try {
-			this.dsp.startProcessing();
+			this.dsp.startProcessing(Req);
 			// if is submit action process query data before
 			if ( !Req.getParameterMap().isEmpty() )
 				this.processDataQuery(Req.getParameterMap());
