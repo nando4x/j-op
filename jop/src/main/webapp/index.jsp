@@ -24,7 +24,7 @@
 			</tbody>
 		</table>-->
 		<form jop_id="">
-		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='(java.lang.Stringc)var2' value='java{return "";}'
+		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='var2' value='java{return "";}'
 				class="java{return $helloWorld.getCssClass();} xxxx">
 			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return "choice "+var2;}</jbean></option>
 		</select>
@@ -43,7 +43,7 @@
 			class="java{return $helloWorld.getCssClass();} xxxx"
 			>
 		<div>	
-		sasas<span class="java{appContext = null; appContext.getParameter(null); return $helloWorld.getCssClass();} xxxx">aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
+		sasas<span class="java{/*appContext = null; appContext.getParameter(null);*/ return $helloWorld.getCssClass();} xxxx">aa</span><jbean>{return $helloWorld.getMessage();}</jbean>ssass
 		</div>
 		<table jop_id="tab1">
 			<thead>
