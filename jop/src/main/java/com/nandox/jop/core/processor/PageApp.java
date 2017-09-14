@@ -54,7 +54,7 @@ public class PageApp {
 		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
-		this.parse();
+		this.parse();//Context.getCurrentRequestContext().getSession().getHttpSession().getServletContext().getContextPath()
 		this.hash = ContentPage.hashCode();
 	}
 	/**

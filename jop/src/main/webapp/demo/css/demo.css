@@ -1,0 +1,57 @@
+body {
+	margin: 0px 0px;
+}
+
+.header {
+	height: 35px;
+	background-color: #b2f5ef;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+}
+
+.middle {
+	margin-top: 35px;
+	min-height: 800px;
+}
+.footer {
+	min-height: 100px;
+	background-color: #e7ebf1;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+.login_area {
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
+	border-radius: 5px;
+	min-height: 300px;
+	width: 250px;
+	margin: 0px auto;
+	top: 20px;
+	position: relative;
+}
+
+.login .title {
+	text-align: center;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	border-bottom: 2px solid #023783;
+	font-weight: bold;
+}
+
+.login .body {
+	padding-top: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.login .body * {
+	width: 100%;
+	margin-bottom: 20px
+}
+
+.login .body button {
+	margin-top: 30px;
+}
