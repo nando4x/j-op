@@ -16,7 +16,6 @@ import org.jsoup.nodes.TextNode;
 //import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 import com.nandox.jop.core.processor.expression.AbstractPageExpression;
@@ -155,6 +154,14 @@ public class PageBlock {
 				pe.getValue().execute(Context, val, null); //TODO: what variables use?
 			}
 		}
+		// check action attribute
+		Iterator<JopAttribute> attr = this.attrs.iterator();
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			if ( ja.isActionAttribute() ) {
+				ja.preRender(Context,this.domEl,null); //TODO: what variables use?
+			}
+		}
 		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
 	}
 	
@@ -213,6 +220,8 @@ public class PageBlock {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
+			if ( ja.isActionAttribute() ) // skip if an action attribute
+				continue;
 			JopAttribute.Response r = ja.preRender(Context,clone,null); //TODO: what variables use?
 			switch (r.getAction()) {
 				case NOTRENDER:
@@ -297,6 +306,8 @@ public class PageBlock {
 					b.getValue().resetValue(Context);
 				String v = (String)b.getValue().execute(Context, vars);
 				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
+				if ( e == null )
+					continue;
 				String a = e.attr("value");
 				e.attr("value",a.replace("java"+b.getValue().getCode(), (v!=null?v:"") ));
 				// add page id to name attribute
@@ -344,7 +355,7 @@ public class PageBlock {
 		elems = this.domEl.getAllElements().iterator();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
-			if ( this.checkIfParentBlockIsThis(el)) {
+			if ( this.checkIfParentBlockIsThis(el, false)) {
 				// check if bean or attributes element
 				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) {
 					// build expression and join the same
@@ -374,7 +385,7 @@ public class PageBlock {
 		while ( elems.hasNext() ) {
 			Element el = elems.next();
 			if ( el.tag().isFormSubmittable() ) {
-				if ( this.checkIfParentBlockIsThis(el)) {
+				if ( this.checkIfParentBlockIsThis(el, true)) {
 					this.computeFormTag(Context, el, mon);
 				}
 				// special case for select tag: scan child option for value attribute expression and content expression
@@ -475,11 +486,11 @@ public class PageBlock {
 	// Check if parent job_id is of this block
 	//
 	//
-	private boolean checkIfParentBlockIsThis ( Element el ) {
+	private boolean checkIfParentBlockIsThis ( Element el, boolean mustBeForm ) {
 		Element p = el.parent(); 
 		while ( p != null ) {
 			// check if tag is in another child block 
-			if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() ) {
+			if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() && (!mustBeForm || p.tagName().equalsIgnoreCase("form") ) ) {
 				if ( p.attr(JopAttribute.JOP_ATTR_ID).equals(this.id) )
 					return true;
 				else

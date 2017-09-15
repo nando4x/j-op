@@ -54,7 +54,7 @@ public class PageApp {
 		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
 		this.blocks = new HashMap<String,PageBlock>();
-		this.parse();//Context.getCurrentRequestContext().getSession().getHttpSession().getServletContext().getContextPath()
+		this.parse();
 		this.hash = ContentPage.hashCode();
 	}
 	/**
@@ -186,8 +186,9 @@ public class PageApp {
 	// 
 	//
 	private void buildHeadScript (Element el) {
-		el.before("<script type=\"text/javascript\" src=\"jopscript/baselibs.js\"/>");
-		el.before("<script type=\"text/javascript\" src=\"jopscript/core/services.js\"/>");
+		String pth = WebAppContext.getCurrentRequestContext().getHttpRequest().getContextPath();
+		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
+		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
 		el.remove();
 	}
 	// Generate css selector with all possible jop attributes

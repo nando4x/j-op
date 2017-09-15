@@ -17,7 +17,8 @@
 	var i = 0;
 	this.CONST = Object.freeze({
 		"RESP_TYPE_BLOCK": i++,
-		"RESP_TYPE_HTML": i++
+		"RESP_TYPE_HTML": i++,
+		"CONTEXT_PATH": '${context_path}'
 	});
 	// private variable and constant
 	var JOP_ID_PARAMETER = "Jop.jopId";
@@ -53,7 +54,7 @@
 				console.log(e);
 			}
 		}
-		ajax("POST","jopservices/inject/postblock",true,request,callback,null);
+		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,null);
 	};
 
 	// ajax generic low-level function

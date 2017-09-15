@@ -25,6 +25,7 @@ import com.nandox.jop.core.processor.JopId;
  * @revisor   Fernando Costantino
  */
 public class RequestContext implements BeanAppContext {
+	private HttpServletRequest httpRequest;
 	private Session session;	// session
 	private Map<String,String[]> params;	// request parameters
 	private Map<String,ExpressionValue<?>> eval;	// expression values
@@ -38,6 +39,7 @@ public class RequestContext implements BeanAppContext {
 	 * @exception
 	 */
 	public RequestContext (HttpServletRequest Request, Map<String,String[]> Params) {
+		this.httpRequest = Request;
 		this.params = Params;
 		this.eval = new HashMap<String,ExpressionValue<?>>();
 		this.rblock = new HashMap<String,RefreshableBlock>();
@@ -47,6 +49,16 @@ public class RequestContext implements BeanAppContext {
 		else {
 			this.session = (Session)sess.getAttribute("jopsession");
 		}
+	}
+	/**
+	 * Return current native http request 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @return	  Bean instance
+	 */
+	public HttpServletRequest getHttpRequest() {
+		return httpRequest;
 	}
 	/**
 	 * Return current BeanAppContext 

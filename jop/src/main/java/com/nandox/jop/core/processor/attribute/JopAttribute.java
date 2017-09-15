@@ -44,7 +44,14 @@ public interface JopAttribute {
 		/** stop rendering: use result as rendering contents */
 		NOTRENDER
 	}
-
+	/**
+	 * return true if is an attribute called on action phase
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
+	public boolean isActionAttribute();
 	/**
 	 * Pre rendering action
 	 * @param	  Context	Application context

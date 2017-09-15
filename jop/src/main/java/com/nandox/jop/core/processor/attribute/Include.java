@@ -32,6 +32,14 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 	public Include(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
 		super(Context, Block, Node, Name, null);
 		this.value = Value;
+		if ( Value.trim().charAt(0) != '/') { // if relative path add part after context root
+			String s = WebAppContext.getCurrentRequestContext().getHttpRequest().getRequestURI();
+			if ( s.indexOf('/', 1) != s.lastIndexOf('/') ) {
+				int ini = s.indexOf('/', 1);
+				int end = s.lastIndexOf('/')+1;
+				this.value = s.substring(ini, end) + this.value;
+			}
+		}
 		Iterator<Element> elems = Node.getElementsByTag("param").iterator();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
@@ -53,10 +61,8 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 			Dom.html(ret);
 			return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 		} catch (Exception e) {
-			//TODO: manage exception
-			e = null;
+			throw new RuntimeException(e.toString());
 		}
-		return null;
 	}
 
 	/* (non-Javadoc)

@@ -59,6 +59,13 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 		return expression;
 	}
 	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#isActionAttribute()
+	 */
+	@Override
+	public boolean isActionAttribute() {
+		return false;
+	}
+	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
 	@Override

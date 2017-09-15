@@ -143,9 +143,10 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 	}
 	
 	// Read a file script under package of this  servlet
-	//
+	// and substitute variable ${}
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String VAR_CONTENXT_PATH = "${context_path}";
 		InputStream i = this.getClass().getResource(SCRIPT_BASE_PATH+"/"+req.getPathInfo()).openStream();
 		if ( i != null ) {
 			int len = 0;
@@ -154,6 +155,9 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 				byte buff[] = new byte[len]; 
 				i.read(buff);
 				jb.append(new String(buff));
+			}
+			while ( (len = jb.indexOf(VAR_CONTENXT_PATH)) > 0 ) {
+				jb.replace(len, len+VAR_CONTENXT_PATH.length(), req.getContextPath());
 			}
 			resp.setContentLength(jb.length());
 			resp.setContentType("text/javascript");
