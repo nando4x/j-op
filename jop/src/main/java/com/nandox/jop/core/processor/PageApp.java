@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Entities;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -53,6 +54,10 @@ public class PageApp {
 		this.id = PageId;
 		this.appCtx = Context;
 		this.dom = Jsoup.parse(ContentPage);
+		Document.OutputSettings settings = this.dom.outputSettings();
+		settings.prettyPrint(false);
+		settings.escapeMode(Entities.EscapeMode.extended);
+		settings.charset("ASCII");
 		this.blocks = new HashMap<String,PageBlock>();
 		this.parse();
 		this.hash = ContentPage.hashCode();

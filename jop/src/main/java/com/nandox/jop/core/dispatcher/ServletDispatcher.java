@@ -54,6 +54,7 @@ public class ServletDispatcher extends AbstractServletDispatcher {
 			resp.getWriter().println(out);
 			resp.getWriter().close();
 		} else {
+			if (LOG != null && LOG.isFatalEnabled() ) LOG.debug("page not found:", f.getPath());
 			throw new FileNotFoundException(ErrorsDefine.JOP_PAGE_NOTFOUND); 
 		}
 	}

@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+import com.nandox.jop.core.logging.Logger;
+
 /**
  * Abstract Servlet Dispatcher to instance dispatcher and process page requested.<p>
  * 
@@ -22,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class AbstractServletDispatcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	/** Logger */
+	protected static final Logger LOG = Logger.Factory.getLogger(AbstractServletDispatcher.class);
 	/** Request dispatcher */
 	protected Dispatcher dsp;
 	
@@ -31,6 +35,8 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	@Override
 	public void init(ServletConfig Config) throws ServletException {
 		super.init(Config);
+		if (LOG != null && LOG.isDebugEnabled() )
+			LOG.debug("start servlet initialization");
 		this.dsp = new Dispatcher();
 		dsp.initFromServlet(Config);
 	}

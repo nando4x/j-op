@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import java.util.Comparator;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -214,7 +216,7 @@ public class PageBlock {
 	private Node renderAsNode(WebAppContext Context, int index) {
 		// Reset all value expression
 		this.resetAllExprValue(Context);
-		Element clone = this.domEl.clone();
+		Element clone = this.cloneElement(domEl);
 		int num = 1;
 		// check render attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();
@@ -241,10 +243,10 @@ public class PageBlock {
 	private void renderer(WebAppContext Context, Element clone, int repeat, int index) {
 		int num = 0;
 		Map<String,Object> vars = this.instanceVariables();
-		Element temp = clone.clone();
+		Element temp = this.cloneElement(clone);
 		clone.empty();
 		while (num<repeat) {
-			Element item = temp.clone();
+			Element item = this.cloneElement(temp);
 			// ### Rendering all child in recursive mode
 			Iterator<PageBlock> cl = this.child.iterator();
 			while ( cl.hasNext() ) {
@@ -542,6 +544,19 @@ public class PageBlock {
 			}
 			this.forms.put(el.attr("name"), exp);
 		}
+	}
+	// clone element: use this instead jsoup clone to force the escaping html special chars
+	//
+	//
+	private Element cloneElement(Element elem) {
+		Element e = elem.clone();
+		Document d = new Document("");
+		Document.OutputSettings settings = d.outputSettings();
+		settings.prettyPrint(false);
+		settings.escapeMode(Entities.EscapeMode.extended);
+		settings.charset("ASCII");
+		d.appendChild(e);
+		return e;
 	}
 	// Comparator for jop attribute name
 	//

@@ -55,3 +55,7 @@ body {
 .login .body button {
 	margin-top: 30px;
 }
+
+.login .error {
+	color: red;
+}

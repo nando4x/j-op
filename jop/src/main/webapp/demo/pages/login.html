@@ -1,27 +1,37 @@
+<div jop_id='' style="display: none">
+	<jbean>{$loginBean.reset(); return null;}</jbean>
+</div>
 <form jop_id='' 
 	  class="login"
 	  jop_onaction="java{$loginBean.submit(); return null;}"
 	  >	  
-	<div jop_rendered="java{return !$loginBean.isAuthorized() || !$loginBean.isInAction();}">	  			
+	<div jop_rendered="java{return !$loginBean.isAuthenticated();}">	  			
 	<div class="title">ACCESSO</div>
 	<div class="body">
 		<label><jbean>{return $localizationTextBean.getText("label.login.username");}</jbean></label>
 		<input type="text" name="user" value="java{if(value!=null) $loginBean.setUsername(value); return null;}" class="" autofocus="">
 		<label><jbean>{return $localizationTextBean.getText("label.login.password");}</jbean></label>
 		<input type="password" name="password" value="java{if(value!=null) $loginBean.setPassword(value); return null;}" class="" >
-		<div jop_rendered="java{return $loginBean.isInAction() && !$loginBean.isAuthorized();}">
-		username o password errati
+		<div class="error" 
+			jop_rendered="java{return $loginBean.getUsername() != null &&  $loginBean.getPassword() != null && !$loginBean.isAuthenticated();}">
+		Attenzione username o password errati. Rimangono <jbean>{return ""+$loginBean.getTryCount();}</jbean> tentativi prima che venga bloccato l'account
 		</div>
 		<button type="submit" class=""><jbean>{return $localizationTextBean.getText("label.login.submit");}</jbean></button>
 	</div>
 	</div>
-	<div jop_rendered="java{return $loginBean.isAuthorized();}">	  			
+	<div jop_rendered="java{return $loginBean.isAuthenticated() && !$loginBean.isAuthorized();}">	  			
 	<div class="title">AUTENTICAZIONE</div>
 	<div class="body">
-		<div>Benvenuto <jbean>{return $localizationTextBean.getText("label.login.username");}</jbean><br>è necessario autenticarsi con l'OTP</div>
-		<input type="password" name="token" value="" class="" >
+		<div>Benvenuto <jbean>{return $localizationTextBean.getText("label.login.username");}</jbean><br>&egrave; necessario autenticarsi con l'OTP</div>
+		<input type="password" name="token" value="java{if(value!=null) $loginBean.setToken(value); return null;}" class="" >
+		<div class="error" 
+			jop_rendered="java{return $loginBean.getToken() != null && !$loginBean.isAuthorized();}">
+		Attenzione token errato. Rimangono <jbean>{return ""+$loginBean.getTryCount();}</jbean> tentativi prima che venga bloccato l'account
+		</div>
 		<button type="submit" class=""><jbean>{return $localizationTextBean.getText("label.login.submit");}</jbean></button>
 	</div>
 	</div>
-	<jbean>{$loginBean.endAction(); return null;}</jbean>
+	<script jop_rendered="java{return $loginBean.isAuthenticated() && $loginBean.isAuthorized();}">
+		window.location="pages/main.html";
+	</script>
 </form>			

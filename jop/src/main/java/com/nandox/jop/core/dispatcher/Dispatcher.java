@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
@@ -38,6 +39,8 @@ public class Dispatcher {
 	public static final String DSP_SERVICE_SERVLET_URL = "";
 	public static final Class<? extends Servlet> DSP_SERVICE_SERVLET_CLASS = ServletDispatcher.class;
 	
+	/** Logger */
+	protected static final Logger LOG = Logger.Factory.getLogger(AbstractServletDispatcher.class);
 	protected static final String ATTR_APPLCONTEXT = "JopWebAppContext";
 	protected static final String INIT_PARAM_COMPILER_DESTPATH ="jop.param.compiler.destpath";
 
@@ -80,6 +83,7 @@ public class Dispatcher {
 	 * @return
 	 */
 	public void startProcessing(HttpServletRequest Request) {
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create Request Context");
 		RequestContext rc = new RequestContext(Request,null);
 		this.appCtx.setCurrentRequestContext(rc);
 		// create refreshable block
@@ -120,6 +124,7 @@ public class Dispatcher {
 				page = null;
 		}
 		if ( page == null ) { // create new
+			if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create and load page:", PageId);
 			page = new PageApp(this.appCtx,PageId,PageContent);
 			this.appCtx.getPagesMap().put(PageId, page);
 		}
@@ -172,6 +177,7 @@ public class Dispatcher {
 			if ( (page = this.appCtx.getPagesMap().get(pageId)) != null ) {
 				page.action(this.appCtx, PageData.get(pageId));
 			} else {
+				if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("page not found:", pageId);
 				//TODO: manage error page not exist
 			}
 		}
@@ -195,9 +201,11 @@ public class Dispatcher {
 			if ( pb != null)
 				pb.action(this.appCtx, par);
 			else {
+				if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("block not found:", Id.getId());
 				// TODO: block not exist
 			}
 		}
+		if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("page not found:", Id.getPage());
 		// TODO: manage page not exist
 	}
 	/**
@@ -229,6 +237,7 @@ public class Dispatcher {
 	//
 	//
 	private void initEnv(ServletContext ctx, HashMap<String,String> params) {
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start environment initialization");
 		if ( (this.appCtx = (WebAppContext)ctx.getAttribute(ATTR_APPLCONTEXT)) == null ) {
 			this.appCtx = new WebAppContext(ctx, this);
 			ctx.setAttribute(ATTR_APPLCONTEXT, this.appCtx);
@@ -241,6 +250,7 @@ public class Dispatcher {
 		// add runtime service servlet
 		//ServletRegistration s = ctx.addServlet(DSP_SERVICE_SERVLET_NAME, DSP_SERVICE_SERVLET_CLASS);
 		//s.addMapping(DSP_SERVICE_SERVLET_URL);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("end environment initialization");
 	}
 	// get page
 	//
