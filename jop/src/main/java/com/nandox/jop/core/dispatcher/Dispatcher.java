@@ -132,7 +132,8 @@ public class Dispatcher {
 		return page.render(this.appCtx);
 	}
 	/**
-	 * Return Map of query data per page id
+	 * Return Map of query data per page id.<p>
+	 *For general parameter page id is set to null
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
 	 * @date      23 gen 2017 - 23 gen 2017
 	 * @author    Fernando Costantino
