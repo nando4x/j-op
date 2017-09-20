@@ -36,7 +36,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	public void init(ServletConfig Config) throws ServletException {
 		super.init(Config);
 		if (LOG != null && LOG.isDebugEnabled() )
-			LOG.debug("start servlet initialization");
+			LOG.debug("start initialization servlet: %s", this.getServletName());
 		this.dsp = new Dispatcher();
 		dsp.initFromServlet(Config);
 	}

@@ -124,7 +124,7 @@ public class Dispatcher {
 				page = null;
 		}
 		if ( page == null ) { // create new
-			if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create and load page:", PageId);
+			if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create and load page: %s", PageId);
 			page = new PageApp(this.appCtx,PageId,PageContent);
 			this.appCtx.getPagesMap().put(PageId, page);
 		}

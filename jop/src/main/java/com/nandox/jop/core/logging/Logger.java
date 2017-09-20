@@ -1,6 +1,7 @@
 package com.nandox.jop.core.logging;
 
 import com.nandox.jop.core.logging.log4j2.Log4j2Logger;
+import java.util.Formatter;
 /**
  * Generic logger interface.<p>
  * 
@@ -56,10 +57,13 @@ public interface Logger {
 		 * @return	  formatted string 
 		 */
 		public static String format(String msg, String... args) {
-			return "";
+			return format(msg,(Object[])args);
 		}
 		public static String format(String msg, Object[] args) {
-			return "";
+			Formatter fm = new Formatter();
+			String s = fm.format(msg, args).toString();
+			fm.close();
+			return s;
 		}
 	}
 	/**

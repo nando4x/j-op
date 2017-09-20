@@ -88,7 +88,7 @@ public class PageApp {
 	 * @return	  HTML of page
 	 */	
 	public String render(WebAppContext Context) {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start rendering page id: "+this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start rendering page %s", this.id);
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		Document d = this.dom.clone();
 		while ( i.hasNext() ) {
@@ -134,7 +134,7 @@ public class PageApp {
 	//
 	//
 	private void parse() throws ParseException {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page id: "+this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page %s", this.id);
 		// Search jop head and substitute with script file include
 		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
 		for ( int ix=0; ix<list.size(); ix++ ) {
@@ -161,7 +161,7 @@ public class PageApp {
 			// check for double jop id
     		String id = el.attr(JopAttribute.JOP_ATTR_ID);
     		if ( this.blocks.containsKey(id) ) {
-    			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block id: "+id);
+    			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",id, this.id);
     			throw new ParseException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
     		} else {
     			// create block and check syntax error
@@ -173,7 +173,7 @@ public class PageApp {
     		}
     	}
 		// Scan blocks for own child and attach them
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build child block chain");
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build child block chain on page %s",this.id);
     	PageBlock b[] = this.blocks.values().toArray(new PageBlock[0]);
     	for ( int ix=0; ix<b.length; ix++ ) {
     		ArrayList<PageBlock> child = new ArrayList<PageBlock>();
@@ -199,7 +199,7 @@ public class PageApp {
 	// 
 	//
 	private void buildHeadScript (Element el) {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts");
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts for page %s", this.id);
 		String pth = WebAppContext.getCurrentRequestContext().getHttpRequest().getContextPath();
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
