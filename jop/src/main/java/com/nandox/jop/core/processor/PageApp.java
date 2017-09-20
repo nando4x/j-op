@@ -13,7 +13,6 @@ import org.jsoup.select.Elements;
 
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 /**
@@ -34,7 +33,7 @@ public class PageApp {
 	/** DOM JOP block selector */
 	protected static final String DOMPARSER_JOP_SELECTOR = PageApp.getAttributeSelector();
 	/** Logger */
-	protected static final Logger LOG = Logger.Factory.getLogger(AbstractServletDispatcher.class);
+	protected static final Logger LOG = Logger.Factory.getLogger(PageApp.class);
 	
 	private static final String DOMPARSER_HEAD_TAG = "script[jop_head=\"true\"]";
 	private String id;	// page identifier
@@ -88,7 +87,7 @@ public class PageApp {
 	 * @return	  HTML of page
 	 */	
 	public String render(WebAppContext Context) {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start rendering page %s", this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start rendering page: %s", this.id);
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		Document d = this.dom.clone();
 		while ( i.hasNext() ) {
@@ -134,7 +133,7 @@ public class PageApp {
 	//
 	//
 	private void parse() throws ParseException {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page %s", this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
 		// Search jop head and substitute with script file include
 		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
 		for ( int ix=0; ix<list.size(); ix++ ) {
@@ -173,7 +172,7 @@ public class PageApp {
     		}
     	}
 		// Scan blocks for own child and attach them
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build child block chain on page %s",this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build child block chain on page: %s",this.id);
     	PageBlock b[] = this.blocks.values().toArray(new PageBlock[0]);
     	for ( int ix=0; ix<b.length; ix++ ) {
     		ArrayList<PageBlock> child = new ArrayList<PageBlock>();
@@ -199,7 +198,7 @@ public class PageApp {
 	// 
 	//
 	private void buildHeadScript (Element el) {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts for page %s", this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts for page: %s", this.id);
 		String pth = WebAppContext.getCurrentRequestContext().getHttpRequest().getContextPath();
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");

@@ -35,8 +35,7 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	@Override
 	public void init(ServletConfig Config) throws ServletException {
 		super.init(Config);
-		if (LOG != null && LOG.isDebugEnabled() )
-			LOG.debug("start initialization servlet: %s", this.getServletName());
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start initialization servlet: %s", this.getServletName());
 		this.dsp = new Dispatcher();
 		dsp.initFromServlet(Config);
 	}
@@ -74,7 +73,9 @@ public abstract class AbstractServletDispatcher extends HttpServlet {
 	 * @return	  rendered html
 	 */
 	protected String processPage(String PageId, String ContentPage) throws Exception {
-		return this.dsp.processPage(PageId, ContentPage);
+		String s = this.dsp.processPage(PageId, ContentPage);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("page processed: %s", PageId);
+		return s;
 	}
 
 	/**

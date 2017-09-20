@@ -40,7 +40,7 @@ public class Dispatcher {
 	public static final Class<? extends Servlet> DSP_SERVICE_SERVLET_CLASS = ServletDispatcher.class;
 	
 	/** Logger */
-	protected static final Logger LOG = Logger.Factory.getLogger(AbstractServletDispatcher.class);
+	protected static final Logger LOG = Logger.Factory.getLogger(Dispatcher.class);
 	protected static final String ATTR_APPLCONTEXT = "JopWebAppContext";
 	protected static final String INIT_PARAM_COMPILER_DESTPATH ="jop.param.compiler.destpath";
 
@@ -83,7 +83,7 @@ public class Dispatcher {
 	 * @return
 	 */
 	public void startProcessing(HttpServletRequest Request) {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create Request Context");
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("create Request Context: %s", Request.getRequestURI());
 		RequestContext rc = new RequestContext(Request,null);
 		this.appCtx.setCurrentRequestContext(rc);
 		// create refreshable block
@@ -178,7 +178,7 @@ public class Dispatcher {
 			if ( (page = this.appCtx.getPagesMap().get(pageId)) != null ) {
 				page.action(this.appCtx, PageData.get(pageId));
 			} else {
-				if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("page not found:", pageId);
+				if (LOG != null && LOG.isErrorEnabled() ) LOG.error("page not found:", pageId);
 				//TODO: manage error page not exist
 			}
 		}
@@ -202,12 +202,13 @@ public class Dispatcher {
 			if ( pb != null)
 				pb.action(this.appCtx, par);
 			else {
-				if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("block not found:", Id.getId());
+				if (LOG != null && LOG.isErrorEnabled() ) LOG.error("block not found:", Id.getId());
 				// TODO: block not exist
 			}
+		} else {
+			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("page not found:", Id.getPage());
+			// TODO: manage page not exist
 		}
-		if (LOG != null && LOG.isErrorEnabled() ) LOG.debug("page not found:", Id.getPage());
-		// TODO: manage page not exist
 	}
 	/**
 	 * Render and return list of page block that changed and to be refresh

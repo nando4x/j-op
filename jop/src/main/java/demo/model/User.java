@@ -1,6 +1,6 @@
 package demo.model;
 
-public class User {
+public class User implements IntegrationServiceData {
 	private String name;
 	private String surename;
 	private String username;

@@ -18,7 +18,6 @@ import org.jsoup.nodes.TextNode;
 //import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
-import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
@@ -62,7 +61,7 @@ public class PageBlock {
 	/** true if block is child of another block */
 	protected boolean isChild;
 	/** Logger */
-	protected static final Logger LOG = Logger.Factory.getLogger(AbstractServletDispatcher.class);
+	protected static final Logger LOG = Logger.Factory.getLogger(PageBlock.class);
 	
 	private static final String tmp_attr_id = "_jop_tmp_id";
 	private static final String form_selector = "[value^=java{]";
@@ -218,6 +217,7 @@ public class PageBlock {
 	//
 	//
 	private Node renderAsNode(WebAppContext Context, int index) {
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("rendering block id: (%s) %s",this.pageId,this.id);
 		// Reset all value expression
 		this.resetAllExprValue(Context);
 		Element clone = this.cloneElement(domEl);
@@ -352,7 +352,7 @@ public class PageBlock {
 	//
 	//
 	private void parse(WebAppContext Context) throws DomException {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: "+"("+this.pageId+") "+this.id);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: (%s) %s",this.pageId,this.id);
 		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
 		// Get and process attributes of this block
 		this.parseAttributes(Context, this.domEl,mon,true);

@@ -1,6 +1,7 @@
 package demo.bean;
 
 import demo.model.User;
+import demo.integration_services.generalData.IntgrationServiceRetriveData;
 
 public class LoginBean {
 	private String username;
@@ -8,6 +9,7 @@ public class LoginBean {
 	private String token;
 	private int tryCount;
 	private int status;
+	private IntgrationServiceRetriveData<User> is;
 	/**
 	 * @return the username
 	 */
@@ -46,6 +48,7 @@ public class LoginBean {
 	}
 	
 	public void submit() {
+		User user = is.servRequest(null).getData();
 		switch ( this.status) {
 			case 0:
 				if ( !this.isAuthenticated() )

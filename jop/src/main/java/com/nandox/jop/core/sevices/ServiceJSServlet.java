@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.nandox.jop.core.dispatcher.AbstractServletDispatcher;
+import com.nandox.jop.core.logging.Logger;
 import com.nandox.libraries.utils.Reflection;
 import com.nandox.libraries.utils.xml.GenerateXmlWithCDATA;
 
@@ -45,6 +46,8 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 	protected static final String SERVICE_REQ = "/jopservices"; 
 	/** */
 	protected static final String SERVICE_NAME_INKJECT = "inkject"; 
+	/** Logger */
+	protected static final Logger LOG = Logger.Factory.getLogger(ServiceJSServlet.class);
 
 	private Map<String,ServiceJSManager> services;
 	
@@ -105,6 +108,7 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 					ServiceJSResponse r = serv.execute(this.dsp,cmd,req.getParameterMap());
 					this.dsp.endProcessing();
 					try {
+						if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("packaging response: %s",req.getRequestURI());
 						this.serviceResponser(r, resp);
 					} catch (Exception e) {
 						e = null;
