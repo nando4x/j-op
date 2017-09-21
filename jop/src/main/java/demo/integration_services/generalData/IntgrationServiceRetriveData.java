@@ -3,9 +3,14 @@ package demo.integration_services.generalData;
 import demo.integration_services.*;
 import demo.model.IntegrationServiceData;
 
-public abstract class IntgrationServiceRetriveData<D extends IntegrationServiceData> implements IntegrationServiceManager<IntegrationServiceDataContainer<D>,IntegrationServiceDataContainer<D>> {
+public class IntgrationServiceRetriveData<E extends IntegrationServiceData> implements IntegrationServiceManager<IntegrationServiceDataContainer<E>,IntegrationServiceDataContainer<E>> {
+	private IntegrationServiceDispatcher dsp;
 
-	@Override
-	public abstract IntegrationServiceDataContainer<D> servRequest(IntegrationServiceDataContainer<D> Request);
+	public IntgrationServiceRetriveData(IntegrationServiceDispatcher Dsp) {
+		this.dsp = Dsp;
+	}
+	public IntegrationServiceDataContainer<E> servRequest(IntegrationServiceDataContainer<E> Request) {
+		return null;
+	}
 
 }
