@@ -25,19 +25,27 @@
 	/**
 	 * Post form data of one block: use service inject/postBlock that return XML list 
 	 * @param	  jopId block identify
+	 * @param	  params parameters to request
 	 * @date      03 feb 2017 - 03 feb 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception Jop.core.exception 
 	 * @return	  response	  
 	 */
-	this.postBlock = function (jopId) {
+	this.postBlock = function (jopId, params) {
 		// get block and its child input
 		var block = Jop.core.getBlockElement(jopId);
 		var list = Jop.core.querySelectorAll(block,'input[name]');
 		var request = JOP_ID_PARAMETER+"="+jopId;
 		for ( var ix=0; list!=null&&ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 
+		}
+		// add optional parameters
+		if ( typeof params == 'object' && Object.keys(params).length > 0 ) {
+			var arr = Object.keys(params);
+			for ( var ix=0; ix<arr.length; ix++ ) {
+				request +="&"+arr[ix]+"="+params[arr[ix]];
+			}
 		}
 		// define ajax callback to read XML response and block to refresh
 		callback = function(response) {

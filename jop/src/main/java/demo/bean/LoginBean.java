@@ -1,9 +1,11 @@
 package demo.bean;
 
 import demo.model.UserSecurity;
+
+import com.nandox.jop.core.context.WebAppContext;
+
 import demo.integration_services.IntegrationServiceDispatcher;
-import demo.integration_services.generalData.IntgrationServiceRetriveData;
-import demo.integration_services.generalData.IntegrationServiceDataContainer;
+import demo.integration_services.auth.AuthenticationRequest;
 
 public class LoginBean {
 	private String username;
@@ -13,7 +15,6 @@ public class LoginBean {
 	private int status;
 	private boolean autenticated;
 	private boolean authorized;
-	private IntgrationServiceRetriveData<UserSecurity> is;
 	private UserSecurity sec;
 	IntegrationServiceDispatcher dsp;
 	
@@ -57,41 +58,47 @@ public class LoginBean {
 	 * @param dsp the dsp to set
 	 */
 	public void setDsp(IntegrationServiceDispatcher dsp) {
-		this.is = new IntgrationServiceRetriveData<UserSecurity>(dsp);
 		this.dsp = dsp;
 	}
 	
 	public void submit() {
-		IntegrationServiceDataContainer<UserSecurity> req = new IntegrationServiceDataContainer<UserSecurity>();
+		AuthenticationRequest req = new AuthenticationRequest();
 		switch ( this.status) {
 			case 0:
 				this.sec.setUsername(this.username);
-				req.setData(this.sec);
-				this.sec = is.servRequest(req).getData();
-				if ( this.sec.getPassword() != null && this.sec.getPassword().equals((this.password == null?"":this.password)) ) {
-					this.tryCount--;
-					this.autenticated = false;
-				} else {
+				this.sec.setPassword(this.password);
+				req.setSecurity(this.sec);
+				req = (AuthenticationRequest)this.dsp.servRequest(req);
+				if ( req.getSecurity().getUID() != null ) {
+					this.sec = req.getSecurity();
 					this.tryCount = 5;
 					this.status = 1;
 					this.autenticated = true;
+				} else {
+					this.tryCount--;
+					this.autenticated = false;
 				}
 				break;
 			case 1:
-				req.setData(this.sec);
-				this.sec = is.servRequest(req).getData();
-				if ( this.sec.getToken() != null && this.sec.getToken().equals((this.token == null?"":this.token)) ) {
-					this.tryCount--;
-					this.authorized = false;
-				} else {
+				this.sec.setToken(this.token);
+				req.setSecurity(this.sec);
+				req = (AuthenticationRequest)this.dsp.servRequest(req);
+				if ( req.getSecurity().getUID() != null ) {
+					this.sec = req.getSecurity();
 					this.tryCount = 5;
 					this.status = 2;
 					this.authorized = true;
+					WebAppContext.getCurrentRequestContext().getSession().setAttribute("security", this.sec);
+				} else {
+					this.tryCount--;
+					this.authorized = false;
 				}
 		}
 	}
 	
 	public void reset() {
+		this.autenticated = false;
+		this.authorized = false;
 		this.username = null;
 		this.password = null;
 		this.token = null;

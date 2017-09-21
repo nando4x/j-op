@@ -1,8 +1,9 @@
 package demo.integration_services;
 
 import demo.model.IntegrationServiceData;
-import demo.integration_services.generalData.IntgrationServiceRetriveData;
+import demo.integration_services.generalData.IntegrationServiceDataContainer;
 
 public interface IntegrationServiceDispatcher {
-		public IntgrationServiceRetriveData<? extends IntegrationServiceData> getDataRetriver(Class<? extends IntegrationServiceData> clazz);
+		public <E extends IntegrationServiceData> IntegrationServiceDataContainer<E> servRequestDataRetrive(IntegrationServiceDataContainer<E> Request);
+		public IntegrationServiceResponse servRequest(IntegrationServiceRequest Request);
 }

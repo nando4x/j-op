@@ -10,10 +10,13 @@
        <property name="message" value="Hello World!"/>
    </bean>
 
+   <bean id="serviceDispatcher" class="demo.integration_services.stub.DispatcherImpl"/>
    <bean id="localizationTextBean" class="demo.bean.LocalizationTextBean" scope="session">
        <property name="fileProps" value="demo.text"/>
    </bean>
-   <bean id="loginBean" class="demo.bean.LoginBean" scope="session"/>
+   <bean id="loginBean" class="demo.bean.LoginBean" scope="session">
+       <property name="dsp" ref="serviceDispatcher"/>
+   </bean>
    <bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
 	<!--<bean id="jopproxyadvice" class="com.nandox.jop.bean.spring.BeanPostCreation"/>
 	<bean id="jopproxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
