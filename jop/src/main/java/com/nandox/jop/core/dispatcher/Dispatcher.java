@@ -195,6 +195,8 @@ public class Dispatcher {
 	 */
 	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
 		Map<String,Map<String,String[]>> map = this.getQueryDataByPage(QueryData);
+		if ( WebAppContext.getCurrentRequestContext() != null )
+			WebAppContext.getCurrentRequestContext().setParameters(map.get(null));
 		Map<String,String[]> par = map.get(Id.getPage());
 		PageApp page = this.getPageApp(Id.getPage());
 		if ( page != null ) {

@@ -200,6 +200,7 @@ public class PageApp {
 	private void buildHeadScript (Element el) {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts for page: %s", this.id);
 		String pth = WebAppContext.getCurrentRequestContext().getHttpRequest().getContextPath();
+		el.before("<link type=\"text/css\" rel=\"stylesheet\" href=\""+pth+"/jopscript/base.css\"/>");
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
 		el.remove();

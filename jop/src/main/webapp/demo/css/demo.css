@@ -59,18 +59,3 @@ body {
 .login .error {
 	color: red;
 }
-
-.jop_accordion {
-	border-top-width: 1px;
-	border-top-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	text-align: center;
-	cursor: pointer;
-}
-
-.jop_accordion::before {
-	content: ">";
-	position: relative;
-	float: left;
-}

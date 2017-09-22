@@ -82,7 +82,7 @@
 				case 200: // response received
 					if ( xhr.readyState == 4 ) {
 						if ( successCallback != 'undefined' && successCallback != null ) {
-							switch (xhr.getResponseHeader("Content-Type").toLowerCase()) {
+							switch (xhr.getResponseHeader("Content-Type").toLowerCase().split(";")[0]) {
 								case "text/xml":
 									successCallback(xhr.responseXML);
 									break;

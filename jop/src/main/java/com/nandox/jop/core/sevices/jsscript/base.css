@@ -1,0 +1,13 @@
+.jop_accordion .jop_accordion_arrow {
+	position: relative;
+	float: left;
+}
+
+.jop_accordion .jop_accordion_title {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	cursor: pointer;
+	text-align: center;
+}
