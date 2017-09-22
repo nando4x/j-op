@@ -1,13 +1,42 @@
-.jop_accordion .jop_accordion_arrow {
+.jop_accordion .wdg_arrow {
+	top: 5px;
 	position: relative;
 	float: left;
+	background: url(jop_icons.png) no-repeat;
+	margin-right:10px;
 }
 
-.jop_accordion .jop_accordion_title {
+.jop_accordion.st_open .wdg_arrow {
+	background-position: -12px 0; 
+	width: 12px; 
+	height: 10px;
+}
+
+.jop_accordion.st_close .wdg_arrow {
+	background-position: 0 0;
+	width: 12px;
+	height: 10px;
+}
+
+.jop_accordion .wdg_header {
+	padding: 10px 0px;
+	cursor: pointer;
+	padding-left: 10px;
+}
+
+.jop_accordion.st_close .wdg_header {
+	border-width: 1px;
+	border-style: solid;
+	background-color: #f5f3f3;
+}
+
+.jop_accordion.st_open .wdg_header {
 	border-top-width: 1px;
 	border-top-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	cursor: pointer;
-	text-align: center;
+	margin-left: 1px;
+}
+
+.jop_accordion .wdg_content {
+	padding-left: 10px;
+	margin-top: 10px;
 }

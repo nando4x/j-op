@@ -1,13 +1,11 @@
 package com.nandox.jop.core.processor.attribute;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.attribute.JopAttribute.RETURN_ACTION;
 import com.nandox.jop.core.processor.expression.SimplePageExpression;
 
 /**

@@ -106,6 +106,15 @@ public class RequestContext implements BeanAppContext {
 		String v[] = {Value};
 		this.params.put(Name, v);
 	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.bean.BeanAppContext#getParameterAsString(java.lang.String)
+	 */
+	@Override
+	public String getParameterAsString(String Name) {
+		if ( this.params != null && this.params.get(Name) != null )
+			return this.params.get(Name)[0];
+		return "";
+	}
 	/**
 	 * @param params the params to set
 	 */

@@ -49,4 +49,15 @@ public interface BeanAppContext {
 	 * @return	 
 	 */
 	public void addParameter(String Name, String Value);
+	/**
+	 * Get request parameter value as a String.<p>
+	 * 
+	 * @param	  Name parameter name
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  parameter value as string with no null
+	 */
+	public String getParameterAsString(String Name);
 }

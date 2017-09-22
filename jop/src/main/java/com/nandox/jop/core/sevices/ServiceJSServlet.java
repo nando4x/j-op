@@ -153,20 +153,38 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 		String VAR_CONTENXT_PATH = "${context_path}";
 		InputStream i = this.getClass().getResource(SCRIPT_BASE_PATH+"/"+req.getPathInfo()).openStream();
 		if ( i != null ) {
+			String ext = req.getPathInfo();
+			ext = (ext.lastIndexOf('.')>=0?ext.substring(ext.lastIndexOf('.')+1):"").toLowerCase();
 			int len = 0;
-			StringBuffer jb = new StringBuffer();
-			while ((len = i.available()) > 0 ) {
-				byte buff[] = new byte[len]; 
-				i.read(buff);
-				jb.append(new String(buff));
+			if ( ext.equals("png")) {
+				resp.setContentType("image/png");
+				while ((len = i.available()) > 0 ) {
+					byte buff[] = new byte[len]; 
+					i.read(buff);
+					resp.getOutputStream().write(buff);
+				}
+				resp.getOutputStream().close();
+			} else {
+				StringBuffer jb = new StringBuffer();
+				while ((len = i.available()) > 0 ) {
+					byte buff[] = new byte[len]; 
+					i.read(buff);
+					jb.append(new String(buff));
+				}
+				while ( (len = jb.indexOf(VAR_CONTENXT_PATH)) > 0 ) {
+					jb.replace(len, len+VAR_CONTENXT_PATH.length(), req.getContextPath());
+				}
+				resp.setContentLength(jb.length());
+				// set mime on file extension
+				if ( ext.equals("js"))
+					resp.setContentType("text/javascript");
+				else if ( ext.equals("css"))
+					resp.setContentType("text/css");
+				else
+					resp.setContentType("text/plain");
+				resp.getWriter().println(jb);
+				resp.getWriter().close();
 			}
-			while ( (len = jb.indexOf(VAR_CONTENXT_PATH)) > 0 ) {
-				jb.replace(len, len+VAR_CONTENXT_PATH.length(), req.getContextPath());
-			}
-			resp.setContentLength(jb.length());
-			resp.setContentType("text/javascript");
-			resp.getWriter().println(jb);
-			resp.getWriter().close();
 		}
 	}
 	

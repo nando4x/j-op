@@ -3,9 +3,12 @@
 		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
 	}
 </script>
-<div jop_id class="jop_accordion"  onclick='accordion_toggle(this,java{return (appContext.getParameter("jop_accordion")!=null&&"1".equals(appContext.getParameter("jop_accordion")[0])?"0":"1");})'>	
-	<div class="jop_accordion_title"><span class="jop_accordion_arrow">&gt;</span>TITLE</div>
-	<div class="jop_accordion_content" jop_rendered='java{return appContext.getParameter("jop_accordion") != null && "1".equals(appContext.getParameter("jop_accordion")[0]);}'>
+<div jop_id 
+	 class='jop_accordion java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"st_open":"st_close");}'
+	 onclick='accordion_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"0":"1");})'
+>	
+	<div class="wdg_header"><span class='wdg_arrow'></span><span class='wdg_title'>TITLE</span></div>
+	<div class="wdg_content" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_accordion"));}'>
 	CONTENT
 	</div>
 </div>
