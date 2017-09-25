@@ -1,16 +1,25 @@
-<script>
-	function accordion_toggle(el,flg) {
-		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
-	}
-</script>
  <jwdg type="accordion">
- 	   <wdg_title>titolo<span style="color: red;">xxx</span></wdg_title>
- 	   <wdg_content>corpo<span style="color: red;">xxx</span></wdg_title>
- </jwdg>
- 
- <div jop_wdg="accordion">
-	<div wdg_title><span style="color: red;">xxx</span></div> 	
-	<div wdg_content>conts</div> 	
- </div>
-<div jop_id></div> 
+ 	   <wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
+ 	   <wdg_content>
+ 	   	<div class="pull-left">
+ 	   		<label><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
+ 	   		<input name="cccc" type="text">
+ 	   	</div>
+ 	   	<div class="pull-rigt">
+ 	   	</div>
+ 	   </wdg_content>
+ </jwdg> 
+ <jwdg type="accordion">
+ 	   <wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
+ 	   <wdg_content>
+ 	   	<div class="pull-left">
+ 	   		<label><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
+ 	   		<input name="cccc" type="text">
+ 	   	</div>
+ 	   	<div class="pull-rigt">
+ 	   		<label><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
+ 	   		<input name="cccc" type="text">
+ 	   	</div>
+ 	   </wdg_content>
+ </jwdg> 
  

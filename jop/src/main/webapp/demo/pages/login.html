@@ -22,7 +22,7 @@
 	<div jop_rendered="java{return $loginBean.isAuthenticated() && !$loginBean.isAuthorized();}">	  			
 	<div class="title">AUTENTICAZIONE</div>
 	<div class="body">
-		<div>Benvenuto <jbean>{return $localizationTextBean.getText("label.login.username");}</jbean><br>&egrave; necessario autenticarsi con l'OTP</div>
+		<div>Benvenuto <jbean>{return $localizationTextBean.getText("label.login.token");}</jbean><br>&egrave; necessario autenticarsi con l'OTP</div>
 		<input type="password" name="token" value="java{if(value!=null) $loginBean.setToken(value); return null;}" class="" >
 		<div class="error" 
 			jop_rendered="java{return $loginBean.getToken() != null && !$loginBean.isAuthorized();}">
