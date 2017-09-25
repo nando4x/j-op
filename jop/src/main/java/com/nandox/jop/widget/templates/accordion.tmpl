@@ -1,0 +1,17 @@
+<script>
+	function accordion_toggle(el,flg) {
+		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
+	}
+</script>
+<div jop_id
+	 class='jop_accordion java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"st_open":"st_close");}'
+	 onclick='accordion_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"0":"1");})'
+>	
+	<div class="wdg_header"><!--
+		--><span class='wdg_arrow'></span><!--
+		--><span class='wdg_title'><wdg_title></wdg_title></span>
+	</div>
+	<div class="wdg_content" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_accordion"));}'>
+	<wdg_content></wdg_content>
+	</div>
+</div>

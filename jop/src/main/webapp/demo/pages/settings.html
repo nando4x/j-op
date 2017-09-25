@@ -3,30 +3,14 @@
 		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
 	}
 </script>
-<div jop_id 
-	 class='jop_accordion java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"st_open":"st_close");}'
-	 onclick='accordion_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"0":"1");})'
->	
-	<div class="wdg_header"><span class='wdg_arrow'></span><span class='wdg_title'>TITLE</span></div>
-	<div class="wdg_content" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_accordion"));}'>
-	CONTENT
-	</div>
-</div>
  <jwdg type="accordion">
  	   <wdg_title>titolo<span style="color: red;">xxx</span></wdg_title>
  	   <wdg_content>corpo<span style="color: red;">xxx</span></wdg_title>
  </jwdg>
+ 
  <div jop_wdg="accordion">
 	<div wdg_title><span style="color: red;">xxx</span></div> 	
 	<div wdg_content>conts</div> 	
  </div>
- <div  
-	 class='jop_accordion java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"st_open":"st_close");}'
-	 onclick='accordion_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"0":"1");})'
->	
-	<div class="wdg_header"><span class='wdg_arrow'></span><span class='wdg_title'><wdg_title></wdg_title></span></div>
-	<div class="wdg_content" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_accordion"));}'>
-	<wdg_content></wdg_content>
-	</div>
-</div>
+<div jop_id></div> 
  

@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
@@ -15,6 +16,8 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
+import com.nandox.jop.widget.WidgetBlock;
+
 /**
  * Class of Page application.<p>
  * One page application is composite by PageBlock, every block can contains PageExpression  
@@ -30,8 +33,12 @@ import com.nandox.jop.core.processor.attribute.JopAttribute;
  * @revisor   Fernando Costantino
  */
 public class PageApp {
+	/** Widget TAG */
+	protected static final String JOP_WIDGET_TAG = "jwdg";
+	/** Alternative Widget TAG */
+	//protected static final String JOP_WIDGET_TAG_ALT = "div[jop_wdg]";
 	/** DOM JOP block selector */
-	protected static final String DOMPARSER_JOP_SELECTOR = PageApp.getAttributeSelector();
+	protected static final String DOMPARSER_JOP_SELECTOR = JOP_WIDGET_TAG+","/*+JOP_WIDGET_TAG_ALT+","*/+PageApp.getAttributeSelector();
 	/** Logger */
 	protected static final Logger LOG = Logger.Factory.getLogger(PageApp.class);
 	
@@ -154,7 +161,7 @@ public class PageApp {
     		}
 		}
 		// create blocks
-        Iterator<Element> elems = list.iterator();
+        Iterator<Element> elems = list.listIterator();        
     	while ( elems.hasNext() ) {
     		Element el = elems.next();
 			// check for double jop id
@@ -165,7 +172,21 @@ public class PageApp {
     		} else {
     			// create block and check syntax error
     			try {
-    				this.blocks.put(id, new PageBlock(this.appCtx,this.id,el));
+    				// test the type of block (if widget or general)
+    				if ( el.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
+    					PageBlock w = new WidgetBlock(this.appCtx,this.id,el);
+    					this.blocks.put(id, w);
+    					// add to list sub block of widget
+    					Elements wlist = w.domEl.select(DOMPARSER_JOP_SELECTOR);
+    					for ( int ix=1; ix<wlist.size(); ix++ ) { // start from second because the first is self
+    						Element wel = wlist.get(ix);
+   			        		auto_id_index++;
+   			    			wel.attr(JopAttribute.JOP_ATTR_ID,""+auto_id_index);
+   			    			((ListIterator<Element>)elems).add(wel);
+   			    			((ListIterator<Element>)elems).previous();
+    					}
+    				} else
+    					this.blocks.put(id, new GenericPageBlock(this.appCtx,this.id,el));
     			} catch (Exception e) {
     				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
     			}
