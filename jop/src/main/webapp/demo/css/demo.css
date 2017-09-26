@@ -69,3 +69,34 @@ body {
 	float: right;
 	width: 50%;
 }
+
+.grid {
+	display: table;
+	width: 100%;
+}
+
+.grid .row {
+	display: table-row;
+	width: 100%;
+}
+
+.grid .row .cell {
+	display: table-cell;
+	width: 50%;
+}
+
+.grid .row .cell.label {
+	width: 200px;
+	overflow-wrap: break-word;
+	word-break: break-all;
+}
+
+.grid .row .cell.data {
+	padding-right: 20px;
+	width: 200px;
+}
+
+.jop_accordion {
+	padding-top: 20px;
+	clear: both;
+}
