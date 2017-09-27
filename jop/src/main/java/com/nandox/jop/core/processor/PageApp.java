@@ -178,8 +178,11 @@ public class PageApp {
     					this.blocks.put(id, w);
     					// add to list sub block of widget
     					Elements wlist = w.domEl.select(DOMPARSER_JOP_SELECTOR);
-    					for ( int ix=1; ix<wlist.size(); ix++ ) { // start from second because the first is self
+    					for ( int ix=0; ix<wlist.size(); ix++ ) { 
     						Element wel = wlist.get(ix);
+    						// exclude block with jop_id already assigned
+    						if ( wel.attr(JopAttribute.JOP_ATTR_ID) != null && !wel.attr(JopAttribute.JOP_ATTR_ID).isEmpty() )
+    							continue;
    			        		auto_id_index++;
    			    			wel.attr(JopAttribute.JOP_ATTR_ID,""+auto_id_index);
    			    			((ListIterator<Element>)elems).add(wel);

@@ -38,6 +38,6 @@
 }
 
 .jop_accordion .wdg_content {
-	padding-left: 10px;
-	margin-top: 10px;
+	padding: 10px 13px;
+	background-color: #f5f3f3;
 }

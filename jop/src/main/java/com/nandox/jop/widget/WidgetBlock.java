@@ -45,10 +45,16 @@ public class WidgetBlock extends PageBlock {
 		this.parse(Context);
 	}
 
-	// Build DOM element to get template and substitute the widget tag 
-	//
-	//
-	private void buildFromTemplate() {
+	/**
+	 * Build widget from a template.<p>
+	 * Read the template html file compile it and place on DOM of this block
+	 * @date      30 set 2016 - 30 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 * @return	  
+	 */	
+	protected void buildFromTemplate() {
 		// Get template into new element
 		String type = this.domEl.attr(ATTR_TYPE);
 		if( type == null || type.isEmpty() ) {
