@@ -16,7 +16,6 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
-import com.nandox.jop.widget.WidgetBlock;
 
 /**
  * Class of Page application.<p>
@@ -174,7 +173,7 @@ public class PageApp {
     			try {
     				// test the type of block (if widget or general)
     				if ( el.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
-    					PageBlock w = new WidgetBlock(this.appCtx,this.id,el);
+    					PageBlock w = this.appCtx.factoryWidget(this.appCtx,this.id,el);
     					this.blocks.put(id, w);
     					// add to list sub block of widget
     					Elements wlist = w.domEl.select(DOMPARSER_JOP_SELECTOR);

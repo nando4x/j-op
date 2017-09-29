@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+
 import javax.servlet.ServletContext;
 
+import org.jsoup.nodes.Element;
 import org.springframework.context.ApplicationContext;
 
 import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.dispatcher.Dispatcher;
+import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.expression.ExpressionCompiler;
+import com.nandox.jop.widget.WidgetBlock;
 
 /**
  * Application Context to resolve and invoke bean.<p>
@@ -35,6 +39,7 @@ public class WebAppContext {
 	private ServletContext ctx;				// servlet context
 	private Dispatcher dsp;					// dispatcher
 	private static ThreadLocal<RequestContext> instance = new ThreadLocal<RequestContext>(); // current thread RequestContext
+	private String[] widgetPkg;				// array of custom widget class packages
 	
 	/**
 	 * @param	  Context Servlet context 
@@ -47,6 +52,9 @@ public class WebAppContext {
 		this.bcmpl = new ExpressionCompiler();
 		this.ctx = Context;
 		this.dsp = Dsp;
+		if ( Context.getInitParameter("jop.customwidget.package") != null && !Context.getInitParameter("jop.customwidget.package").isEmpty() ) {
+			this.widgetPkg = Context.getInitParameter("jop.customwidget.package").split(",");
+		}
 	}
 	/**
 	 * Search and return bean instance by name 
@@ -170,6 +178,30 @@ public class WebAppContext {
 		}else {
 			instance.set(ReqCtx);
 		}
+	}
+	/**
+	 * Widget factory
+	 * @param	  Context	Application context
+	 * @param	  PageId	page identificator
+	 * @param	  DomElement	HTML element of the block
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  widget instance
+	 */
+	public WidgetBlock factoryWidget(WebAppContext Context, String PageId, Element DomElement) throws DomException {
+		String name = WidgetBlock.computeWidgetName(DomElement);
+		for ( int ix=0; ix<this.widgetPkg.length; ix++ ) {
+			try {
+				Class<?> c = Class.forName(this.widgetPkg[ix]+"."+name);
+				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, String.class, Element.class).newInstance(Context,PageId,DomElement);
+			} catch (ClassNotFoundException  e) {
+			} catch (Exception e) {
+				throw new DomException(e.getMessage());
+			}
+		}
+		return new WidgetBlock(Context,PageId,DomElement);
 	}
 	/**
 	 * Return BeanAppContext of current thread
