@@ -19,6 +19,11 @@ public class DispatcherImpl implements IntegrationServiceDispatcher {
 				((demo.model.UserSecurity)Request.getData()).setPassword("test");
 				return Request;
 			}
+			if ( Request.getData() instanceof demo.model.User ) {
+				((demo.model.User)Request.getData()).setName("test");
+				((demo.model.User)Request.getData()).setSurename("test");
+				return Request;
+			}
 		}
 		return null;
 	}

@@ -5,4 +5,4 @@
  * @author ee38938
  *
  */
-package demo.ui_jop.widget.template;
+package demo.ui_jop.widget.templates;

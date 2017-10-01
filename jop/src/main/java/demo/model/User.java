@@ -1,10 +1,12 @@
 package demo.model;
 
+import java.util.Date;
+
 public class User implements IntegrationServiceData {
 	private String name;
 	private String surename;
-	private String username;
 	private String email;
+	private Date birthdate;
 	/**
 	 * @return the name
 	 */
@@ -30,18 +32,6 @@ public class User implements IntegrationServiceData {
 		this.surename = surename;
 	}
 	/**
-	 * @return the username
-	 */
-	public String getUsername() {
-		return username;
-	}
-	/**
-	 * @param username the username to set
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	/**
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -52,6 +42,18 @@ public class User implements IntegrationServiceData {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	/**
+	 * @return the birthdate
+	 */
+	public Date getBirthdate() {
+		return birthdate;
+	}
+	/**
+	 * @param birthdate the birthdate to set
+	 */
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
 	}
 
 }

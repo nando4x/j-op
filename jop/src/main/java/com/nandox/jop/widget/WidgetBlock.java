@@ -87,6 +87,7 @@ public class WidgetBlock extends PageBlock {
 			this.compileAttributes(attrs);
 		} catch (Exception e) {
 			//TODO: exception unknown widget type
+			e = null;
 		}
 	}
 	/**

@@ -1,76 +1,37 @@
 <div class="settings">
-	<form class="content" jop_id>
-	 		<div class="grid">
-	 			<div class="row">
-	 				<div class="cell">
-	 					<div class="row">
-	 						<wdg_item></wdg_item>
-	 					</div>
-	 				</div>
-	 			</div>
-	   		</div>
-	   		<div class="action">
-	   			<input type="submit">
-	   		</div>
-	</form>
-	<jwdg_custom type="accordion">
-		<wdg_item newrow="1">
-			<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-			<input class="cell data" name="security.username" type="text">
-		</wdg_item>
-	</jwdg_custom>
+	<div jop_id='' style="display: none">
+		<jbean>{$settingsBean.load(); return null;}</jbean>
+	</div>
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
-	 	<form class="content" jop_id>
-	 		<div class="grid">
-	 			<div class="row">
-	 				<div class="cell">
-	 					<div class="row">
-	 	   					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-	 	   					<input class="cell data" name="security.username" type="text">
-	 					</div>
-	 				</div>
-	 			</div>
-	   		</div>
-	   		<div class="action">
-	   			<input type="submit">
-	   		</div>
-   		</form>
+		<jwdg type="FormInAccordion">
+			<wdg_item>
+				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
+				<input class="cell data" name="security.username" type="text"
+					   value="java{if(value!=null) $loginBean.setUsername(value); return $loginBean.getUsername();}">
+			</wdg_item>
+		</jwdg>
 	 	</wdg_content>
 	 </jwdg> 
 	 <jwdg type="accordion">
 	   	<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
 		<wdg_content>
-	 	<form class="content" jop_id>
-	 		<div class="grid">
-	 			<div class="row">
-	 				<div class="cell">
-	 					<div class="row">
-	 	   					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
-	 	   					<input class="cell data" name="cccc" type="text">
-	 					</div>
-	 				</div>
-	 				<div class="cell">
-	 					<div class="row">
-	 	   					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
-	 	   					<input class="cell data" name="cccc" type="text">
-	 					</div>
-	 				</div>
-	 			</div>
-	 			<div class="row">
-	 				<div class="cell">
-	 					<div class="row">
-	 	   					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>
-	 	   					<input class="cell data" name="cccc" type="text">
-	 					</div>
-	 				</div>
-	 			</div>
-	   		</div>
-	   		<div class="action">
-	   			<input type="submit">
-	   		</div>
-	   	</form>	
+		<jwdg type="FormInAccordion">
+			<wdg_item>
+				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
+				<input class="cell data" name="personal.name" type="text"
+					   value="java{if(value!=null) $settingsBean.getUser().setName(value); return $settingsBean.getUser().getName();}">
+			</wdg_item>
+			<wdg_item>
+				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
+				<input class="cell data" name="personal.surname" type="text">
+			</wdg_item>
+			<wdg_item newrow>
+				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>
+				<input class="cell data" name="cccc" type="date">
+			</wdg_item>
+		</jwdg>
 	 	</wdg_content>
 	 </jwdg> 
  </div>

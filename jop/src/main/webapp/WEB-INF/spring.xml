@@ -17,6 +17,9 @@
    <bean id="loginBean" class="demo.bean.LoginBean" scope="session">
        <property name="dsp" ref="serviceDispatcher"/>
    </bean>
+   <bean id="settingsBean" class="demo.bean.SettingsBean" scope="session">
+       <property name="dsp" ref="serviceDispatcher"/>
+   </bean>
    <bean class="com.nandox.jop.bean.spring.BeanPostCreation"/>
 	<!--<bean id="jopproxyadvice" class="com.nandox.jop.bean.spring.BeanPostCreation"/>
 	<bean id="jopproxy" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">

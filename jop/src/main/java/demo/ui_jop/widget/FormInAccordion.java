@@ -19,23 +19,26 @@ public class FormInAccordion extends WidgetBlock {
 	 */
 	@Override
 	protected void compileTemplate(Element Tmpl) {
-		Iterator<Element> elems = this.domEl.getElementsByTag("wdg_item").iterator();
-		while (elems.hasNext() ) {
-			Element e = elems.next();
-			Tmpl.select(cssQuery)
-		}
 		Element tmp = Tmpl.clone();
-		Iterator<Element> elems = Tmpl.getAllElements().iterator();
+		Iterator<Element> elems = this.domEl.getElementsByTag("wdg_item").iterator();
+		int ix=0;
 		while (elems.hasNext() ) {
 			Element e = elems.next();
-			// if found replace template clone widget with same tag of the element 
-			if ( e.tagName().toLowerCase().startsWith("wdg_") ) {
-				if ( !this.domEl.getElementsByTag(e.tagName()).isEmpty() ) {
-					e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
+			Element item;
+			if ( ix > 0 ) { // first item every substitute others append
+				if ( e.hasAttr("newrow") ) {
+					item = tmp.select(".row:has(.cell)").get(0);
+					Tmpl.select(".row:has(.cell):last-of-type").get(0).after(item.outerHtml());
+				} else {
+					item = tmp.select(".cell").get(0);
+					Tmpl.select(".cell:last-of-type").get(0).after(item.outerHtml());
 				}
-				e.unwrap();
 			}
+			Tmpl.getElementsByTag(e.tagName()).get(0).tagName(e.tagName()+ix);
+			e.tagName(e.tagName()+ix);
+			ix++;
 		}
+		super.compileTemplate(Tmpl);
 	}
 
 }
