@@ -21,7 +21,7 @@ public class DispatcherImpl implements IntegrationServiceDispatcher {
 			}
 			if ( Request.getData() instanceof demo.model.User ) {
 				((demo.model.User)Request.getData()).setName("test");
-				((demo.model.User)Request.getData()).setSurename("test");
+				((demo.model.User)Request.getData()).setSurname("test");
 				return Request;
 			}
 		}

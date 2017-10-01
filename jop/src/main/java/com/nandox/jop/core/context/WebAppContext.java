@@ -198,7 +198,7 @@ public class WebAppContext {
 				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, String.class, Element.class).newInstance(Context,PageId,DomElement);
 			} catch (ClassNotFoundException  e) {
 			} catch (Exception e) {
-				throw new DomException(e.getMessage());
+				throw new DomException(e.getCause().getMessage());
 			}
 		}
 		return new WidgetBlock(Context,PageId,DomElement);

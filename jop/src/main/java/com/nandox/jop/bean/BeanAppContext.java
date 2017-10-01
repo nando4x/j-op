@@ -60,4 +60,17 @@ public interface BeanAppContext {
 	 * @return	  parameter value as string with no null
 	 */
 	public String getParameterAsString(String Name);
+	/**
+	 * Helper to manage html input.<p>
+	 * Manage rread and write operations
+	 * @param	  Bean bean associated
+	 * @param	  Property bean property to read or write
+	 * @param	  Value value to write, if null do read operation
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  value of property
+	 */
+	public Object mngInput(Object Bean, String Property, Object Value );
 }

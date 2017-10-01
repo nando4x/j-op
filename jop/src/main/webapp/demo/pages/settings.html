@@ -25,7 +25,8 @@
 			</wdg_item>
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
-				<input class="cell data" name="personal.surname" type="text">
+				<input class="cell data" name="personal.surname" type="text"
+					   value="java{if(value!=null) $settingsBean.getUser().setSurname(value); return $settingsBean.getUser().getSurname();}">
 			</wdg_item>
 			<wdg_item newrow>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>

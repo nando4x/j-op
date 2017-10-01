@@ -115,6 +115,14 @@ public class RequestContext implements BeanAppContext {
 			return this.params.get(Name)[0];
 		return "";
 	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.bean.BeanAppContext#mngInput(java.lang.Object, java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public Object mngInput(Object Bean, String Property, Object Value) {
+		
+		return null;
+	}
 	/**
 	 * @param params the params to set
 	 */
