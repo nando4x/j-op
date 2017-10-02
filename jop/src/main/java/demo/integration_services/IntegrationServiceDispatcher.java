@@ -1,9 +1,10 @@
 package demo.integration_services;
 
+import demo.integration_services.dataservice.IntegrationServiceDataContainer;
 import demo.model.IntegrationServiceData;
-import demo.integration_services.generalData.IntegrationServiceDataContainer;
 
 public interface IntegrationServiceDispatcher {
-		public <E extends IntegrationServiceData> IntegrationServiceDataContainer<E> servRequestDataRetrive(IntegrationServiceDataContainer<E> Request);
+		public <E extends IntegrationServiceData, K> IntegrationServiceDataContainer<E,K> servRequestDataRetrive(IntegrationServiceDataContainer<E,K> Request);
+		public <E extends IntegrationServiceData, K> IntegrationServiceDataContainer<E,K> servRequestDataChange(IntegrationServiceDataContainer<E,K> Request);
 		public IntegrationServiceResponse servRequest(IntegrationServiceRequest Request);
 }

@@ -38,6 +38,8 @@ public class FormInAccordion extends WidgetBlock {
 			e.tagName(e.tagName()+ix);
 			ix++;
 		}
+		if ( this.domEl.hasAttr("jop_onaction") )
+			Tmpl.child(0).attr("jop_onaction",this.domEl.attr("jop_onaction"));
 		super.compileTemplate(Tmpl);
 	}
 

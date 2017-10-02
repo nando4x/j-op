@@ -17,7 +17,7 @@
 	 <jwdg type="accordion">
 	   	<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
 		<wdg_content>
-		<jwdg type="FormInAccordion">
+		<jwdg type="FormInAccordion"  jop_onaction="java{$settingsBean.save(); return null;}">
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
 				<input class="cell data" name="personal.name" type="text"
