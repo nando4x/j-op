@@ -2,6 +2,7 @@ package com.nandox.jop.core.context;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -119,9 +120,24 @@ public class RequestContext implements BeanAppContext {
 	 * @see com.nandox.jop.bean.BeanAppContext#mngInput(java.lang.Object, java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public Object mngInput(Object Bean, String Property, Object Value) {
-		
-		return null;
+	public <E> String mngInput(Object Bean, String Property, E Value) {
+		String name = Property.substring(0, 1).toUpperCase() + Property.substring(1);
+		if ( Value == null ) {
+			try {
+				Method m = Bean.getClass().getDeclaredMethod("get"+name);
+				return (String)m.invoke(Bean);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+			try {
+				Method m = Bean.getClass().getDeclaredMethod("set"+name,Value.getClass());
+				m.invoke(Bean,Value);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return (String)Value;
 	}
 	/**
 	 * @param params the params to set

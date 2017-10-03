@@ -21,7 +21,7 @@
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
 				<input class="cell data" name="personal.name" type="text"
-					   value="java{if(value!=null) $settingsBean.getUser().setName(value); return $settingsBean.getUser().getName();}">
+					   value='java{return appContext.mngInput($settingsBean.getUser(),"name",value);}'>
 			</wdg_item>
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>

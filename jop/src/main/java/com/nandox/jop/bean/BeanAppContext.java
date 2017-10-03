@@ -72,5 +72,5 @@ public interface BeanAppContext {
 	 * @exception 
 	 * @return	  value of property
 	 */
-	public Object mngInput(Object Bean, String Property, Object Value );
+	public <E> String mngInput(Object Bean, String Property, E Value );
 }
