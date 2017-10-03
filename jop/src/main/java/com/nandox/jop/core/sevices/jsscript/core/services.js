@@ -65,7 +65,7 @@
 		// define ajax error callback
 		errorCallback = function(status,statusMessage,response) {
 			var id = jopId;
-			
+			Jop.core.showAlert(response);
 		}
 		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,errorCallback);
 	};

@@ -234,6 +234,22 @@ Jop.core.services = Jop.core.services || {};
 		}
 	    window.dispatchEvent(evt);
 	}
+	/**
+	 * Show alert dialog box
+	 * @param	  title	dialogbox title
+	 * @param	  msg	message to show
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  
+	 */
+	this.showAlert = function(title,msg) {
+		var tmp = document.createElement('div');
+		tmp.id = "jop_alertdialog";
+		tmp.innerHTML = "<div class='header'><span class='icon_close' onclick='this.parentElement.parentElement.parentElement.removeChild(this.parentElement.parentElement);'/></div>"
+						+"<p>"+msg+"</p>";
+	}
 	// init process
 	//
 	//
