@@ -62,7 +62,12 @@
 				console.log(e);
 			}
 		}
-		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,null);
+		// define ajax error callback
+		errorCallback = function(status,statusMessage,response) {
+			var id = jopId;
+			
+		}
+		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,errorCallback);
 	};
 
 	// ajax generic low-level function
@@ -96,11 +101,13 @@
 					}
 					break;
 				default:
-					end = true;
-					if ( errorCallback != 'undefined' && errorCallback != null )
-						errorCallback(xhr.status,xhr.statusText);
-					else
-						Jop.core.debugger("ajax error callback undefined")
+					if ( xhr.readyState == 4 ) {
+						end = true;
+						if ( errorCallback != 'undefined' && errorCallback != null )
+							errorCallback(xhr.status,xhr.statusText,xhr.responseText);
+						else
+							Jop.core.debugger("ajax error callback undefined")
+					}
 					break;
 			}
 			if ( end )

@@ -142,14 +142,14 @@ public class ExpressionCompiler {
 		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
-		int inx_end = source.indexOf('.',inx_st);
+		int inx_end = (source.indexOf('.',inx_st)>0?source.indexOf('.',inx_st):(source.indexOf(',',inx_st)>0?source.indexOf(',',inx_st):(source.indexOf(' ',inx_st)>0?source.indexOf(' ',inx_st):(source.indexOf(')',inx_st)>0?source.indexOf(')',inx_st):source.indexOf('(',inx_st)))));
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			try {
 				beans.add(source.substring(inx_st+1, inx_end));
 				code += "import "+this.epurateClassName(context.getBeanType(source.substring(inx_st+1, inx_end)).getName())+";";
 				source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
 				inx_st = source.indexOf('$', inx_st+1);
-				inx_end = source.indexOf('.',inx_st);
+				inx_end = (source.indexOf('.',inx_st)>0?source.indexOf('.',inx_st):(source.indexOf(',',inx_st)>0?source.indexOf(',',inx_st):(source.indexOf(' ',inx_st)>0?source.indexOf(' ',inx_st):(source.indexOf(')',inx_st)>0?source.indexOf(')',inx_st):source.indexOf('(',inx_st)))));
 			} catch ( org.springframework.beans.factory.NoSuchBeanDefinitionException e ) {
 				throw new Exception(ErrorsDefine.JOP_BEAN_NOTFOUND);
 			}

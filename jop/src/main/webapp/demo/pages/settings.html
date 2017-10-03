@@ -5,11 +5,11 @@
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
-		<jwdg type="FormInAccordion">
+		<jwdg class="" type="FormInAccordion">
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
 				<input class="cell data" name="security.username" type="text"
-					   value="java{if(value!=null) $loginBean.setUsername(value); return $loginBean.getUsername();}">
+					   value='java{return appContext.mngInput($settingsBean,"username",value);}'>
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>
@@ -26,7 +26,7 @@
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
 				<input class="cell data" name="personal.surname" type="text"
-					   value="java{if(value!=null) $settingsBean.getUser().setSurname(value); return $settingsBean.getUser().getSurname();}">
+					   value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
 			</wdg_item>
 			<wdg_item newrow>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>
