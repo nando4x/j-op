@@ -24,7 +24,8 @@ Jop.core.services = Jop.core.services || {};
 	// Constant definition
 	var i = 0;
 	this.CONST = Object.freeze({
-		"DEBUG": true
+		"DEBUG": true,
+		"SPINNERENABLE": ${initpar:jop.browser.spinnerenable}		
 	});
 	this.EVENT = Object.freeze({
 		"DOMLOADED": 'jop_domloaded'
@@ -247,8 +248,30 @@ Jop.core.services = Jop.core.services || {};
 	this.showAlert = function(title,msg) {
 		var tmp = document.createElement('div');
 		tmp.id = "jop_alertdialog";
-		tmp.innerHTML = "<div class='header'><span class='icon_close' onclick='this.parentElement.parentElement.parentElement.removeChild(this.parentElement.parentElement);'/></div>"
-						+"<p>"+msg+"</p>";
+		tmp.innerHTML = "<div class='background'></div>"+
+						"<div class='dialog'>"+
+						"<div class='header'><span class='title'>"+title+"</span><span class='icon_close' onclick='document.getElementById(\"jop_alertdialog\").parentElement.removeChild(document.getElementById(\"jop_alertdialog\"));'/></div>"+
+						"<div class='content'>"+msg+"</div>"+
+						"</div>";
+		document.body.appendChild(tmp);
+	}
+
+	/**
+	 * Show spinner on specific block
+	 * @param	  jopId block identifier
+	 * @date      03 feb 2017 - 03 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  
+	 */
+	this.turnBlockSpinner = function(jopId,enable) {
+		if ( this.CONST.SPINNERENABLE ) {
+			var el = this.getBlockElement(jopId);
+			if ( el != null ) {
+				(enable?this.dom.addClass(el,"jop_spinner"):this.dom.removeClass(el,"jop_spinner"));
+			}
+		}
 	}
 	// init process
 	//
@@ -259,8 +282,18 @@ Jop.core.services = Jop.core.services || {};
 			eval.call(window,scr);
 	    }
 	});
-	// also introduce a new sub-namespace
-	//this.tools = {};
+	// DOM manipulate sub-namespace
+	this.dom = {
+			addClass: function(Element,Class) {
+				Element.className = Element.className.split(Class).join("") + " " + Class;
+			},
+			removeClass: function(Element,Class) {
+				Element.className = Element.className.split(Class).join("");
+			},
+			removeElement: function(Element) {
+				Element.parentElement.removeChild(Element);
+			}
+	};
 	
 }).apply( Jop.core );
 

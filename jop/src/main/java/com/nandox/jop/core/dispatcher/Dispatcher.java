@@ -46,6 +46,12 @@ public class Dispatcher {
 
 	private WebAppContext appCtx;
 	/**
+	 * @return the appCtx
+	 */
+	public WebAppContext getAppCtx() {
+		return appCtx;
+	}
+	/**
 	 * Init used by servlet
 	 * @param	  config servlet configuration
 	 * @date      17 set 2016 - 17 set 2016

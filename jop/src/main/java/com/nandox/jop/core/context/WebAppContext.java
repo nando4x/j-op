@@ -3,7 +3,9 @@ package com.nandox.jop.core.context;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 
@@ -40,6 +42,7 @@ public class WebAppContext {
 	private Dispatcher dsp;					// dispatcher
 	private static ThreadLocal<RequestContext> instance = new ThreadLocal<RequestContext>(); // current thread RequestContext
 	private String[] widgetPkg;				// array of custom widget class packages
+	private Map<String,String> initPar; 	// init parameters
 	
 	/**
 	 * @param	  Context Servlet context 
@@ -52,9 +55,16 @@ public class WebAppContext {
 		this.bcmpl = new ExpressionCompiler();
 		this.ctx = Context;
 		this.dsp = Dsp;
-		if ( Context.getInitParameter("jop.customwidget.package") != null && !Context.getInitParameter("jop.customwidget.package").isEmpty() ) {
-			this.widgetPkg = Context.getInitParameter("jop.customwidget.package").split(",");
+		this.initPar = new HashMap<String,String>();
+		ResourceBundle res = ResourceBundle.getBundle(this.getClass().getPackage().getName()+"."+"default_init_param");
+		String keys[] = res.keySet().toArray(new String[0]);
+		for ( int ix=0; ix<keys.length; ix++ ) {
+			if ( Context.getInitParameter(keys[ix]) != null && !Context.getInitParameter(keys[ix]).isEmpty() )
+				this.initPar.put(keys[ix], Context.getInitParameter(keys[ix]));
+			else
+				this.initPar.put(keys[ix], res.getString(keys[ix]));
 		}
+		this.widgetPkg = this.initPar.get("jop.customwidget.package").split(",");
 	}
 	/**
 	 * Search and return bean instance by name 
@@ -214,5 +224,18 @@ public class WebAppContext {
 	 */
 	static public RequestContext getCurrentRequestContext() {
 		return instance.get();
+	}
+	/**
+	 * Return init parameter value.<p>
+	 * If is not defined on web.xml use the default value from properties file  
+	 * @param	  Name paramenter name 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  Request Context instance
+	 */
+	public String getInitParameter(String Name) {
+		return this.initPar.get(Name);
 	}
 }

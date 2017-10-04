@@ -150,14 +150,13 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 	// and substitute variable ${}
 	//
 	private void readFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String VAR_CONTENXT_PATH = "${context_path}";
 		InputStream i = this.getClass().getResource(SCRIPT_BASE_PATH+"/"+req.getPathInfo()).openStream();
 		if ( i != null ) {
 			String ext = req.getPathInfo();
 			ext = (ext.lastIndexOf('.')>=0?ext.substring(ext.lastIndexOf('.')+1):"").toLowerCase();
 			int len = 0;
-			if ( ext.equals("png")) {
-				resp.setContentType("image/png");
+			if ( ext.equals("png") || ext.equals("gif") ) {
+				resp.setContentType("image/"+ext);
 				while ((len = i.available()) > 0 ) {
 					byte buff[] = new byte[len]; 
 					i.read(buff);
@@ -171,11 +170,11 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 					i.read(buff);
 					jb.append(new String(buff));
 				}
-				while ( (len = jb.indexOf(VAR_CONTENXT_PATH)) > 0 ) {
-					jb.replace(len, len+VAR_CONTENXT_PATH.length(), req.getContextPath());
-				}
+				// interpreter variables
+				this.resourcesVariablesInterpreter(jb, req);
+				
+				// set length and mime on file extension
 				resp.setContentLength(jb.length());
-				// set mime on file extension
 				if ( ext.equals("js"))
 					resp.setContentType("text/javascript");
 				else if ( ext.equals("css"))
@@ -185,6 +184,21 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 				resp.getWriter().println(jb);
 				resp.getWriter().close();
 			}
+		}
+	}
+	// resources variables interpreter
+	//
+	//
+	private void resourcesVariablesInterpreter(StringBuffer buff,HttpServletRequest req) {
+		String VAR_CONTENXT_PATH = "${context_path}";
+		String VAR_INIT_PARAM = "${initpar:";
+		int len = 0;
+		while ( (len = buff.indexOf(VAR_CONTENXT_PATH)) > 0 ) {
+			buff.replace(len, len+VAR_CONTENXT_PATH.length(), req.getContextPath());
+		}
+		while ( (len = buff.indexOf(VAR_INIT_PARAM)) > 0 ) {
+			String par = buff.substring(len+VAR_INIT_PARAM.length(), buff.indexOf("}", len));
+			buff.replace(len, len+VAR_INIT_PARAM.length()+par.length()+1, this.dsp.getAppCtx().getInitParameter(par));
 		}
 	}
 	

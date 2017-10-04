@@ -9,7 +9,7 @@
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
 				<input class="cell data" name="security.username" type="text"
-					   value='java{return appContext.mngInput($settingsBean,"username",value);}'>
+					   value='java{return appContext.mngInput($loginBean,"username",value);}'>
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>

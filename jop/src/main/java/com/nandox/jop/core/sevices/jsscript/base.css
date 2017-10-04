@@ -1,3 +1,68 @@
+/* 
+ *	general
+ */
+.jop_spinner::before {
+    background-image: url('spinner.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    content: " ";
+}
+
+/* 
+ *	dialog alert
+ */
+#jop_alertdialog .background {
+	background-color: black;
+	opacity
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height:100%;
+	position: fixed;
+	opacity: 0.5;
+}
+
+#jop_alertdialog .dialog {
+	position: fixed;
+	top: calc(50% - 150px);
+	left: calc(50% - 400px);
+	background: white;
+}
+
+#jop_alertdialog .dialog .content {
+	max-width: 800px;
+	min-width: 800px;
+	max-height: 300px;
+	min-height: 300px;
+	overflow: auto;
+}
+
+#jop_alertdialog .dialog .header {
+	background-color: #e2dede;
+	height: 20px;
+	position: relative;
+}
+
+#jop_alertdialog .dialog .header .title {
+	padding-left: 10px;
+}
+
+#jop_alertdialog .header .icon_close::before {
+	float: right;
+	padding-right: 5px;
+	content: "x";
+	cursor:pointer;
+}
+
+/* 
+ *	accordion widget
+ */
 .jop_accordion .wdg_arrow {
 	top: 5px;
 	position: relative;
@@ -40,14 +105,4 @@
 .jop_accordion .wdg_content {
 	padding: 10px 13px;
 	background-color: #f5f3f3;
-}
-
-#jop_alertdialog {
-	position: fixed;
-	top: calc(50% - 150px);
-	left: calc(50% - 400px);
-	max-width: 800px;
-	min-width: 800px;
-	max-height: 300px;
-	min-height: 300px;
 }

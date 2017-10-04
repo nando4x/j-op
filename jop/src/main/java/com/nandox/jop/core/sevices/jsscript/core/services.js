@@ -35,6 +35,8 @@
 	this.postBlock = function (jopId, params) {
 		// get block and its child input
 		var block = Jop.core.getBlockElement(jopId);
+		// set spinner
+		Jop.core.turnBlockSpinner(jopId,"jop_spinner");
 		var list = Jop.core.querySelectorAll(block,'input[name]');
 		var request = JOP_ID_PARAMETER+"="+jopId;
 		for ( var ix=0; list!=null&&ix<list.length; ix++ ) {
@@ -65,7 +67,7 @@
 		// define ajax error callback
 		errorCallback = function(status,statusMessage,response) {
 			var id = jopId;
-			Jop.core.showAlert(response);
+			Jop.core.showAlert("EXCEPTION ERROR",response);
 		}
 		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,errorCallback);
 	};
