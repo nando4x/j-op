@@ -10,6 +10,7 @@ import org.jsoup.parser.Tag;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.attribute.JopAttribute;
 
 /**
  * Widget page block.<p>
@@ -83,7 +84,7 @@ public class WidgetBlock extends PageBlock {
 			this.domEl = (Element)this.domEl.unwrap().parent();
 			this.domEl = this.domEl.select("[jop_id="+this.id+"]").iterator().next();
 			
-			// add or merge html attributes (exclude type and jop_*)
+			// add or merge html attributes (exclude type and known managed jop_*)
 			this.compileAttributes(attrs);
 		} catch (Exception e) {
 			//TODO: exception unknown widget type
@@ -115,7 +116,7 @@ public class WidgetBlock extends PageBlock {
 	}
 	/**
 	 * Compile attributes.<p>
-	 * Merge attributes (excluding jop_*) between DOM and template 
+	 * Merge attributes (excluding known managed jop_*) between DOM and template 
 	 * @param	  Attrs attributes to change with relative new value
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
@@ -126,7 +127,7 @@ public class WidgetBlock extends PageBlock {
 	protected void compileAttributes(Iterator<Attribute> Attrs) {
 		while ( Attrs.hasNext() ) {
 			Attribute attr = Attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(ATTR_TYPE) && !attr.getKey().equalsIgnoreCase(ATTR_TYPE_ALT) && !attr.getKey().toLowerCase().startsWith("jop_") ) {
+			if ( !attr.getKey().equalsIgnoreCase(ATTR_TYPE) && !attr.getKey().equalsIgnoreCase(ATTR_TYPE_ALT) && !attr.getKey().equalsIgnoreCase("jop_id") && !JopAttribute.Factory.isKnown(attr.getKey()) ) {
 				if ( this.domEl.hasAttr(attr.getKey()) )
 					this.domEl.attr(attr.getKey(), this.domEl.attr(attr.getKey()) + " " +attr.getValue());
 				else

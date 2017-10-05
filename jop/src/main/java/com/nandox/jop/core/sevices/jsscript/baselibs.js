@@ -266,8 +266,12 @@ Jop.core.services = Jop.core.services || {};
 	 * @return	  
 	 */
 	this.turnBlockSpinner = function(jopId,enable) {
-		if ( this.CONST.SPINNERENABLE ) {
-			var el = this.getBlockElement(jopId);
+		var el = this.getBlockElement(jopId);
+		if ( 
+			(this.CONST.SPINNERENABLE && el.getAttribute('jop_force_spinner') != 'false')
+													||
+			(!this.CONST.SPINNERENABLE && el.getAttribute('jop_force_spinner') == 'true')
+			) {
 			if ( el != null ) {
 				(enable?this.dom.addClass(el,"jop_spinner"):this.dom.removeClass(el,"jop_spinner"));
 			}

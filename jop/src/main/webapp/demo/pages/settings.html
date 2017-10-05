@@ -1,4 +1,35 @@
 <div class="settings">
+<script>
+	function selection_toggle(el,flg) {
+		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
+			var block = Jop.core.getBlockElement(jopId);
+			var li = Jop.core.querySelectorAll(block,"li");
+			for ( var ix=0; ix<li.length; ix++ ) {
+				li[ix].onmouseover = function(e) {
+					Jop.core.dom.addClass(e.target,"st_active");
+				}
+				li[ix].onmouseout = function(e) {
+					Jop.core.dom.removeClass(e.target,"st_active");
+				}
+			}
+		});
+	}
+</script>
+	<div jop_id
+		 class='jop_selection java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
+		>
+	    <label class="wdg_label">select one</label>
+	    <span class="wdg_arrow"
+	    	  onclick='selection_toggle(this.parentElement,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
+	    	 />
+	    <div class="wdg_list" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
+		    <ul>
+		    	<li>item1</li>
+		    	<li>item2</li>
+		    	<li>item3</li>
+		    </ul>
+	    </div>
+	</div>
 	<div jop_id='' style="display: none">
 		<jbean>{$settingsBean.load(); return null;}</jbean>
 	</div>
@@ -13,8 +44,8 @@
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>
-	 </jwdg> 
-	 <jwdg type="accordion">
+	</jwdg> 
+	<jwdg type="accordion">
 	   	<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
 		<wdg_content>
 		<jwdg type="FormInAccordion"  jop_onaction="java{$settingsBean.save(); return null;}">
@@ -34,5 +65,5 @@
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>
-	 </jwdg> 
+	</jwdg> 
  </div>

@@ -50,7 +50,7 @@
 			}
 		}
 		// define ajax callback to read XML response and block to refresh
-		callback = function(response) {
+		callback = function(response,xhrRef) {
 			try {
 				var num = response.getElementsByTagName('response')[0].attributes.num.value;
 				for (var ix=0; ix<num; ix++) {
@@ -58,6 +58,8 @@
 					var id = response.getElementsByTagName('block')[ix].getAttribute('id');
 					Jop.core.injectBlockElement(id, data, true);
 				}
+				if ( typeof xhrRef == 'object' && typeof xhrRef.done == 'function' )
+					xhrRef.done(jopId);
 				Jop.core.trigger(Jop.core.EVENT.DOMLOADED);
 			} catch (e) {
 				// TODO: manage response error
@@ -65,17 +67,23 @@
 			}
 		}
 		// define ajax error callback
-		errorCallback = function(status,statusMessage,response) {
+		errorCallback = function(status,statusMessage,response,xhrRef) {
 			var id = jopId;
 			Jop.core.showAlert("EXCEPTION ERROR",response);
 		}
-		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,errorCallback);
+		xhr = {
+				done: function(func) {
+					this.done = func;
+				}
+		}
+		ajax("POST",this.CONST.CONTEXT_PATH+"/jopservices/inject/postblock",true,request,callback,errorCallback,xhr);
+		return xhr;
 	};
 
 	// ajax generic low-level function
 	//
 	//
-	function ajax(method,url,async,data,successCallback,errorCallback) {
+	function ajax(method,url,async,data,successCallback,errorCallback,xhrRef) {
 		// create XML http request
 		var xhr;
 		if (window.XMLHttpRequest)
@@ -83,7 +91,7 @@
 		else if (window.ActiveXObject)
 			xhr = window.ActiveXObject( "Microsoft.XMLHTTP" );
 		// define callback
-		callback = function(response) {
+		callback = function() {
 			var end = false;
 			switch (xhr.status) {
 				case 200: // response received
@@ -91,10 +99,10 @@
 						if ( successCallback != 'undefined' && successCallback != null ) {
 							switch (xhr.getResponseHeader("Content-Type").toLowerCase().split(";")[0]) {
 								case "text/xml":
-									successCallback(xhr.responseXML);
+									successCallback(xhr.responseXML,xhrRef);
 									break;
 								default:
-									successCallback(xhr.responseText);
+									successCallback(xhr.responseText,xhrRef);
 									break;
 							}
 						} else
@@ -106,7 +114,7 @@
 					if ( xhr.readyState == 4 ) {
 						end = true;
 						if ( errorCallback != 'undefined' && errorCallback != null )
-							errorCallback(xhr.status,xhr.statusText,xhr.responseText);
+							errorCallback(xhr.status,xhr.statusText,xhr.responseText,xhrRef);
 						else
 							Jop.core.debugger("ajax error callback undefined")
 					}
