@@ -105,10 +105,25 @@ public class WidgetBlock extends PageBlock {
 		Iterator<Element> elems = Tmpl.getAllElements().iterator();
 		while (elems.hasNext() ) {
 			Element e = elems.next();
-			// if found replace template widget with same tag of the element 
+			// if found replace template widget with same tag of the element, if more that one append them 
 			if ( e.tagName().toLowerCase().startsWith("wdg_") ) {
 				if ( !this.domEl.getElementsByTag(e.tagName()).isEmpty() ) {
-					e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
+					String t = "";
+					if ( e.text().contains("$"+e.tagName()) ) {
+						String s = e.html();
+						t = new String(s);
+						s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(0).html());
+						e.html(s);
+					} else
+						e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
+					for ( int ix=1; ix<this.domEl.getElementsByTag(e.tagName()).size(); ix++ ) {
+						if ( t.contains("$"+e.tagName()) ) {
+							String s = new String(t);
+							s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+							e.append(s);
+						} else
+							e.append(this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+					}
 				}
 				e.unwrap();
 			}
@@ -127,13 +142,22 @@ public class WidgetBlock extends PageBlock {
 	protected void compileAttributes(Iterator<Attribute> Attrs) {
 		while ( Attrs.hasNext() ) {
 			Attribute attr = Attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(ATTR_TYPE) && !attr.getKey().equalsIgnoreCase(ATTR_TYPE_ALT) && !attr.getKey().equalsIgnoreCase("jop_id") && !JopAttribute.Factory.isKnown(attr.getKey()) ) {
-				if ( this.domEl.hasAttr(attr.getKey()) )
+			if ( !attr.getKey().equalsIgnoreCase(ATTR_TYPE) && !attr.getKey().equalsIgnoreCase(ATTR_TYPE_ALT) && !attr.getKey().equalsIgnoreCase("jop_id")/* && !JopAttribute.Factory.isKnown(attr.getKey())*/ ) {
+				if ( this.domEl.hasAttr(attr.getKey()) & !JopAttribute.Factory.isKnown(attr.getKey()) ) {
 					this.domEl.attr(attr.getKey(), this.domEl.attr(attr.getKey()) + " " +attr.getValue());
-				else
-					this.domEl.attr(attr.getKey(), attr.getValue());
+					//TODO: manage attribute to complicate merge like onclick
+				} else {
+					Element e[] = this.domEl.select("[$"+attr.getKey()+"]").toArray(new Element[0]);
+					for ( int ix=0; ix<e.length; ix++ ) {
+						e[ix].removeAttr("$"+attr.getKey());
+						e[ix].attr(attr.getKey(), attr.getValue());
+					}
+					if ( e.length == 0 )
+						this.domEl.attr(attr.getKey(), attr.getValue());
+				}
 			}
 		}
+		//TODO: clean $ attribute remains
 	}
 	
 	/**

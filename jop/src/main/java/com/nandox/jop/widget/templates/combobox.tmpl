@@ -1,0 +1,35 @@
+<script>
+	function selection_toggle(el,flg) {
+		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
+			var block = Jop.core.getBlockElement(jopId);
+			var li = Jop.core.querySelectorAll(block,"li");
+			for ( var ix=0; ix<li.length; ix++ ) {
+				li[ix].onmouseover = function(e) {
+					Jop.core.dom.addClass(e.target,"st_active");
+				}
+				li[ix].onmouseout = function(e) {
+					Jop.core.dom.removeClass(e.target,"st_active");
+				}
+				li[ix].onclick = function(e) {
+					var block = e.target.parentElement.parentElement.parentElement;
+					var i = Jop.core.querySelector(block,".wdg_input");
+					i.value = e.target.textContent;
+					selection_toggle(block,0);
+				}
+			}
+		});
+	}
+</script>
+<form jop_id
+	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
+	>
+    <input class="wdg_input" disabled=disabled $value/>
+    <span class="wdg_arrow"
+    	  onclick='selection_toggle(this.parentElement,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
+    	 />
+    <div class="wdg_list" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
+	    <ul $jop_repeater $jop_var>
+	    	<wdg_item><li>$wdg_item</li></wdg_item>
+	    </ul>
+    </div>
+</form>
