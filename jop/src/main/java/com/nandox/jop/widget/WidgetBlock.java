@@ -108,6 +108,10 @@ public class WidgetBlock extends PageBlock {
 			// if found replace template widget with same tag of the element, if more that one append them 
 			if ( e.tagName().toLowerCase().startsWith("wdg_") ) {
 				if ( !this.domEl.getElementsByTag(e.tagName()).isEmpty() ) {
+					Element p[] = this.domEl.getElementsByTag(e.tagName()).get(0).parents().toArray(new Element[0]);
+					for ( int ix=0; ix<p.length; ix++ ) {
+						
+					}
 					String t = "";
 					if ( e.text().contains("$"+e.tagName()) ) {
 						String s = e.html();

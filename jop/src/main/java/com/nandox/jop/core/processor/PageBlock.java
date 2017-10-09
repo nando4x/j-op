@@ -501,7 +501,7 @@ public abstract class PageBlock {
 		Element p = el.parent(); 
 		while ( p != null ) {
 			// check if tag is in another child block 
-			if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() && (!mustBeForm || p.tagName().equalsIgnoreCase("form") ) ) {
+			if ( p.hasAttr(JopAttribute.JOP_ATTR_ID) && (!mustBeForm || p.tagName().equalsIgnoreCase("form") ) ) {
 				if ( p.attr(JopAttribute.JOP_ATTR_ID).equals(this.id) )
 					return true;
 				else

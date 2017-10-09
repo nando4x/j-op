@@ -27,7 +27,7 @@
     <span class="wdg_arrow"
     	  onclick='selection_toggle(this.parentElement,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
     	 />
-    <div class="wdg_list" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
+    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
 	    <ul $jop_repeater $jop_var>
 	    	<wdg_item><li>$wdg_item</li></wdg_item>
 	    </ul>
