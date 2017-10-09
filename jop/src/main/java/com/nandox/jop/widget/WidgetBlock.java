@@ -108,30 +108,44 @@ public class WidgetBlock extends PageBlock {
 			// if found replace template widget with same tag of the element, if more that one append them 
 			if ( e.tagName().toLowerCase().startsWith("wdg_") ) {
 				if ( !this.domEl.getElementsByTag(e.tagName()).isEmpty() ) {
-					Element p[] = this.domEl.getElementsByTag(e.tagName()).get(0).parents().toArray(new Element[0]);
-					for ( int ix=0; ix<p.length; ix++ ) {
-						
-					}
+					// exclude tag inside nested jdwg
 					String t = "";
-					if ( e.text().contains("$"+e.tagName()) ) {
-						String s = e.html();
-						t = new String(s);
-						s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(0).html());
-						e.html(s);
-					} else
-						e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
-					for ( int ix=1; ix<this.domEl.getElementsByTag(e.tagName()).size(); ix++ ) {
-						if ( t.contains("$"+e.tagName()) ) {
-							String s = new String(t);
-							s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(ix).html());
-							e.append(s);
+					if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(0)) ) {
+						if ( e.text().contains("$"+e.tagName()) ) {
+							String s = e.html();
+							t = new String(s);
+							s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(0).html());
+							e.html(s);
 						} else
-							e.append(this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+							e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
+					}
+					for ( int ix=1; ix<this.domEl.getElementsByTag(e.tagName()).size(); ix++ ) {
+						if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(ix)) ) {
+							if ( t.contains("$"+e.tagName()) ) {
+								String s = new String(t);
+								s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+								e.append(s);
+							} else
+								e.append(this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+						}
 					}
 				}
 				e.unwrap();
 			}
 		}
+	}
+	// Check if an element is child of this element: is child if has father jwdg with this id and 
+	//
+	//
+	private boolean checkIfChildOfThis(Element elem) {
+		Element p[] = elem.parents().toArray(new Element[0]); // sort parent list
+		for ( int ix=0; ix<p.length; ix++ ) {
+			if ( p[ix].tagName().equalsIgnoreCase("jwdg") && !this.id.equals(p[ix].attr("jop_id")) ) //TODO:
+				return  false;
+			if ( p[ix].tagName().equalsIgnoreCase("jwdg") && this.id.equals(p[ix].attr("jop_id")) ) //TODO:
+				return true;
+		}
+		return false;
 	}
 	/**
 	 * Compile attributes.<p>

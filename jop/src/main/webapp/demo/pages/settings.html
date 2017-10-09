@@ -2,14 +2,14 @@
 	<div jop_id='' style="display: none">
 		<jbean>{$settingsBean.load(); return null;}</jbean>
 	</div>
-	<!-- 
+	 
+<!-- 	 
 				<jwdg type="combobox" jop_repeater='java{return $helloWorld.getArray();}' jop_var='var'
 						value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
 				    <wdg_item><jbean>{return "choice "+var;}</jbean></wdg_item>
 				</jwdg>
 	
-	 -->
-	 
+	  -->	 	 
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
@@ -24,7 +24,7 @@
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>
-	</jwdg> 
+	</jwdg>	 
 <!-- 	
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>

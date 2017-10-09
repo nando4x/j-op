@@ -20,10 +20,10 @@
 		});
 	}
 </script>
-<form jop_id
+<div jop_id
 	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
 	>
-    <input class="wdg_input" disabled=disabled $value/>
+    <input class="wdg_input" disabled=disabled $value></input>
     <span class="wdg_arrow"
     	  onclick='selection_toggle(this.parentElement,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
     	 />
@@ -32,4 +32,4 @@
 	    	<wdg_item><li>$wdg_item</li></wdg_item>
 	    </ul>
     </div>
-</form>
+</div>
