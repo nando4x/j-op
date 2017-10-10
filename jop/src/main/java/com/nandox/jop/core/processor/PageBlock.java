@@ -108,6 +108,13 @@ public abstract class PageBlock {
 	public PageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
 		this(Context, Page.id, DomElement);
 		this.child = new ArrayList<PageBlock>();
+		// Assign jop_id if not just defined
+		String id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
+		if ( id.isEmpty() ) {
+			id = Page.assignAutoId();
+			this.domEl.attr(JopAttribute.JOP_ATTR_ID,id);
+		}
+		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);		
 	}
 	/**
 	 * @return the id
@@ -128,14 +135,6 @@ public abstract class PageBlock {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: (%s) %s",this.pageId,this.id);
 		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
 		
-		// Assign jop_id if not just defined
-		String id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
-		if ( id.isEmpty() ) {
-			id = Page.assignAutoId();
-			this.domEl.attr(JopAttribute.JOP_ATTR_ID,id);
-		}
-		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
-
 		// Get and process attributes of this block
 		this.parseAttributes(Context, this.domEl,mon,true);
 		
@@ -308,6 +307,10 @@ public abstract class PageBlock {
 				String val = Data.get(pe.getKey())[0]; // get string data
 				pe.getValue().execute(Context, val, null); //TODO: what variables use?
 			}
+		}
+		Iterator<PageBlock> c = this.child.iterator();
+		while ( c.hasNext() ) {
+			c.next().action(Context, Data);
 		}
 		// check action attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();

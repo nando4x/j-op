@@ -146,9 +146,14 @@ public class PageApp {
 		PageBlock b;
 		// test the type of block (if widget or general)
 		if ( Elem.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
-			b = this.appCtx.factoryWidget(Context,this.id,Elem);
+			b = this.appCtx.factoryWidget(Context,this,Elem);
 		} else
 			b = new GenericPageBlock(Context,this,Elem);
+		// check for double jop id
+		if ( this.blocks.containsKey(b.id) ) {
+			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",id, this.id);
+			throw new DomException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,Elem));
+		}
 		this.blocks.put(b.id, b);
 		return b;
 	}
@@ -167,19 +172,14 @@ public class PageApp {
 			if ( !this.hasParentBlock(el) ) {
     			// create block and check syntax error
     			try {
-    				PageBlock b;
-    				// test the type of block (if widget or general)
-    				if ( el.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
-    					b = this.appCtx.factoryWidget(this.appCtx,this.id,el);
-    				} else
-    					b = new GenericPageBlock(this.appCtx,this,el);
-    				this.blocks.put(b.id, b);
+    				this.createBlock(this.appCtx,el);
     			} catch (Exception e) {
     				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
     			}
 			}
 		}
 		// check for double jop_id
+		
 	}
 	private boolean hasParentBlock (Element elem) {
 		Element p[] = elem.parents().toArray(new Element[0]); // sort parent list

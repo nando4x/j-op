@@ -213,6 +213,19 @@ public class WebAppContext {
 		}
 		return new WidgetBlock(Context,PageId,DomElement);
 	}
+	public WidgetBlock factoryWidget(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
+		String name = WidgetBlock.computeWidgetName(DomElement);
+		for ( int ix=0; ix<this.widgetPkg.length; ix++ ) {
+			try {
+				Class<?> c = Class.forName(this.widgetPkg[ix]+"."+name);
+				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, PageApp.class, Element.class).newInstance(Context,Page,DomElement);
+			} catch (ClassNotFoundException  e) {
+			} catch (Exception e) {
+				throw new DomException(e.getCause().getMessage());
+			}
+		}
+		return new WidgetBlock(Context,Page,DomElement);
+	}
 	/**
 	 * Return BeanAppContext of current thread
 	 * @param	  Bean Bean instance 

@@ -10,6 +10,7 @@ import org.jsoup.parser.Tag;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 
 /**
@@ -45,6 +46,11 @@ public class WidgetBlock extends PageBlock {
 		super(Context, PageId, DomElement);
 		this.buildFromTemplate(BASE_TMPL_PATH);
 		this.parse(Context);
+	}
+	public WidgetBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
+		super(Context, Page, DomElement);
+		this.buildFromTemplate(BASE_TMPL_PATH);
+		this.parse(Context,Page);
 	}
 
 	/**
