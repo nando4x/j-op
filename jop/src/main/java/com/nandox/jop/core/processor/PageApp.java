@@ -19,7 +19,7 @@ import com.nandox.jop.core.processor.attribute.JopAttribute;
 
 /**
  * Class of Page application.<p>
- * One page application is composite by PageBlock, every block can contains PageExpression  
+ * One page application is composed by PageBlock, every block can contains PageExpression and others blocks  
  * 
  * @project   Jop (Java One Page)
  * 
@@ -68,7 +68,7 @@ public class PageApp {
 		settings.escapeMode(Entities.EscapeMode.extended);
 		settings.charset("ASCII");
 		this.blocks = new HashMap<String,PageBlock>();
-		this.parse(0);
+		this.parse();
 		this.hash = ContentPage.hashCode();
 	}
 	/**
@@ -85,7 +85,7 @@ public class PageApp {
 	}
 	/**
 	 * Rendering the page: read every bean value and insert it into dom.<br>
-	 * This method render only parent block 
+	 * This method render only first level block 
 	 * @param	  Context	Application context
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
@@ -107,6 +107,7 @@ public class PageApp {
 	}
 	/**
 	 * Performe action submit: search from own form and if present invoke in write mode with data
+	 * This method call only first level block 
 	 * @param	  Context	Application context
 	 * @param	  Data	Map with name of tag and data
 	 * @date      24 gen 2017 - 24 gen 2017
@@ -120,7 +121,8 @@ public class PageApp {
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		while (i.hasNext() ) {
 			PageBlock b = i.next();
-			b.action(Context, Data);
+			if ( !b.isChild )
+				b.action(Context, Data);
 		}
 	}
 	/**
@@ -135,13 +137,40 @@ public class PageApp {
 	public PageBlock getPageBlock(String BlockId) {
 		return this.blocks.get(BlockId);
 	}
+	/**
+	 * Return a new id computed automatically
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  auto incremented value
+	 */
 	protected String assignAutoId(){
 		auto_id_index++;
 		return ""+auto_id_index;
 	}
+	/**
+	 * Check if element is a block or not
+	 * @param	  Elem	element to check
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  true if block otherwise false
+	 */
 	protected boolean checkIfIsBlock(Element Elem) {
 		return Elem.select(DOMPARSER_JOP_SELECTOR).first() == Elem;
 	}
+	/**
+	 * Create a block from dom element
+	 * @param	  Context	Application context
+	 * @param	  Elem 		element that represent a block   
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  created block
+	 */
 	protected PageBlock createBlock(WebAppContext Context,Element Elem) throws DomException {
 		PageBlock b;
 		// test the type of block (if widget or general)
@@ -151,13 +180,16 @@ public class PageApp {
 			b = new GenericPageBlock(Context,this,Elem);
 		// check for double jop id
 		if ( this.blocks.containsKey(b.id) ) {
-			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",id, this.id);
+			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",b.id, this.id);
 			throw new DomException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,Elem));
 		}
 		this.blocks.put(b.id, b);
 		return b;
 	}
-	private void parse(int x) throws ParseException {
+	// Parsing page content to search and build every block 
+	//
+	//
+	private void parse() throws ParseException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
 		// Search jop head and substitute with script file include
 		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
@@ -178,9 +210,10 @@ public class PageApp {
     			}
 			}
 		}
-		// check for double jop_id
-		
 	}
+	// check if element has a parent that's a blovk 
+	//
+	//
 	private boolean hasParentBlock (Element elem) {
 		Element p[] = elem.parents().toArray(new Element[0]); // sort parent list
 		for ( int ix=0; ix<p.length; ix++ ) {
@@ -192,7 +225,7 @@ public class PageApp {
 	// Parsing page content to search and build every block 
 	//
 	//
-	private void parse() throws ParseException {
+	private void oldparse() throws ParseException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
 		// Search jop head and substitute with script file include
 		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);

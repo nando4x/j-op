@@ -89,6 +89,8 @@ Jop.core.services = Jop.core.services || {};
 			block.outerHTML = html;
 			// refresh block and register form
 			block = this.querySelector(document,'[jop_id="'+jopId+'"]');
+			if ( block == null ) 
+				return; // block is been deleted
 			this.registForm(block);
 			// execute script after immediately or queued 
 			var lst = block.querySelectorAll('script:not([jop_before="true"])');

@@ -298,6 +298,11 @@ public abstract class PageBlock {
 	 * @return
 	 */
 	public void action(WebAppContext Context, Map<String,String[]> Data) {
+		this.realAction(Context, Data);
+		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
+	}
+	
+	private void realAction(WebAppContext Context, Map<String,String[]> Data) {
 		// Search form tag with key (name) of the Data
 		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
 		while ( i.hasNext() ) {
@@ -310,7 +315,7 @@ public abstract class PageBlock {
 		}
 		Iterator<PageBlock> c = this.child.iterator();
 		while ( c.hasNext() ) {
-			c.next().action(Context, Data);
+			c.next().realAction(Context, Data);
 		}
 		// check action attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();
@@ -320,9 +325,7 @@ public abstract class PageBlock {
 				ja.preRender(Context,this.domEl,null); //TODO: what variables use?
 			}
 		}
-		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
 	}
-	
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
 	 */
