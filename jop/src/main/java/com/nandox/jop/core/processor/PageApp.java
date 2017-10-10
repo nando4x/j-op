@@ -42,7 +42,7 @@ public class PageApp {
 	protected static final Logger LOG = Logger.Factory.getLogger(PageApp.class);
 	
 	private static final String DOMPARSER_HEAD_TAG = "script[jop_head=\"true\"]";
-	private String id;	// page identifier
+	protected String id;	// page identifier
 	private int hash;	// page hash code
 	private Document dom;	// html DOM document
 	private Map<String,PageBlock> blocks;	// list of all page blocks
@@ -68,7 +68,7 @@ public class PageApp {
 		settings.escapeMode(Entities.EscapeMode.extended);
 		settings.charset("ASCII");
 		this.blocks = new HashMap<String,PageBlock>();
-		this.parse();
+		this.parse(0);
 		this.hash = ContentPage.hashCode();
 	}
 	/**
@@ -134,6 +134,60 @@ public class PageApp {
 	 */
 	public PageBlock getPageBlock(String BlockId) {
 		return this.blocks.get(BlockId);
+	}
+	protected String assignAutoId(){
+		auto_id_index++;
+		return ""+auto_id_index;
+	}
+	protected boolean checkIfIsBlock(Element Elem) {
+		return Elem.select(DOMPARSER_JOP_SELECTOR).first() == Elem;
+	}
+	protected PageBlock createBlock(WebAppContext Context,Element Elem) throws DomException {
+		PageBlock b;
+		// test the type of block (if widget or general)
+		if ( Elem.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
+			b = this.appCtx.factoryWidget(Context,this.id,Elem);
+		} else
+			b = new GenericPageBlock(Context,this,Elem);
+		this.blocks.put(b.id, b);
+		return b;
+	}
+	private void parse(int x) throws ParseException {
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
+		// Search jop head and substitute with script file include
+		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
+		for ( int ix=0; ix<list.size(); ix++ ) {
+			Element el = list.get(ix);
+			this.buildHeadScript(el);
+		}
+		// Search every 1st level jop block into dom and create it
+		list = this.dom.select(DOMPARSER_JOP_SELECTOR);
+		for ( int ix=0; ix<list.size(); ix++ ) {
+			Element el = list.get(ix);
+			if ( !this.hasParentBlock(el) ) {
+    			// create block and check syntax error
+    			try {
+    				PageBlock b;
+    				// test the type of block (if widget or general)
+    				if ( el.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
+    					b = this.appCtx.factoryWidget(this.appCtx,this.id,el);
+    				} else
+    					b = new GenericPageBlock(this.appCtx,this,el);
+    				this.blocks.put(b.id, b);
+    			} catch (Exception e) {
+    				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
+    			}
+			}
+		}
+		// check for double jop_id
+	}
+	private boolean hasParentBlock (Element elem) {
+		Element p[] = elem.parents().toArray(new Element[0]); // sort parent list
+		for ( int ix=0; ix<p.length; ix++ ) {
+			if ( p[ix].select(DOMPARSER_JOP_SELECTOR).first() == p[ix] )
+				return true;
+		}
+		return false;
 	}
 	// Parsing page content to search and build every block 
 	//
