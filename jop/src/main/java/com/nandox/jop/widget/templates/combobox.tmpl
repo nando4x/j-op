@@ -3,6 +3,10 @@
 		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
 			var block = Jop.core.getBlockElement(jopId);
 			var li = Jop.core.querySelectorAll(block,"li");
+			var c = Jop.core.querySelector(block,".wdg_list");
+			if ( c != null ) {
+				c.style.minWidth = block.offsetWidth-2;
+			}
 			for ( var ix=0; ix<li.length; ix++ ) {
 				li[ix].onmouseover = function(e) {
 					Jop.core.dom.addClass(e.target,"st_active");

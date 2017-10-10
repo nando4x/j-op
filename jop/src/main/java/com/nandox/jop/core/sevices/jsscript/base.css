@@ -63,7 +63,7 @@
 /* 
  *	accordion widget
  */
-.jop_accordion .wdg_arrow {
+.jop_accordion .wdg_arrow:first-child {
 	top: 5px;
 	position: relative;
 	float: left;
@@ -71,38 +71,38 @@
 	margin-right:10px;
 }
 
-.jop_accordion.st_open .wdg_arrow {
+.jop_accordion.st_open .wdg_arrow:first-child {
 	background-position: -12px 0; 
 	width: 12px; 
 	height: 10px;
 }
 
-.jop_accordion.st_close .wdg_arrow {
+.jop_accordion.st_close .wdg_arrow:first-child {
 	background-position: 0 0;
 	width: 12px;
 	height: 10px;
 }
 
-.jop_accordion .wdg_header {
+.jop_accordion .wdg_header:first-child {
 	padding: 10px 0px;
 	cursor: pointer;
 	padding-left: 10px;
 }
 
-.jop_accordion.st_close .wdg_header {
+.jop_accordion.st_close .wdg_header:first-child {
 	border-width: 1px;
 	border-style: solid;
 	background-color: #f5f3f3;
 }
 
-.jop_accordion.st_open .wdg_header {
+.jop_accordion.st_open .wdg_header:first-child {
 	border-top-width: 1px;
 	border-top-style: solid;
 	margin-left: 1px;
 	background-color: #a59b9b;
 }
 
-.jop_accordion .wdg_content {
+.jop_accordion .wdg_content:first-child {
 	padding: 10px 13px;
 	background-color: #f5f3f3;
 }
