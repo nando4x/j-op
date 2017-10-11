@@ -24,7 +24,7 @@ public class FormInAccordion extends WidgetBlock {
 	@Override
 	protected void compileTemplate(Element Tmpl) {
 		Element tmp = Tmpl.clone();
-		Iterator<Element> elems = this.domEl.getElementsByTag("wdg_item:not(wdg_item jwdg wdg_item)").iterator();
+		Iterator<Element> elems = this.domEl.select("wdg_item:not(wdg_item jwdg wdg_item)").iterator();
 		int ix=0;
 		while (elems.hasNext() ) {
 			Element e = elems.next();

@@ -211,7 +211,7 @@ public class PageApp {
 			}
 		}
 	}
-	// check if element has a parent that's a blovk 
+	// check if element has a parent that's a block 
 	//
 	//
 	private boolean hasParentBlock (Element elem) {
@@ -225,7 +225,8 @@ public class PageApp {
 	// Parsing page content to search and build every block 
 	//
 	//
-	private void oldparse() throws ParseException {
+	@SuppressWarnings("unused")
+	private void __oldparse() throws ParseException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
 		// Search jop head and substitute with script file include
 		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);

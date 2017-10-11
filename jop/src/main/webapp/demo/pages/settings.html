@@ -2,30 +2,54 @@
 	<div jop_id='' style="display: none">
 		<jbean>{$settingsBean.load(); return null;}</jbean>
 	</div>
+<script>
+	function selection_toggle(el,flg) {
+		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
+			var block = Jop.core.getBlockElement(jopId);
+			var li = Jop.core.querySelectorAll(block,"li");
+			var c = Jop.core.querySelector(block,".wdg_list");
+			if ( c != null ) {
+				c.style.minWidth = block.offsetWidth-2;
+			}
+			for ( var ix=0; ix<li.length; ix++ ) {
+				li[ix].onmouseover = function(e) {
+					Jop.core.dom.addClass(e.target,"st_active");
+				}
+				li[ix].onmouseout = function(e) {
+					Jop.core.dom.removeClass(e.target,"st_active");
+				}
+				li[ix].onclick = function(e) {
+					var block = e.target.parentElement.parentElement.parentElement;
+					var i = Jop.core.querySelector(block,".wdg_input");
+					i.value = e.target.textContent;
+					selection_toggle(block,0);
+				}
+			}
+		});
+	}
+</script>
+<div jop_id
+	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
+	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
+   >
+    <input type="hidden" value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'></input>
+    <input class="wdg_input" value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'></input>
+    <span class="wdg_arrow"/>
+    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
+	    <ul $jop_repeater $jop_var>
+	    	<li value="1">11</li>
+	    	<li value="2">22</li>
+	    </ul>
+    </div>
+</div>
 	 
- 	 
+ 	 <!--
 				<jwdg type="combobox" jop_repeater='java{return $helloWorld.getArray();}' jop_var='var'
 						value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
 				    <wdg_item><jbean>{return "choice "+var;}</jbean></wdg_item>
 				</jwdg>
-	
+	-->
 	  	 	 
-	<jwdg type="accordion">
-		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
-	 	<wdg_content>
-		<jwdg class="" type="FormInAccordion">
-			<wdg_item>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-				<jwdg type="combobox" value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
-				    <wdg_item value="1">11</wdg_item>
-				    <wdg_item value="1">22</wdg_item>
-				    <wdg_item value="1">33</wdg_item>
-				</jwdg>
-			</wdg_item>
-		</jwdg>
-	 	</wdg_content>
-	</jwdg>	 
-<!-- 	
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
@@ -45,7 +69,8 @@
 			</wdg_item>
 		</jwdg>
 	 	</wdg_content>
-	</jwdg> 
+	</jwdg>
+	 
 	<jwdg type="accordion">
 	   	<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
 		<wdg_content>
@@ -67,5 +92,5 @@
 		</jwdg>
 	 	</wdg_content>
 	</jwdg>
- -->	 
+	 
  </div>

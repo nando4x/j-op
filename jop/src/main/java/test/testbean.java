@@ -4,6 +4,7 @@ import com.nandox.jop.bean.JopMonitoring;
 
 public class testbean {
 	private String message;
+	private list clist;
 
 	@JopMonitoring
    public void setMessage(String message){
@@ -28,5 +29,27 @@ public class testbean {
 	   String r[] = { "a", "b" };
 	   return r;
    }
+   public list[] getList () {
+	   list r[] = new list[2];
+	   r[0] = new list();
+	   r[0].code = "1";
+	   r[0].value = "111";
+	   r[1] = new list();
+	   r[1].code = "2";
+	   r[1].value = "222";
+	   return r;
+   }
    
+   public void setClist(list lst) {
+	   this.clist = lst;
+   }
+
+   public list getClist() {
+	   return this.clist;
+   }
+
+   public class list {
+	   public String code;
+	   public String value;
+   }
 }
