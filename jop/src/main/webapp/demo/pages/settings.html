@@ -45,7 +45,10 @@
 	 
  	 <!--
 				<jwdg type="combobox" jop_repeater='java{return $helloWorld.getArray();}' jop_var='var'
-						value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
+						value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'
+						jop_converter=class
+						jop_converter_data= 
+						>
 				    <wdg_item><jbean>{return "choice "+var;}</jbean></wdg_item>
 				</jwdg>
 	-->
