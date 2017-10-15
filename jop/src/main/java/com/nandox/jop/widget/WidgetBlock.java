@@ -42,11 +42,6 @@ public class WidgetBlock extends PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public WidgetBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
-		super(Context, PageId, DomElement);
-		this.buildFromTemplate(BASE_TMPL_PATH);
-		this.parse(Context);
-	}
 	public WidgetBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
 		super(Context, Page, DomElement);
 		this.buildFromTemplate(BASE_TMPL_PATH);

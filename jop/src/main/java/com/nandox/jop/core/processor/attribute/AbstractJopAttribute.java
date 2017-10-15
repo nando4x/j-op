@@ -44,7 +44,7 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws DomException {
 		this.name = Name;
 		this.value = Value;
-		if ( Value != null )
+		if ( Value != null && Block.getParser().parseJavaExpression(Value) != null )
 			this.computeExpression(Context, Value, Block.getVarsDefinition());
 	}
 	/**

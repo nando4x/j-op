@@ -12,7 +12,6 @@ import java.util.Comparator;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities;
-import org.jsoup.select.Elements;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 //import org.jsoup.Jsoup;
@@ -21,10 +20,8 @@ import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
-import com.nandox.jop.core.processor.expression.AbstractPageExpression;
 import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.expression.PageWriteExpression;
-import com.nandox.jop.core.processor.expression.SimplePageExpression;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -48,10 +45,7 @@ import com.nandox.jop.core.ErrorsDefine;
  *
  */
 public abstract class PageBlock {
-//	public static final String JOP_BEAN_INI = "jop_bean={";
-	public static final String JOP_EXPR_INI = "{";
-	public static final String JOP_EXPR_END = "}";
-	public static final String JOP_BEAN_TAG = "jbean";
+	private static final String JOP_BEAN_TAG = "jbean";
 	/** block DOM */
 	protected Element domEl;
 	/** block identifier */
@@ -93,8 +87,8 @@ public abstract class PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
-		this.pageId = PageId;
+	public PageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
+		this.pageId = Page.id;
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
 		
@@ -105,9 +99,6 @@ public abstract class PageBlock {
 		this.attrs = new ArrayList<JopAttribute>();
 		this.vars_definition = new HashMap<String,Class<?>>();
 		this.parser = new Parser(this.exprs,this.vars_definition);
-	}
-	public PageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
-		this(Context, Page.id, DomElement);
 		this.child = new ArrayList<PageBlock>();
 		// Assign jop_id if not just defined
 		String id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
@@ -121,7 +112,13 @@ public abstract class PageBlock {
 	 * @return the id
 	 */
 	public String getId() {
-		return id;
+		return this.id;
+	}
+	/**
+	 * @return the parser
+	 */
+	public Parser getParser() {
+		return this.parser;
 	}
 	/**
 	 * Parse block.<br>
@@ -148,14 +145,6 @@ public abstract class PageBlock {
 				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) { // is bean
 					// build expression and join the same
 					PageExpression exp = this.parser.expressionParser(Context, "java"+el.text().trim(), new JopId(this.pageId,this.id));
-					/*String code = this.parseBean(el);
-					if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-						// for a new expression add it and register this block to those to refresh 
-						exp = new SimplePageExpression(Context,code,this.vars_definition);
-						this.exprs.put(exp.getId(), exp);
-						mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-					} else
-						exp = this.exprs.get(AbstractPageExpression.computeId(code));*/
 					this.beans.put(exp.getId(),exp);
 					el.attr("id",exp.getId());
 				} else if ( Page.checkIfIsBlock(el) ) { // is child
@@ -178,87 +167,9 @@ public abstract class PageBlock {
 					el.attr("name",base_name+"_"+inx);
 					this.computeFormTag(Context, el, mon);
 					PageExpression exp = this.parser.expressionParser(Context, "java"+el.text().trim(), new JopId(this.pageId,this.id));
-					/*String code = this.parseBean(el);
-					if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-						// for a new expression add it and register this block to those to refresh 
-						exp = new SimplePageExpression(Context,code,this.vars_definition);
-						this.exprs.put(exp.getId(), exp);
-						mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-					} else
-						exp = this.exprs.get(AbstractPageExpression.computeId(code));*/
 					this.beans.put(exp.getId(),exp);
 					el.text(exp.getId());
 					inx++;
-				}
-			}
-		}
-	}
-	protected void parse(WebAppContext Context) throws DomException {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: (%s) %s",this.pageId,this.id);
-		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
-		// Get and process attributes of this block
-		this.parseAttributes(Context, this.domEl,mon,true);
-		
-		// Scan for element that is not inside another child block 
-		Iterator<Element> elems = this.domEl.select(JOP_BEAN_TAG).iterator();
-		elems = this.domEl.getAllElements().iterator();
-		while (elems.hasNext() ) {
-			Element el = elems.next();
-			if ( this.checkIfParentBlockIsThis(el, false)) {
-				// check if bean or attributes element
-				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) {
-					// build expression and join the same
-					PageExpression exp;
-					String code = this.parseBean(el);
-					if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-						// for a new expression add it and register this block to those to refresh 
-						exp = new SimplePageExpression(Context,code,this.vars_definition);
-						this.exprs.put(exp.getId(), exp);
-						mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-					} else
-						exp = this.exprs.get(AbstractPageExpression.computeId(code));
-					this.beans.put(exp.getId(),exp);
-					el.attr("id",exp.getId());
-				} else {
-					// Get and process attributes of children block
-					this.parseAttributes(Context, el,mon,false);
-				}
-			}
-		}
-		
-		// Get and process value attribute of form tags (es. input)
-		Elements grp = this.domEl.select(form_selector);
-		if ( !this.domEl.tag().isFormSubmittable() ) // add self to the list if is not already present 
-			grp.add(this.domEl); 
-		elems = grp.iterator();
-		while ( elems.hasNext() ) {
-			Element el = elems.next();
-			if ( el.tag().isFormSubmittable() ) {
-				if ( this.checkIfParentBlockIsThis(el, true)) {
-					this.computeFormTag(Context, el, mon);
-				}
-				// special case for select tag: scan child option for value attribute expression and content expression
-				else if ( el.tagName().equalsIgnoreCase("select") ) {
-					Iterator<Element> opt = el.select("option").iterator();
-					String base_name = el.attr("name");
-					int inx = 0;
-					while ( opt.hasNext() ) {
-						el = opt.next();
-						el.attr("name",base_name+"_"+inx);
-						this.computeFormTag(Context, el, mon);
-						PageExpression exp;
-						String code = this.parseBean(el);
-						if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-							// for a new expression add it and register this block to those to refresh 
-							exp = new SimplePageExpression(Context,code,this.vars_definition);
-							this.exprs.put(exp.getId(), exp);
-							mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-						} else
-							exp = this.exprs.get(AbstractPageExpression.computeId(code));
-						this.beans.put(exp.getId(),exp);
-						el.text(exp.getId());
-						inx++;
-					}
 				}
 			}
 		}
@@ -505,13 +416,6 @@ public abstract class PageBlock {
 		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
 		// TODO: gestire eccezzione esecuzione espressioni
 	}
-	// Parse page bean of the block to verify delimiter { } and than create one set of bean text  
-	//
-	//
-	private String parseBean(Element element) throws DomException {
-		// parse as java expression
-		return this.parseJavaExpression("java"+element.text().trim());
-	}
 	// Parse attributes element to verify delimiter { }
 	//
 	//
@@ -525,7 +429,7 @@ public abstract class PageBlock {
 			Attribute attr =  attrs.next();
 			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
 				String a = attr.getValue();
-				String bid = this.parseJavaExpression(a); 
+				String bid = this.parser.parseJavaExpression(a); 
 				if ( bid != null || ( attr.getKey().toLowerCase().startsWith("jop_") && JopAttribute.Factory.isKnown(attr.getKey()) ) ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						if ( isOwn ) {
@@ -538,14 +442,6 @@ public abstract class PageBlock {
 					} else {
 						// html attribute: parse expression and verify if exist
 						PageExpression exp = this.parser.expressionParser(context, a, new JopId(this.pageId,this.id));
-						/*String code = this.parseJavaExpression(a); 
-						if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-							// for a new expression add it and register this block to those to refresh 
-							exp = new SimplePageExpression(context,code,this.vars_definition);
-							this.exprs.put(exp.getId(), exp);
-							mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-						} else
-							exp = this.exprs.get(AbstractPageExpression.computeId(code));*/
 						// add attribute to map and identify element with temp id
 						AttributeExpr ae = new AttributeExpr();
 						ae.expr = exp;
@@ -558,21 +454,6 @@ public abstract class PageBlock {
 				}
 			}
 		}
-	}
-	// Parse expression check syntax and extract string of expression
-	//
-	//
-	private String parseJavaExpression (String code) throws DomException {
-		if ( !code.isEmpty() ) {
-			if ( code.trim().indexOf("java"+JOP_EXPR_INI) >= 0 ) {
-				if ( code.lastIndexOf(JOP_EXPR_END) > 0 ) {
-					String bid = code.substring(code.indexOf(JOP_EXPR_INI),code.trim().lastIndexOf(JOP_EXPR_END)+1);
-					return bid;
-				} else
-					throw new DomException(ErrorsDefine.JOP_EXPR_SYNTAX);
-			}
-		}
-		return null;
 	}
 	// Check if parent job_id is of this block
 	//
@@ -614,18 +495,10 @@ public abstract class PageBlock {
 	//
 	private void computeFormTag(WebAppContext Context, Element el, BeanMonitoring mon) throws DomException {
 		String a = el.attr("value");
-		String code = this.parseJavaExpression(a); 
+		String code = this.parser.parseJavaExpression(a); 
 		if ( code != null ) {
 			// create new expression and register this block to those to refresh 
 			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id));
-
-			/*if ( !this.exprs.containsKey(AbstractPageExpression.computeId(code)) ) {
-				// for a new expression add it and register this block to those to refresh 
-				exp = new SimplePageExpression(Context,code,this.vars_definition);
-				this.exprs.put(exp.getId(), exp);
-				mon.registerRefreshable(exp.getBeansList(), new JopId(this.pageId,this.id));
-			} else
-				exp = (PageWriteExpression)this.exprs.get(AbstractPageExpression.computeId(code));*/
 			// if name attributes don't exist add it with auto index
 			if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 				el.attr("name",""+this.auto_id_index);

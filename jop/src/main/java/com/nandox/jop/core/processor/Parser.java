@@ -52,7 +52,7 @@ public class Parser {
 	// Parse expression check syntax and extract string of expression
 	//
 	//
-	private String parseJavaExpression (String code) throws DomException {
+	public String parseJavaExpression (String code) throws DomException {
 		if ( !code.isEmpty() ) {
 			if ( code.trim().indexOf("java"+JOP_EXPR_INI) >= 0 ) {
 				if ( code.lastIndexOf(JOP_EXPR_END) > 0 ) {

@@ -11,9 +11,6 @@ import com.nandox.jop.widget.WidgetBlock;
 
 public class FormInAccordion extends WidgetBlock {
 
-	public FormInAccordion(WebAppContext Context, String PageId, Element DomElement) throws DomException {
-		super(Context, PageId, DomElement);
-	}
 	public FormInAccordion(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
 		super(Context, Page, DomElement);
 	}

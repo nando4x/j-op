@@ -3,8 +3,6 @@ package com.nandox.jop.core.processor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Entities;
@@ -221,89 +219,6 @@ public class PageApp {
 				return true;
 		}
 		return false;
-	}
-	// Parsing page content to search and build every block 
-	//
-	//
-	@SuppressWarnings("unused")
-	private void __oldparse() throws ParseException {
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing page: %s", this.id);
-		// Search jop head and substitute with script file include
-		Elements list = this.dom.select(DOMPARSER_HEAD_TAG);
-		for ( int ix=0; ix<list.size(); ix++ ) {
-			Element el = list.get(ix);
-			this.buildHeadScript(el);
-		}
-		// Search every jop block into dom and create it
-		list = this.dom.select(DOMPARSER_JOP_SELECTOR);
-		// generate auto id if empty
-        this.auto_id_index=0;
-		for ( int ix=0; ix<list.size(); ix++ ) {
-			Element el = list.get(ix);
-    		String id = el.attr(JopAttribute.JOP_ATTR_ID);
-    		if ( id.isEmpty() ) {
-        		auto_id_index++;
-    			id = ""+auto_id_index;
-    			el.attr(JopAttribute.JOP_ATTR_ID,id);
-    		}
-		}
-		// create blocks
-        Iterator<Element> elems = list.listIterator();        
-    	while ( elems.hasNext() ) {
-    		Element el = elems.next();
-			// check for double jop id
-    		String id = el.attr(JopAttribute.JOP_ATTR_ID);
-    		if ( this.blocks.containsKey(id) ) {
-    			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",id, this.id);
-    			throw new ParseException(ErrorsDefine.formatDOM(ErrorsDefine.JOP_ID_DOUBLE,el));
-    		} else {
-    			// create block and check syntax error
-    			try {
-    				// test the type of block (if widget or general)
-    				if ( el.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
-    					PageBlock w = this.appCtx.factoryWidget(this.appCtx,this.id,el);
-    					this.blocks.put(id, w);
-    					// add to list sub block of widget
-    					Elements wlist = w.domEl.select(DOMPARSER_JOP_SELECTOR);
-    					for ( int ix=0; ix<wlist.size(); ix++ ) { 
-    						Element wel = wlist.get(ix);
-    						// exclude block with jop_id already assigned
-    						if ( wel.attr(JopAttribute.JOP_ATTR_ID) != null && !wel.attr(JopAttribute.JOP_ATTR_ID).isEmpty() )
-    							continue;
-   			        		auto_id_index++;
-   			    			wel.attr(JopAttribute.JOP_ATTR_ID,""+auto_id_index);
-   			    			((ListIterator<Element>)elems).add(wel);
-   			    			((ListIterator<Element>)elems).previous();
-    					}
-    				} else
-    					this.blocks.put(id, new GenericPageBlock(this.appCtx,this.id,el));
-    			} catch (Exception e) {
-    				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
-    			}
-    		}
-    	}
-		// Scan blocks for own child and attach them
-		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build child block chain on page: %s",this.id);
-    	PageBlock b[] = this.blocks.values().toArray(new PageBlock[0]);
-    	for ( int ix=0; ix<b.length; ix++ ) {
-    		ArrayList<PageBlock> child = new ArrayList<PageBlock>();
-    		elems = b[ix].domEl.select(DOMPARSER_JOP_SELECTOR).iterator();
-    		while ( elems.hasNext() ) {
-        		Element el = elems.next();
-        		Element p = el.parent(); 
-    			while ( p != null ) {
-    				if ( !p.attr(JopAttribute.JOP_ATTR_ID).isEmpty() ) {
-    					if ( p.attr(JopAttribute.JOP_ATTR_ID).equals(b[ix].id) ) {
-    						child.add(this.blocks.get(el.attr(JopAttribute.JOP_ATTR_ID)));
-    						this.blocks.get(el.attr(JopAttribute.JOP_ATTR_ID)).isChild = true;
-    					}
-    					break;
-    				}
-    				p = p.parent();
-    			}
-    		}
-    		b[ix].child = child;
-    	}
 	}
 	// Build head scripts inclusion
 	// 

@@ -192,7 +192,7 @@ public class WebAppContext {
 	/**
 	 * Widget factory
 	 * @param	  Context	Application context
-	 * @param	  PageId	page identificator
+	 * @param	  Page		parent page
 	 * @param	  DomElement	HTML element of the block
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
@@ -200,19 +200,6 @@ public class WebAppContext {
 	 * @exception 
 	 * @return	  widget instance
 	 */
-	public WidgetBlock factoryWidget(WebAppContext Context, String PageId, Element DomElement) throws DomException {
-		String name = WidgetBlock.computeWidgetName(DomElement);
-		for ( int ix=0; ix<this.widgetPkg.length; ix++ ) {
-			try {
-				Class<?> c = Class.forName(this.widgetPkg[ix]+"."+name);
-				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, String.class, Element.class).newInstance(Context,PageId,DomElement);
-			} catch (ClassNotFoundException  e) {
-			} catch (Exception e) {
-				throw new DomException(e.getCause().getMessage());
-			}
-		}
-		return new WidgetBlock(Context,PageId,DomElement);
-	}
 	public WidgetBlock factoryWidget(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
 		String name = WidgetBlock.computeWidgetName(DomElement);
 		for ( int ix=0; ix<this.widgetPkg.length; ix++ ) {

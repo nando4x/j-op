@@ -22,17 +22,13 @@ public class GenericPageBlock extends PageBlock {
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
-	 * @param	  PageId	page identificator
+	 * @param	  Page		parent page
 	 * @param	  DomElement	HTML element of the block
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public GenericPageBlock(WebAppContext Context, String PageId, Element DomElement) throws DomException {
-		super(Context, PageId, DomElement);
-		this.parse(Context);
-	}
 	public GenericPageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
 		super(Context,Page,DomElement);
 		this.parse(Context,Page);
