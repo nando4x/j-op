@@ -24,6 +24,7 @@ import com.nandox.jop.core.processor.attribute.JopAttributeRendering;
 import com.nandox.jop.core.processor.attribute.JopAttributeAction;
 import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.expression.PageWriteExpression;
+import com.nandox.jop.core.processor.expression.CollectionPageExpression;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -528,7 +529,7 @@ public abstract class PageBlock {
 		String code = this.parser.parseJavaExpression(a); 
 		if ( code != null ) {
 			// create new expression and register this block to those to refresh 
-			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id));
+			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id),CollectionPageExpression.class);
 			// if name attributes don't exist add it with auto index
 			if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 				el.attr("name",""+this.auto_id_index);

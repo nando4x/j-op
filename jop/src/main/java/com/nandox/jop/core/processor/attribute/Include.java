@@ -61,7 +61,7 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> implemen
 			Dom.html(ret);
 			return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 		} catch (Exception e) {
-			throw new RuntimeException(e.getCause());
+			throw new RuntimeException(e);
 		}
 	}
 

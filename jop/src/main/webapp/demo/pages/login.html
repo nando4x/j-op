@@ -10,9 +10,9 @@
 	<div class="title">ACCESSO</div>
 	<div class="body">
 		<label><jbean>{return $localizationTextBean.getText("label.login.username");}</jbean></label>
-		<input type="text" name="user" value="java{if(value!=null) $loginBean.setUsername(value); return null;}" class="" autofocus="">
+		<input type="text" name="user" value='java{return appContext.mngInput($loginBean,"username",value);}' class="" autofocus="">
 		<label><jbean>{return $localizationTextBean.getText("label.login.password");}</jbean></label>
-		<input type="password" name="password" value="java{if(value!=null) $loginBean.setPassword(value); return null;}" class="" >
+		<input type="password" name="password" value='java{return appContext.mngInput($loginBean,"password",value);}' class="" >
 		<div class="error" 
 			jop_rendered="java{return $loginBean.getUsername() != null &&  $loginBean.getPassword() != null && !$loginBean.isAuthenticated();}">
 		Attenzione username o password errati. Rimangono <jbean>{return ""+$loginBean.getTryCount();}</jbean> tentativi prima che venga bloccato l'account
@@ -24,7 +24,7 @@
 	<div class="title">AUTENTICAZIONE</div>
 	<div class="body">
 		<div>Benvenuto <jbean>{return $localizationTextBean.getText("label.login.token");}</jbean><br>&egrave; necessario autenticarsi con l'OTP</div>
-		<input type="password" name="token" value="java{if(value!=null) $loginBean.setToken(value); return null;}" class="" >
+		<input type="password" name="token" value='java{return appContext.mngInput($loginBean,"token",value);}' class="" >
 		<div class="error" 
 			jop_rendered="java{return $loginBean.getToken() != null && !$loginBean.isAuthorized();}">
 		Attenzione token errato. Rimangono <jbean>{return ""+$loginBean.getTryCount();}</jbean> tentativi prima che venga bloccato l'account

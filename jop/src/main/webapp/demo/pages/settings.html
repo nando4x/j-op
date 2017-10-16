@@ -37,7 +37,7 @@
 	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
 	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
    >
-    <input class="wdg_input" value='java{   java.lang.Object o = appContext.mngInput($helloWorld,"clist",value); return (java.lang.String)(o!=null?o.toString():null);}'
+    <input class="wdg_input" value='java{ System.out.println("xxz");   java.lang.Object o = appContext.mngInput($helloWorld,"clist",value); return (java.lang.String)(o!=null?o.toString():null);}'
     		jop_converter='test.testbean$Converter' jop_converter_data='java{return $helloWorld.getList();}'
     ></input>
     <span class="wdg_arrow"/>

@@ -120,12 +120,12 @@ public class RequestContext implements BeanAppContext {
 	 * @see com.nandox.jop.bean.BeanAppContext#mngInput(java.lang.Object, java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public <E> String mngInput(Object Bean, String Property, E Value) {
+	public <E> E mngInput(Object Bean, String Property, E Value) {
 		String name = Property.substring(0, 1).toUpperCase() + Property.substring(1);
 		if ( Value == null ) {
 			try {
 				Method m = Bean.getClass().getDeclaredMethod("get"+name);
-				return (String)m.invoke(Bean);
+				return (E)m.invoke(Bean);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -137,7 +137,7 @@ public class RequestContext implements BeanAppContext {
 				throw new RuntimeException(e);
 			}
 		}
-		return (String)Value;
+		return (E)Value;
 	}
 	/**
 	 * @param params the params to set
