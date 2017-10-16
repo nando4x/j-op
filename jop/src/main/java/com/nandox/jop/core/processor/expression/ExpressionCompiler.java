@@ -143,11 +143,18 @@ public class ExpressionCompiler {
 		String code = (PACKAGE.isEmpty()?"":"package "+PACKAGE);
 		// 	search beans reference $xxxx and put them on argument list
 		int inx_st = source.indexOf('$');
-		int inx_end = (source.indexOf('.',inx_st)>0?source.indexOf('.',inx_st):(source.indexOf(',',inx_st)>0?source.indexOf(',',inx_st):(source.indexOf(' ',inx_st)>0?source.indexOf(' ',inx_st):(source.indexOf(')',inx_st)>0?source.indexOf(')',inx_st):source.indexOf('(',inx_st)))));
+		int inx_end = 0;
+		for ( int ix=inx_st; inx_st>= 0 && ix<source.length(); ix++ ) {
+			char ch = source.charAt(ix);
+			if ( ch == ' ' || ch == '.' ||ch == ',' || ch == ')' || ch == '(' ) {
+				inx_end = ix;
+				break;
+			}
+		}
 		while ( inx_st >= 0 && inx_end > inx_st) {
 			try {
 				beans.add(source.substring(inx_st+1, inx_end));
-				code += "import "+this.epurateClassName(context.getBeanType(source.substring(inx_st+1, inx_end)).getName())+";";
+				code += "import "+this.epurateClassName(context.getBeanType(source.substring(inx_st+1, inx_end)).getCanonicalName())+";";
 				source = source.replace(source.substring(inx_st, inx_end), source.substring(inx_st+1, inx_end));
 				inx_st = source.indexOf('$', inx_st+1);
 				inx_end = (source.indexOf('.',inx_st)>0?source.indexOf('.',inx_st):(source.indexOf(',',inx_st)>0?source.indexOf(',',inx_st):(source.indexOf(' ',inx_st)>0?source.indexOf(' ',inx_st):(source.indexOf(')',inx_st)>0?source.indexOf(')',inx_st):source.indexOf('(',inx_st)))));
@@ -156,8 +163,8 @@ public class ExpressionCompiler {
 			}
 		}
 		// wrap code to class that implements ExpressionExecutor interface
-		code += "public class "+classname + " implements "+ExpressionExecutor.class.getName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke ("+BeanAppContext.class.getName()+" appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
+		code += "public class "+classname + " implements "+ExpressionExecutor.class.getCanonicalName()+"<"+returnclass+"> {";
+		code += "public "+returnclass+ " invoke ("+BeanAppContext.class.getCanonicalName()+" appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
 		code += returnclass+" value = ("+returnclass+")Value;";
 		// add variables declaration if present and have a class definition
 		if ( vars != null && vars.size() > 0 ) {
@@ -165,13 +172,13 @@ public class ExpressionCompiler {
 			while (v.hasNext()) {
 				String k = v.next();
 				if ( vars.get(k) != null )
-					code += " "+vars.get(k).getName()+" "+k+" = (vars!=null&&vars.size()>0?("+vars.get(k).getName()+")vars.get(\""+k+"\"):null);";
+					code += " "+vars.get(k).getCanonicalName()+" "+k+" = (vars!=null&&vars.size()>0?("+vars.get(k).getCanonicalName()+")vars.get(\""+k+"\"):null);";
 			}
 		}
 		if ( beans.size() > 0 ) {
 			int ix=0;
 			for ( String bean: beans ) {
-				String bcls = this.epurateClassName(context.getBeanType(bean).getName());
+				String bcls = this.epurateClassName(context.getBeanType(bean).getCanonicalName());
 				code += ""+bcls+" "+bean+"=("+bcls+")beans["+ix+"]; ";
 				ix++;
 			}

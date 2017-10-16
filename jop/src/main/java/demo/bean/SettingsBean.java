@@ -50,4 +50,13 @@ public class SettingsBean {
 			req.setKey(this.sec.getUID());
 		this.dsp.servRequestDataChange(req);
 	}
+	public static class Converter implements com.nandox.jop.core.Converter {
+
+		//public Converter() {}
+		@Override
+		public Object asObject(WebAppContext Context, Object Data, String Value) {
+			return Value;
+		}
+		
+	}
 }

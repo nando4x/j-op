@@ -37,9 +37,9 @@ public class SimplePageExpression extends AbstractPageExpression<String> impleme
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.String, Map<String,Object>)
+	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.Object, java.lang.String, Map<String,Object>)
 	 */
-	public String execute(WebAppContext Context, String NativeValue, Map<String,Object> Vars) {
-		return (String)this.invoke(Context,NativeValue,NativeValue,Vars);
+	public String execute(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars) {
+		return (String)this.invoke(Context,Value,NativeValue,Vars);
 	}
 }

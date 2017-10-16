@@ -23,16 +23,16 @@ import com.nandox.jop.core.processor.expression.BooleanPageExpression;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="rendered")
-public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
+public class Rendered extends AbstractJopAttribute<BooleanPageExpression> implements JopAttributeRendering {
 
 	/**
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String>)
 	 */
-	public Rendered(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
-		super(Context, Block, Node, Name, Value);
+	public Rendered(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
+		super(Context, Block, Node, Value);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
 	public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars) {
 		if ( !(Boolean)this.getExpression().execute(Context, Vars) )
@@ -40,7 +40,7 @@ public class Rendered extends AbstractJopAttribute<BooleanPageExpression> {
 		return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	public JopAttribute.Response postRender(WebAppContext Context, Element Dom) {
 		return null;

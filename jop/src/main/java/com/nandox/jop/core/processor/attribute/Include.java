@@ -25,12 +25,12 @@ import com.nandox.jop.core.processor.expression.SimplePageExpression;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="include")
-public class Include extends AbstractJopAttribute<SimplePageExpression> {
+public class Include extends AbstractJopAttribute<SimplePageExpression> implements JopAttributeRendering {
 	/**
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String>)
 	 */
-	public Include(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
-		super(Context, Block, Node, Name, null);
+	public Include(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
+		super(Context, Block, Node, null);
 		this.value = Value;
 		if ( Value.trim().charAt(0) != '/') { // if relative path add part after context root
 			String s = WebAppContext.getCurrentRequestContext().getHttpRequest().getRequestURI();
@@ -51,7 +51,7 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 		}
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
 	 */
 	@Override
 	public Response preRender(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
@@ -61,12 +61,12 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> {
 			Dom.html(ret);
 			return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 		} catch (Exception e) {
-			throw new RuntimeException(e.toString());
+			throw new RuntimeException(e.getCause());
 		}
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	@Override
 	public Response postRender(WebAppContext Context, Element Dom) {

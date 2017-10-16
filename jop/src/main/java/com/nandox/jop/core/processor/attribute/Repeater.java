@@ -25,20 +25,20 @@ import com.nandox.jop.core.processor.expression.CollectionPageExpression;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="repeater", priority=100, nested="var")
-public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttribute {
+public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttributeRendering {
 	private String coll_name;
 	private String vname;
 	private String is_array;
 
 	/**
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String>)
 	 */
-	public Repeater(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
-		super(Context, Block, Node, Name, Value);
+	public Repeater(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
+		super(Context, Block, Node, Value);
 		this.registerVariable(Context, Block, Node);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
 	 */
 	public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars) {
 		int size;
@@ -52,7 +52,7 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 		return new JopAttribute.Response(RETURN_ACTION.CONTINUE,size);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	public JopAttribute.Response postRender(WebAppContext Context, Element Dom) {
 		return null;

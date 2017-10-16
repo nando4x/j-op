@@ -24,9 +24,10 @@ import com.nandox.jop.core.context.WebAppContext;
 public interface PageWriteExpression extends PageExpression {
 
 	/** 
-	 * @param NativeValue	value to write to 
+	 * @param Value	submission value to write to 
+	 * @param NativeValue	native html submission value to write to 
 	 * @see com.nandox.jop.core.processor.PageExpression#Execute(com.nandox.jop.core.context.WebAppContext,Map<String,Object>)
 	 */
-	Object execute(WebAppContext Context, String NativeValue, Map<String,Object> Vars);
+	Object execute(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars);
 
 }

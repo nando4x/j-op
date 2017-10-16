@@ -17,11 +17,10 @@ import com.nandox.libraries.utils.Reflection;
 
 /**
  * Attribute of page block.<p>
- * Use this interface to implement every jop attribute with preRender and postRender action on rendering of page block,<br>
- * every action can return an RETURN_ACTION to pilot the rest of rendering.<br>
+ * Use this interface to implement every jop attribute, on default is implemented from AbstractJopAttribute.<br>
  * There is also a subclass Factory to instance an attribute.<br>
  * <br>
- * To implement an attribute have to create a Class that implements JopAttribute and extend AbstractJopAttribute.<br>
+ * To implement an attribute have to create a Class that implements JopAttributeRendering or JopAttributeAction and extend AbstractJopAttribute.<br>
  * !!IMPORTANT!! on the class define annotation JopCoreAttribute with attribute name without prefix (jop_) 
  * 
  * @project   Jop (Java One Page)
@@ -42,29 +41,12 @@ public interface JopAttribute {
 		/** continue rendering */
 		CONTINUE,
 		/** stop rendering: use result as rendering contents */
-		NOTRENDER
+		NOTRENDER,
+		/** action value converted */
+		CONVERTED
 	}
 	/**
-	 * return true if is an attribute called on action phase
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 */
-	public boolean isActionAttribute();
-	/**
-	 * Pre rendering action
-	 * @param	  Context	Application context
-	 * @param	  Dom element dom of the block
-	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 */
-	public Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars);
-	/**
-	 * Post rendering action
+	 * Setting variables used into page expression and defined with attribute
 	 * @param	  Context	Application context
 	 * @param	  Vars		variables map
 	 * @param	  Index		iterator index
@@ -75,16 +57,6 @@ public interface JopAttribute {
 	 */
 	public void setVariables(WebAppContext Context, Map<String,Object> Vars, int Index);
 	/**
-	 * Post rendering action
-	 * @param	  Context	Application context
-	 * @param	  Dom element dom of the block
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
-	 */
-	public Response postRender(WebAppContext Context, Element Dom);
-	/**
 	 * Response class of an attribute
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
@@ -93,7 +65,7 @@ public interface JopAttribute {
 	public static class Response {
 		private RETURN_ACTION action;
 		private int repater_num;
-		private String result;
+		private Object result;
 		
 		public Response(RETURN_ACTION Action) {
 			this.action = Action;
@@ -105,7 +77,7 @@ public interface JopAttribute {
 			this.repater_num = Num;
 			this.result = "";
 		}
-		public Response(RETURN_ACTION Action, String Result) {
+		public Response(RETURN_ACTION Action, Object Result) {
 			this(Action);
 			this.repater_num = 1;
 			this.result = Result;
@@ -125,7 +97,7 @@ public interface JopAttribute {
 		/**
 		 * @return the result
 		 */
-		public String getResult() {
+		public Object getResult() {
 			return result;
 		}
 	}
@@ -153,7 +125,7 @@ public interface JopAttribute {
 			init();
 			Class<?> c = attrs.get(Name);
 			try {
-				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,Element.class,String.class,String.class).newInstance(Context,Block,Node,Name,Value);
+				return (JopAttribute)c.getDeclaredConstructor(WebAppContext.class,PageBlock.class,Element.class,String.class).newInstance(Context,Block,Node,Value);
 			} catch (Exception e) {
 				// TODO: manage instantiate error
 				//return null;

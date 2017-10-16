@@ -20,6 +20,8 @@ import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.BeanMonitoring;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
+import com.nandox.jop.core.processor.attribute.JopAttributeRendering;
+import com.nandox.jop.core.processor.attribute.JopAttributeAction;
 import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.expression.PageWriteExpression;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
@@ -77,6 +79,8 @@ public abstract class PageBlock {
 	private Map<String,AttributeExpr> html_attrs;	// list of DOM attribute with an expression [attribute id, attribute expression]
 	private List<JopAttribute> attrs;	// list of Jop Attribute of block
 	private Map<String,Class<?>> vars_definition;	// list of block variables [variable name, variable java class]
+	
+	private boolean isform;		// true if this block is a form child tag (es: input)
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -171,6 +175,9 @@ public abstract class PageBlock {
 					el.text(exp.getId());
 					inx++;
 				}
+			} else if ( el == this.domEl && el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // the block is form tag
+				this.computeFormTag(Context, el, mon);
+				this.isform = true;
 			}
 		}
 	}
@@ -213,32 +220,7 @@ public abstract class PageBlock {
 		this.realAction(Context, Data);
 		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
 	}
-	
-	private void realAction(WebAppContext Context, Map<String,String[]> Data) {
-		// Search form tag with key (name) of the Data
-		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
-		while ( i.hasNext() ) {
-			Entry<String,PageWriteExpression> pe = i.next();
-			if ( Data != null && Data.containsKey(pe.getKey()) ) {
-				// Invoke expression in write mode
-				String val = Data.get(pe.getKey())[0]; // get string data
-				pe.getValue().execute(Context, val, null); //TODO: what variables use?
-			}
-		}
-		Iterator<PageBlock> c = this.child.iterator();
-		while ( c.hasNext() ) {
-			c.next().realAction(Context, Data);
-		}
-		// check action attribute
-		Iterator<JopAttribute> attr = this.attrs.iterator();
-		while (attr.hasNext()) {
-			JopAttribute ja = attr.next();
-			if ( ja.isActionAttribute() ) {
-				ja.preRender(Context,this.domEl,null); //TODO: what variables use?
-			}
-		}
-	}
-	/* (non-Javadoc)
+		/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
 	 */
 	public void resetToBeRefreshed(boolean ResetChild) {
@@ -294,12 +276,12 @@ public abstract class PageBlock {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
-			if ( ja.isActionAttribute() ) // skip if an action attribute
+			if ( !(ja instanceof JopAttributeRendering) ) // skip if an action attribute
 				continue;
-			JopAttribute.Response r = ja.preRender(Context,clone,null); //TODO: what variables use?
+			JopAttribute.Response r = ((JopAttributeRendering)ja).preRender(Context,clone,null); //TODO: what variables use?
 			switch (r.getAction()) {
 				case NOTRENDER:
-					return new TextNode(r.getResult(),"");
+					return new TextNode((String)r.getResult(),"");
 				default:
 					num = r.getRepater_num();
 					break;
@@ -395,7 +377,10 @@ public abstract class PageBlock {
 					e.removeAttr("name");
 				}
 			}
-			
+			if ( this.isform ) { // if this block is a form tag substitute only attribute value and name
+				clone.attr("value",item.attr("value"));
+				clone.attr("name",item.attr("name"));
+			}
 			clone.append(item.html());
 			num++;
 		}
@@ -427,12 +412,12 @@ public abstract class PageBlock {
 		Iterator<Attribute> attrs = lst.iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !attr.getKey().equalsIgnoreCase("value") ) {
+			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !(attr.getKey().equalsIgnoreCase("value") && el.tag().isFormSubmittable()) ) {
 				String a = attr.getValue();
 				String bid = this.parser.parseJavaExpression(a); 
 				if ( bid != null || ( attr.getKey().toLowerCase().startsWith("jop_") && JopAttribute.Factory.isKnown(attr.getKey()) ) ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
-						if ( isOwn ) {
+						if ( isOwn && JopAttribute.Factory.isKnown(attr.getKey()) ) {
 							// block jop attribute
 							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),(bid!=null?bid:a));
 							this.attrs.add(ja);
@@ -452,6 +437,51 @@ public abstract class PageBlock {
 						el.attr(tmp_attr_id,id);
 					}
 				}
+			}
+		}
+	}
+	// real action submission
+	//
+	//
+	private void realAction(WebAppContext Context, Map<String,String[]> Data) {
+		Iterator<JopAttribute> attr = this.attrs.iterator();
+		// Search form tag with key (name) of the Data
+		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
+		while ( i.hasNext() ) {
+			Entry<String,PageWriteExpression> pe = i.next();
+			if ( Data != null && Data.containsKey(pe.getKey()) ) {
+				// Invoke expression in write mode
+				String val = Data.get(pe.getKey())[0]; // get string data
+				Object cval = val;
+				// check pre action attribute
+				while (attr.hasNext()) {
+					JopAttribute ja = attr.next();
+					if ( ja instanceof JopAttributeAction ) {
+						JopAttribute.Response r = ((JopAttributeAction)ja).preAction(Context,this.domEl,null, val); //TODO: what variables use?
+						if ( r != null ) {
+							switch (r.getAction()) {
+							case CONVERTED:
+								cval = r.getResult();
+								break;
+							default:
+								break;
+						}
+						}
+					}
+				}
+				pe.getValue().execute(Context, cval, val, null); //TODO: what variables use?
+			}
+		}
+		Iterator<PageBlock> c = this.child.iterator();
+		while ( c.hasNext() ) {
+			c.next().realAction(Context, Data);
+		}
+		// check post action attribute
+		attr = this.attrs.iterator();
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			if ( ja instanceof JopAttributeAction ) {
+				((JopAttributeAction)ja).postAction(Context,this.domEl,null); //TODO: what variables use?
 			}
 		}
 	}

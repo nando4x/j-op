@@ -23,34 +23,27 @@ import com.nandox.jop.core.processor.expression.SimplePageExpression;
  * @revisor   Fernando Costantino
  */
 @JopCoreAttribute(name="onaction")
-public class OnAction extends AbstractJopAttribute<SimplePageExpression> {
+public class OnAction extends AbstractJopAttribute<SimplePageExpression> implements JopAttributeAction {
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)
 	 */
-	public OnAction(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws Exception {
-		super(Context, Block, Node, Name, Value);
+	public OnAction(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
+		super(Context, Block, Node, Value);
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#isActionAttribute()
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeAction#preAction(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
 	 */
 	@Override
-	public boolean isActionAttribute() {
-		return true;
-	}
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
-	 */
-	@Override
-	public Response preRender(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
-		this.getExpression().execute(Context, Vars);
+	public Response preAction(WebAppContext Context, Element Dom, Map<String, Object> Vars, String NativeValue) {
 		return null;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttributeAction#postAction(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
 	 */
 	@Override
-	public Response postRender(WebAppContext Context, Element Dom) {
+	public Response postAction(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
+		this.getExpression().execute(Context, Vars);
 		return null;
 	}
 

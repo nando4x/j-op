@@ -92,7 +92,7 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 		return ev.getValue();
 	}
 	@SuppressWarnings("unchecked")
-	protected Object invoke(WebAppContext Context, E Value, String NativeValue, Map<String,Object> Vars) {
+	protected Object invoke(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars) {
 		ExpressionValue<E> ev = this.initExpValue(Context); 
 		ev.setValue((E)this.invoker.invoke(Context,Value,NativeValue,Vars));
 		return ev.getValue();

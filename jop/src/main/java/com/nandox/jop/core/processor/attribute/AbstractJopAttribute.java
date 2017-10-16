@@ -12,7 +12,8 @@ import com.nandox.jop.core.processor.expression.AbstractPageExpression;
 import com.nandox.jop.core.processor.expression.PageExpression;
 
 /**
- * Jop Attribute abstract implementation.<p> 
+ * Jop Attribute abstract implementation.<p>
+ * Used to implements an attribute and compile own expression value 
  * 
  * @project   Jop (Java One Page)
  * 
@@ -25,31 +26,28 @@ import com.nandox.jop.core.processor.expression.PageExpression;
  * @revisor   Fernando Costantino
  */
 public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> implements JopAttribute {
-	
-	private E expression;
-	protected String name;
+	/* Attribute DOM value */
 	protected String value;
+	private E expression;
 	/**
 	 * Constructor
 	 * @param	  Context	Application context
 	 * @param	  Block		Page block
 	 * @param	  Node		DOM node
-	 * @param	  Name		Attribute name
 	 * @param	  Value		Attribute value or expression
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Name, String Value) throws DomException {
-		this.name = Name;
+	
+	public AbstractJopAttribute(WebAppContext Context, PageBlock Block, Element Node, String Value) throws DomException {
 		this.value = Value;
-		if ( Value != null && Block.getParser().parseJavaExpression(Value) != null )
+		if ( Value != null && Block.getParser().parseJavaExpression("java"+Value) != null )
 			this.computeExpression(Context, Value, Block.getVarsDefinition());
 	}
 	/**
 	 * Return expression 
-	 * @param	  Dom element dom of the block
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
@@ -59,28 +57,10 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 		return expression;
 	}
 	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#isActionAttribute()
-	 */
-	@Override
-	public boolean isActionAttribute() {
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, Map<String,Object>)
-	 */
-	@Override
-	abstract public JopAttribute.Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars);
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
-	 */
-	@Override
-	abstract public JopAttribute.Response postRender(WebAppContext Context, Element Dom);
-	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#setVariables(com.nandox.jop.core.context.WebAppContext, java.util.Map, int)
 	 */
 	@Override
-	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
-	}
+	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {}
 	/**
 	 * Create attribute expression 
 	 * @param	  Context	Application context

@@ -19,9 +19,14 @@
 					Jop.core.dom.removeClass(e.target,"st_active");
 				}
 				li[ix].onclick = function(e) {
+					debugger;
 					var block = e.target.parentElement.parentElement.parentElement;
 					var i = Jop.core.querySelector(block,".wdg_input");
-					i.value = e.target.textContent;
+					var val = e.target.getAttribute('data-value');
+					if ( val != null )
+						i.value = val;
+					else
+						i.value = e.target.textContent;
 					selection_toggle(block,0);
 				}
 			}
@@ -32,13 +37,13 @@
 	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
 	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
    >
-    <input type="hidden" value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'></input>
-    <input class="wdg_input" value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'></input>
+    <input class="wdg_input" value='java{   java.lang.Object o = appContext.mngInput($helloWorld,"clist",value); return (java.lang.String)(o!=null?o.toString():null);}'
+    		jop_converter='test.testbean$Converter' jop_converter_data='java{return $helloWorld.getList();}'
+    ></input>
     <span class="wdg_arrow"/>
     <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
-	    <ul $jop_repeater $jop_var>
-	    	<li value="1">11</li>
-	    	<li value="2">22</li>
+	    <ul jop_repeater='java{return $helloWorld.getList();}' jop_var=(test.testbean$list)var>
+	    	<li data-value='java{return var.code;}'><jbean>{return var.value;}</jbean></li>
 	    </ul>
     </div>
 </div>
@@ -52,7 +57,7 @@
 				    <wdg_item><jbean>{return "choice "+var;}</jbean></wdg_item>
 				</jwdg>
 	-->
-	  	 	 
+<!-- 	  	 	 
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
@@ -95,5 +100,5 @@
 		</jwdg>
 	 	</wdg_content>
 	</jwdg>
-	 
+ -->	 
  </div>
