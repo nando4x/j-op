@@ -13,7 +13,7 @@ package com.nandox.jop.core.processor;
  * 
  * @revisor   Fernando Costantino
  */
-public class DomException extends Exception {
+public class RenderException extends DomException {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -22,7 +22,7 @@ public class DomException extends Exception {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 */
-	public DomException(String message) {
+	public RenderException(String message) {
 		super(message);
 	}
 }

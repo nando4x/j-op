@@ -43,7 +43,7 @@ public interface JopAttribute {
 		/** stop rendering: use result as rendering contents */
 		NOTRENDER,
 		/** action value converted */
-		CONVERTED
+		CONVERTER
 	}
 	/**
 	 * Setting variables used into page expression and defined with attribute

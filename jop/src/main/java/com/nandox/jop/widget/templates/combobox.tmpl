@@ -15,9 +15,14 @@
 					Jop.core.dom.removeClass(e.target,"st_active");
 				}
 				li[ix].onclick = function(e) {
+					e.stopPropagation();
 					var block = e.target.parentElement.parentElement.parentElement;
 					var i = Jop.core.querySelector(block,".wdg_input");
-					i.value = e.target.textContent;
+					var val = e.target.getAttribute('data-value');
+					if ( val != null )
+						i.value = val;
+					else
+						i.value = e.target.textContent;
 					selection_toggle(block,0);
 				}
 			}
@@ -28,11 +33,11 @@
 	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
 	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
    >
-    <input class="wdg_input" disabled=disabled $value></input>
+    <input class="wdg_input" disabled=disabled $value $jop_converter $jop_support_data></input>
     <span class="wdg_arrow"/>
     <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
 	    <ul $jop_repeater $jop_var>
-	    	<wdg_item><li>$wdg_item</li></wdg_item>
+	    	<wdg_item><li $data-value>$wdg_item</li></wdg_item>
 	    </ul>
     </div>
 </div>

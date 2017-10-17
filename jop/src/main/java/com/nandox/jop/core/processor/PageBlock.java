@@ -24,7 +24,7 @@ import com.nandox.jop.core.processor.attribute.JopAttributeRendering;
 import com.nandox.jop.core.processor.attribute.JopAttributeAction;
 import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.expression.PageWriteExpression;
-import com.nandox.jop.core.processor.expression.CollectionPageExpression;
+import com.nandox.jop.core.processor.expression.ExpressionConverter;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -191,7 +191,7 @@ public abstract class PageBlock {
 	 * @exception
 	 * @return	  html in string format
 	 */	
-	public String render(WebAppContext Context) {
+	public String render(WebAppContext Context) throws RenderException {
 		return this.renderAsNode(Context).outerHtml();
 	}
 	/**
@@ -204,7 +204,7 @@ public abstract class PageBlock {
 	 * @exception
 	 * @return	  
 	 */	
-	protected Node renderAsNode(WebAppContext Context) {
+	protected Node renderAsNode(WebAppContext Context) throws RenderException {
 		return this.renderAsNode(Context,0);
 	}
 	/**
@@ -218,8 +218,10 @@ public abstract class PageBlock {
 	 * @return
 	 */
 	public void action(WebAppContext Context, Map<String,String[]> Data) {
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("submitting block id: (%s) %s",this.pageId,this.id);
 		this.realAction(Context, Data);
 		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("submitted block id: (%s) %s",this.pageId,this.id);
 	}
 		/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
@@ -267,12 +269,13 @@ public abstract class PageBlock {
 	// Real render as node 
 	//
 	//
-	private Node renderAsNode(WebAppContext Context, int index) {
+	private Node renderAsNode(WebAppContext Context, int index) throws RenderException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("rendering block id: (%s) %s",this.pageId,this.id);
 		// Reset all value expression
 		this.resetAllExprValue(Context);
 		Element clone = this.cloneElement(domEl);
 		int num = 1;
+		ExpressionConverter conv = null;
 		// check render attribute
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		while (attr.hasNext()) {
@@ -282,20 +285,25 @@ public abstract class PageBlock {
 			JopAttribute.Response r = ((JopAttributeRendering)ja).preRender(Context,clone,null); //TODO: what variables use?
 			switch (r.getAction()) {
 				case NOTRENDER:
+					if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("NOT rendered block id: (%s) %s",this.pageId,this.id);
 					return new TextNode((String)r.getResult(),"");
+				case CONVERTER:
+					conv = (ExpressionConverter)r.getResult();
+					break;
 				default:
 					num = r.getRepater_num();
 					break;
 			}
 		}
 		// real render
-		this.renderer(Context,clone,num,index);
+		this.renderer(Context,clone,num,index,conv);
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("rendered block id: (%s) %s",this.pageId,this.id);
 		return clone;
 	}
 	// Real final render call 
 	//
 	//
-	private void renderer(WebAppContext Context, Element clone, int repeat, int index) {
+	private void renderer(WebAppContext Context, Element clone, int repeat, int index, ExpressionConverter converter) throws RenderException {
 		int num = 0;
 		Map<String,Object> vars = this.instanceVariables();
 		Element temp = this.cloneElement(clone);
@@ -322,9 +330,10 @@ public abstract class PageBlock {
 				while (beans.hasNext()) {
 					Entry<String,PageExpression> e = beans.next();
 					PageExpression b = e.getValue();
-					if ( repeat > 1 )
+					if ( repeat > 1 )	// reset value for each repetition 
 						b.resetValue(Context);
-					String v = (String)b.execute(Context, vars);
+					// execute expression and then replace original tag with result text
+					String v = (String)b.execute(Context, vars);	
 					Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
 					while (elem.hasNext()) {
 						TextNode txt = new TextNode((v==null?"":v),"");
@@ -361,10 +370,14 @@ public abstract class PageBlock {
 				Entry<String,PageWriteExpression> b = f.next();
 				if ( repeat > 1 )
 					b.getValue().resetValue(Context);
-				String v = (String)b.getValue().execute(Context, vars);
+				// execute expression e convert if needed
+				Object o = b.getValue().execute(Context, vars);
+				String v = (converter!=null?converter.callOutputConverter(Context, o):(String)o);	
+				//String v = (String)b.getValue().execute(Context, vars);
 				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
 				if ( e == null )
 					continue;
+				// setting value attribute
 				String a = e.attr("value");
 				e.attr("value",a.replace("java"+b.getValue().getCode(), (v!=null?v:"") ));
 				// add page id to name attribute
@@ -446,31 +459,32 @@ public abstract class PageBlock {
 	//
 	private void realAction(WebAppContext Context, Map<String,String[]> Data) {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
-		// Search form tag with key (name) of the Data
+		// check pre action attribute
+		ExpressionConverter conv = null;
+		while (attr.hasNext()) {
+			JopAttribute ja = attr.next();
+			if ( ja instanceof JopAttributeAction ) {
+				JopAttribute.Response r = ((JopAttributeAction)ja).preAction(Context,this.domEl,null); //TODO: what variables use?
+				if ( r != null ) {
+					switch (r.getAction()) {
+						case CONVERTER:
+							conv = (ExpressionConverter)r.getResult();
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		// Search each form tag with key (name) of the Data
 		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
 		while ( i.hasNext() ) {
 			Entry<String,PageWriteExpression> pe = i.next();
 			if ( Data != null && Data.containsKey(pe.getKey()) ) {
 				// Invoke expression in write mode
 				String val = Data.get(pe.getKey())[0]; // get string data
-				Object cval = val;
-				// check pre action attribute
-				while (attr.hasNext()) {
-					JopAttribute ja = attr.next();
-					if ( ja instanceof JopAttributeAction ) {
-						JopAttribute.Response r = ((JopAttributeAction)ja).preAction(Context,this.domEl,null, val); //TODO: what variables use?
-						if ( r != null ) {
-							switch (r.getAction()) {
-							case CONVERTED:
-								cval = r.getResult();
-								break;
-							default:
-								break;
-						}
-						}
-					}
-				}
-				pe.getValue().execute(Context, cval, val, null); //TODO: what variables use?
+				pe.getValue().execute(Context, (conv!=null?conv.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
 			}
 		}
 		Iterator<PageBlock> c = this.child.iterator();
@@ -529,7 +543,7 @@ public abstract class PageBlock {
 		String code = this.parser.parseJavaExpression(a); 
 		if ( code != null ) {
 			// create new expression and register this block to those to refresh 
-			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id),CollectionPageExpression.class);
+			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id));
 			// if name attributes don't exist add it with auto index
 			if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
 				el.attr("name",""+this.auto_id_index);

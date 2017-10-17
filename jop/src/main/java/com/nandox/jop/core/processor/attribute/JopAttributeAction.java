@@ -27,13 +27,12 @@ public interface JopAttributeAction {
 	 * @param	  Context	Application context
 	 * @param	  Dom element dom of the block
 	 * @param	  Vars 	list of block variables instance [variable name, variable value instanced]
-	 * @param	  NativeValue native submission value
 	 * @date      04 ott 2016 - 04 ott 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public Response preAction(WebAppContext Context, Element Dom, Map<String,Object> Vars, String NativeValue);
+	public Response preAction(WebAppContext Context, Element Dom, Map<String,Object> Vars);
 	/**
 	 * Post action method executed before action submit block operation
 	 * @param	  Context	Application context

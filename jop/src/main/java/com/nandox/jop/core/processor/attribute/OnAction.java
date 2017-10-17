@@ -34,7 +34,7 @@ public class OnAction extends AbstractJopAttribute<SimplePageExpression> impleme
 	 * @see com.nandox.jop.core.processor.attribute.JopAttributeAction#preAction(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
 	 */
 	@Override
-	public Response preAction(WebAppContext Context, Element Dom, Map<String, Object> Vars, String NativeValue) {
+	public Response preAction(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
 		return null;
 	}
 

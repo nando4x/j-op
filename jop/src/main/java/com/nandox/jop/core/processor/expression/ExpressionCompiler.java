@@ -163,8 +163,11 @@ public class ExpressionCompiler {
 			}
 		}
 		// wrap code to class that implements ExpressionExecutor interface
-		code += "public class "+classname + " implements "+ExpressionExecutor.class.getCanonicalName()+"<"+returnclass+"> {";
-		code += "public "+returnclass+ " invoke ("+BeanAppContext.class.getCanonicalName()+" appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
+		//code += "public class "+classname + " implements "+ExpressionExecutor.class.getCanonicalName()+"<"+returnclass+"> {";
+		//code += "public "+returnclass+ " invoke ("+BeanAppContext.class.getCanonicalName()+" appContext, Object beans[],Object Value, String nativeValue, java.util.Map<String,Object> vars) { ";
+		returnclass = "E";
+		code += "public class "+classname + " implements "+ExpressionExecutor.class.getCanonicalName()+" {";
+		code += "public <E> "+ "Object invoke ("+BeanAppContext.class.getCanonicalName()+" appContext, Object beans[],E Value, String nativeValue, java.util.Map<String,Object> vars) { ";
 		code += returnclass+" value = ("+returnclass+")Value;";
 		// add variables declaration if present and have a class definition
 		if ( vars != null && vars.size() > 0 ) {

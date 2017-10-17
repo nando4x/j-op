@@ -73,7 +73,6 @@ public class WebAppContext {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @return	  Bean instance
-	 * @exception TODO:
 	 */
 	public Object getBeanInstance(String BeanName) {
 		return this.springCtx.getBean(BeanName);
@@ -85,7 +84,6 @@ public class WebAppContext {
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @return	  Bean class
-	 * @exception TODO:
 	 */
 	public Class<?> getBeanType(String BeanName) {
 		return this.springCtx.getType(BeanName);

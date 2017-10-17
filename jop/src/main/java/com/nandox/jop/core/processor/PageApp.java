@@ -90,7 +90,7 @@ public class PageApp {
 	 * @revisor   Fernando Costantino
 	 * @return	  HTML of page
 	 */	
-	public String render(WebAppContext Context) {
+	public String render(WebAppContext Context) throws RenderException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("start rendering page: %s", this.id);
 		Iterator<PageBlock> i = this.blocks.values().iterator();
 		Document d = this.dom.clone();

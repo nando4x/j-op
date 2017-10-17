@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor.attribute;
 import java.util.Map;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
+import com.nandox.jop.core.processor.RenderException;
 import com.nandox.jop.core.processor.attribute.JopAttribute.Response; 
 
 /**
@@ -32,7 +33,7 @@ public interface JopAttributeRendering {
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars);
+	public Response preRender(WebAppContext Context, Element Dom, Map<String,Object> Vars) throws RenderException;
 	/**
 	 * Post rendering action executed before rendering block operation
 	 * @param	  Context	Application context
@@ -42,5 +43,5 @@ public interface JopAttributeRendering {
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 */
-	public Response postRender(WebAppContext Context, Element Dom);
+	public Response postRender(WebAppContext Context, Element Dom) throws RenderException;
 }

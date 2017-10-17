@@ -18,7 +18,8 @@ import com.nandox.jop.bean.BeanAppContext;
  * @revisor   Fernando Costantino
  */
 
-public interface ExpressionExecutor<E> {
+//public interface ExpressionExecutor<E> {
+public interface ExpressionExecutor {
 	
 	/** Main method to invoke expression
 	 * @param	  appContext Bean of application context
@@ -31,5 +32,6 @@ public interface ExpressionExecutor<E> {
 	 * @revisor   Fernando Costantino
 	 * @exception specific type value
 	 */
-	public E invoke(BeanAppContext appContext, Object Beans[], Object Value, String NativeValue, Map<String,Object> Vars);
+	//public E invoke(BeanAppContext appContext, Object Beans[], Object Value, String NativeValue, Map<String,Object> Vars);
+	public <E> Object invoke(BeanAppContext appContext, Object Beans[], E Value, String NativeValue, Map<String,Object> Vars);
 }

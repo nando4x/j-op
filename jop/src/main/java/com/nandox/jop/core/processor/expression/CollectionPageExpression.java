@@ -20,7 +20,7 @@ import com.nandox.jop.core.processor.DomException;
  * @revisor   Fernando Costantino
  */
 
-public class CollectionPageExpression extends AbstractPageExpression<Object> implements PageWriteExpression {
+public class CollectionPageExpression extends AbstractPageExpression<Object> {
 
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#PageBean(WebAppContext,String,Map<String,Class<?>>)
@@ -33,16 +33,6 @@ public class CollectionPageExpression extends AbstractPageExpression<Object> imp
 	 */
 	@Override
 	public Object execute(WebAppContext Context, Map<String,Object> Vars) {
-		java.util.List<String> l = new java.util.ArrayList<String>();
-		l.add("1");
-		l.add("2");
 		return this.invoke(Context, Vars);
-		//return l;
-	}
-	/* (non-Javadoc)
-	 * @see com.nandox.jop.core.processor.PageWriteExpression#Execute(com.nandox.jop.core.context.WebAppContext, java.lang.Object, java.lang.String, Map<String,Object>)
-	 */
-	public String execute(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars) {
-		return (String)this.invoke(Context,Value,NativeValue,Vars);
 	}
 }

@@ -17,9 +17,9 @@ import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.ParseException;
 import com.nandox.jop.core.processor.JopId;
 import com.nandox.jop.core.processor.RefreshableBlock;
+import com.nandox.jop.core.processor.RenderException;
 /**
  * Real Dispatcher to process page requested.<p>
  * Search the existing page or create it and than process it 
@@ -119,10 +119,10 @@ public class Dispatcher {
 	 * @date      17 set 2016 - 17 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception ParseException if parsing and check synstax error
+	 * @exception Exception if parsing and check synstax error or rendering error
 	 * @return	  html rendered
 	 */
-	public String processPage(String PageId, String PageContent) throws ParseException {
+	public String processPage(String PageId, String PageContent) throws Exception {
 		PageApp page;
 		// check if page is changed, in this case or if not exist create new
 		if ( (page = this.appCtx.getPagesMap().get(PageId)) != null ) {
@@ -147,7 +147,7 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	protected Map<String,Map<String,String[]>> getQueryDataByPage(Map<String,String[]> QueryData) {
+	protected Map<String,Map<String,String[]>> getQueryDataByPage(Map<String,String[]> QueryData) throws Exception {
 		Map<String,Map<String,String[]>> map = new HashMap<String,Map<String,String[]>>();
 		Iterator<String> i = QueryData.keySet().iterator();
 		while (i.hasNext()) {
@@ -199,7 +199,7 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) {
+	public void processPageBlockFormAction(JopId Id, Map<String,String[]> QueryData) throws Exception {
 		Map<String,Map<String,String[]>> map = this.getQueryDataByPage(QueryData);
 		if ( WebAppContext.getCurrentRequestContext() != null )
 			WebAppContext.getCurrentRequestContext().setParameters(map.get(null));
@@ -227,7 +227,7 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) {
+	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) throws RenderException {
 		RequestContext rc = WebAppContext.getCurrentRequestContext();
 		PageApp page = this.getPageApp(PageId);
 		Map<JopId,String> lst = new HashMap<JopId,String>();

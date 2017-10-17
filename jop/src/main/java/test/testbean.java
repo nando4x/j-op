@@ -75,6 +75,13 @@ public class testbean {
 			}
 			return null;
 		}
+
+		@Override
+		public String asString(WebAppContext Context, Object Data, Object Value) {
+			if ( Value != null )
+				return ((list)Value).value;
+			return null;
+		}
 		
 	}
 }

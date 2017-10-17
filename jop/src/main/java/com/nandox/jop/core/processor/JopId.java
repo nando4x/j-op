@@ -1,5 +1,7 @@
 package com.nandox.jop.core.processor;
 
+import com.nandox.jop.core.ErrorsDefine;
+
 /**
  * Class that represents an Jop Identifier.<p> 
  * 
@@ -22,17 +24,17 @@ public class JopId {
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
-	 * @exception 
+	 * @exception ParseException if malformed (must be [page path].idblock)
 	 * @return
 	 */
-	public JopId(String CompositId) {
+	public JopId(String CompositId) throws ParseException {
 		int ini = CompositId.indexOf("[");
 		int end = CompositId.indexOf("].");
 		if ( ini >= 0 && end > ini ) {
 			this.page = CompositId.substring(ini+1, end);
 			this.Id = CompositId.substring(end+2);
-		}
-		// TODO: generate exception if syntax error
+		}// else
+			//throw new ParseException(ErrorsDefine.JOP_ID_MALFORMED);
 	}
 	/**
 	 * Constructor

@@ -49,7 +49,7 @@ public class ExpressionInvoker {
 		Object ret = null;
 		Object beans[] = new Object[this.beans.length];
 		try {
-			ExpressionExecutor<?> o = this.expClass.newInstance();
+			ExpressionExecutor o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,null,null,Vars);
@@ -62,7 +62,7 @@ public class ExpressionInvoker {
 		Object ret = null;
 		Object beans[] = new Object[this.beans.length];
 		try {
-			ExpressionExecutor<?> o = this.expClass.newInstance();
+			ExpressionExecutor o = this.expClass.newInstance();
 			for ( int ix=0; ix<this.beans.length; ix++)
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,Value,NativeValue,Vars);

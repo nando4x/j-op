@@ -109,25 +109,28 @@ public class WidgetBlock extends PageBlock {
 			// if found replace template widget with same tag of the element, if more that one append them 
 			if ( e.tagName().toLowerCase().startsWith("wdg_") ) {
 				if ( !this.domEl.getElementsByTag(e.tagName()).isEmpty() ) {
-					// exclude tag inside nested jdwg
 					String t = "";
-					if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(0)) ) {
-						if ( e.text().contains("$"+e.tagName()) ) {
+					if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(0)) ) { // exclude tag inside nested jdwg
+						if ( e.text().contains("$"+e.tagName()) ) { // check if there is widget whit prefix $ and substitute
 							String s = e.html();
 							t = new String(s);
 							s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(0).html());
 							e.html(s);
-						} else
+						} else // otherwise substitute all element html
 							e.html(this.domEl.getElementsByTag(e.tagName()).get(0).html());
+						// compile attribute
+						this.compileAttributes(e, this.domEl.getElementsByTag(e.tagName()).get(0).attributes().iterator());
 					}
 					for ( int ix=1; ix<this.domEl.getElementsByTag(e.tagName()).size(); ix++ ) {
-						if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(ix)) ) {
-							if ( t.contains("$"+e.tagName()) ) {
+						if ( this.checkIfChildOfThis(this.domEl.getElementsByTag(e.tagName()).get(ix)) ) { // exclude tag inside nested jdwg
+							if ( t.contains("$"+e.tagName()) ) { // check if there is widget whit prefix $ and substitute
 								String s = new String(t);
 								s = s.replace("$"+e.tagName(), this.domEl.getElementsByTag(e.tagName()).get(ix).html());
 								e.append(s);
-							} else
+							} else // otherwise substitute all element html
 								e.append(this.domEl.getElementsByTag(e.tagName()).get(ix).html());
+							// compile attribute
+							this.compileAttributes(e, this.domEl.getElementsByTag(e.tagName()).get(ix).attributes().iterator());
 						}
 					}
 				}
@@ -150,7 +153,8 @@ public class WidgetBlock extends PageBlock {
 	}
 	/**
 	 * Compile attributes.<p>
-	 * Merge attributes (excluding known managed jop_*) between DOM and template 
+	 * Merge attributes (excluding known managed jop_*) between DOM and template. For each attribute of DOM search if there is the same with prefix $<br>
+	 * in the template and substitute. If not found add to main tag of the template 
 	 * @param	  Attrs attributes to change with relative new value
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
@@ -159,20 +163,26 @@ public class WidgetBlock extends PageBlock {
 	 * @return	  
 	 */	
 	protected void compileAttributes(Iterator<Attribute> Attrs) {
+		this.compileAttributes(this.domEl, Attrs);
+	}
+	//
+	//
+	//
+	private void compileAttributes(Element elem, Iterator<Attribute> Attrs) {
 		while ( Attrs.hasNext() ) {
 			Attribute attr = Attrs.next();
 			if ( !attr.getKey().equalsIgnoreCase(ATTR_TYPE) && !attr.getKey().equalsIgnoreCase(ATTR_TYPE_ALT) && !attr.getKey().equalsIgnoreCase("jop_id")/* && !JopAttribute.Factory.isKnown(attr.getKey())*/ ) {
-				if ( this.domEl.hasAttr(attr.getKey()) & !JopAttribute.Factory.isKnown(attr.getKey()) ) {
-					this.domEl.attr(attr.getKey(), this.domEl.attr(attr.getKey()) + " " +attr.getValue());
+				if ( elem.hasAttr(attr.getKey()) & !JopAttribute.Factory.isKnown(attr.getKey()) ) {
+					elem.attr(attr.getKey(), elem.attr(attr.getKey()) + " " +attr.getValue());
 					//TODO: manage attribute to complicate merge like onclick
 				} else {
-					Element e[] = this.domEl.select("[$"+attr.getKey()+"]").toArray(new Element[0]);
+					Element e[] = elem.select("[$"+attr.getKey()+"]").toArray(new Element[0]);
 					for ( int ix=0; ix<e.length; ix++ ) {
 						e[ix].removeAttr("$"+attr.getKey());
 						e[ix].attr(attr.getKey(), attr.getValue());
 					}
 					if ( e.length == 0 )
-						this.domEl.attr(attr.getKey(), attr.getValue());
+						elem.attr(attr.getKey(), attr.getValue());
 				}
 			}
 		}

@@ -26,6 +26,8 @@ public class ErrorsDefine {
 	static final public String JOP_EXPR_SYNTAX = "Syntax error in page expression";  
 	/** */
 	static final public String JOP_BEAN_NOTFOUND = "Bean used in page expression don't exist";  
+	/** */
+	static final public String JOP_ID_MALFORMED = "Jop ID malformed (must be [page path].idblock)";  
 
 	/**
 	 * Format message error to print

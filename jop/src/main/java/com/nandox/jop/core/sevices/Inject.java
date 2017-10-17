@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.nandox.jop.core.dispatcher.Dispatcher;
+import com.nandox.jop.core.processor.RenderException;
 import com.nandox.jop.core.processor.JopId;
 
 /**
@@ -34,7 +35,7 @@ public class Inject extends AbstractServiceJS implements ServiceJSManager {
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.sevices.ServiceJSManager#execute(java.lang.String, java.util.Map)
 	 */
-	public ServiceJSResponse execute(Dispatcher Dsp, String Cmd, Map<String, String[]> Params) {
+	public ServiceJSResponse execute(Dispatcher Dsp, String Cmd, Map<String, String[]> Params) throws Exception {
 		if ( Cmd.equals(CMD_POSTBLOCK) ) {
 			JopId id = this.getJopIdFromParams(Params);
 			Dsp.processPageBlockFormAction(id,Params);

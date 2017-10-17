@@ -19,7 +19,7 @@ import com.nandox.jop.core.context.WebAppContext;
 public interface Converter {
 
 	/**
-	 * Convert native submitted value and return value as Object
+	 * Convert string native submitted value and return value as Object
 	 * @param	  Context	Application context
 	 * @param	  Data		result of jop_converter_data attribute
 	 * @param	  Value		native html submitted value
@@ -30,4 +30,16 @@ public interface Converter {
 	 * @return	  converted value
 	 */
 	public Object asObject(WebAppContext Context, Object Data, String Value);
+	/**
+	 * Convert object value and return value as String
+	 * @param	  Context	Application context
+	 * @param	  Data		result of jop_converter_data attribute
+	 * @param	  Value		expression result value
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  converted value
+	 */
+	public String asString(WebAppContext Context, Object Data, Object Value);
 }

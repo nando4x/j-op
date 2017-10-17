@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.RenderException;
 import com.nandox.jop.core.processor.expression.SimplePageExpression;
 
 /**
@@ -54,14 +55,14 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> implemen
 	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#preRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element, java.util.Map)
 	 */
 	@Override
-	public Response preRender(WebAppContext Context, Element Dom, Map<String, Object> Vars) {
+	public Response preRender(WebAppContext Context, Element Dom, Map<String, Object> Vars) throws RenderException {
 		try {
 			String file = Context.getResource(this.value);
 			String ret = Context.getDispatcher().processPage((this.value.charAt(0)=='/'?this.value.substring(1):this.value), file);
 			Dom.html(ret);
 			return new JopAttribute.Response(RETURN_ACTION.CONTINUE);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RenderException(e.getMessage());
 		}
 	}
 
@@ -69,7 +70,7 @@ public class Include extends AbstractJopAttribute<SimplePageExpression> implemen
 	 * @see com.nandox.jop.core.processor.attribute.JopAttributeRendering#postRender(com.nandox.jop.core.context.WebAppContext, org.jsoup.nodes.Element)
 	 */
 	@Override
-	public Response postRender(WebAppContext Context, Element Dom) {
+	public Response postRender(WebAppContext Context, Element Dom) throws RenderException {
 		return null;
 	}
 

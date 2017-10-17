@@ -28,7 +28,7 @@ public abstract class AbstractServiceJS {
 	 * @exception 
 	 * @return
 	 */
-	protected JopId getJopIdFromParams (Map<String,String[]> Params) {
+	protected JopId getJopIdFromParams (Map<String,String[]> Params) throws Exception {
 		String p[] = Params.get(PARAMS_JOPID);
 		if ( p!= null && p.length > 0 )
 			return new JopId(p[0]);
