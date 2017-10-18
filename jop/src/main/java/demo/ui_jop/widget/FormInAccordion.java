@@ -6,12 +6,12 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.DomException;
-import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.widget.WidgetBlock;
 
 public class FormInAccordion extends WidgetBlock {
 
-	public FormInAccordion(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
+	public FormInAccordion(WebAppContext Context, JopElement Page, Element DomElement) throws DomException {
 		super(Context, Page, DomElement);
 	}
 

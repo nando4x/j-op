@@ -16,6 +16,7 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.core.processor.expression.ExpressionCompiler;
 import com.nandox.jop.widget.WidgetBlock;
 
@@ -198,18 +199,18 @@ public class WebAppContext {
 	 * @exception 
 	 * @return	  widget instance
 	 */
-	public WidgetBlock factoryWidget(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
+	public WidgetBlock factoryWidget(WebAppContext Context, JopElement Parent, Element DomElement) throws DomException {
 		String name = WidgetBlock.computeWidgetName(DomElement);
 		for ( int ix=0; ix<this.widgetPkg.length; ix++ ) {
 			try {
 				Class<?> c = Class.forName(this.widgetPkg[ix]+"."+name);
-				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, PageApp.class, Element.class).newInstance(Context,Page,DomElement);
+				return (WidgetBlock)c.getDeclaredConstructor(WebAppContext.class, JopElement.class, Element.class).newInstance(Context,Parent,DomElement);
 			} catch (ClassNotFoundException  e) {
 			} catch (Exception e) {
 				throw new DomException(e.getCause().getMessage());
 			}
 		}
-		return new WidgetBlock(Context,Page,DomElement);
+		return new WidgetBlock(Context,Parent,DomElement);
 	}
 	/**
 	 * Return BeanAppContext of current thread

@@ -29,7 +29,7 @@ import com.nandox.jop.core.processor.attribute.JopAttribute;
  * 
  * @revisor   Fernando Costantino
  */
-public class PageApp {
+public class PageApp implements JopElement {
 	/** Widget TAG */
 	protected static final String JOP_WIDGET_TAG = "jwdg";
 	/** Alternative Widget TAG */
@@ -162,6 +162,7 @@ public class PageApp {
 	/**
 	 * Create a block from dom element
 	 * @param	  Context	Application context
+	 * @param	  Parent	parent element
 	 * @param	  Elem 		element that represent a block   
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
@@ -169,13 +170,13 @@ public class PageApp {
 	 * @exception 
 	 * @return	  created block
 	 */
-	protected PageBlock createBlock(WebAppContext Context,Element Elem) throws DomException {
+	protected PageBlock createBlock(WebAppContext Context,JopElement Parent, Element Elem) throws DomException {
 		PageBlock b;
 		// test the type of block (if widget or general)
 		if ( Elem.tagName().equalsIgnoreCase(JOP_WIDGET_TAG) /*|| (el.tagName().equalsIgnoreCase("div") && el.hasAttr("jop_wdg"))*/ ) {
-			b = this.appCtx.factoryWidget(Context,this,Elem);
+			b = this.appCtx.factoryWidget(Context,Parent,Elem);
 		} else
-			b = new GenericPageBlock(Context,this,Elem);
+			b = new GenericPageBlock(Context,Parent,Elem);
 		// check for double jop id
 		if ( this.blocks.containsKey(b.id) ) {
 			if (LOG != null && LOG.isErrorEnabled() ) LOG.error("double block %s on page %s",b.id, this.id);
@@ -202,7 +203,7 @@ public class PageApp {
 			if ( !this.hasParentBlock(el) ) {
     			// create block and check syntax error
     			try {
-    				this.createBlock(this.appCtx,el);
+    				this.createBlock(this.appCtx,this,el);
     			} catch (Exception e) {
     				throw new ParseException(ErrorsDefine.formatDOM(e.getMessage(),el));
     			}

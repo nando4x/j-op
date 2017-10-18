@@ -29,8 +29,8 @@ public class GenericPageBlock extends PageBlock {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public GenericPageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
-		super(Context,Page,DomElement);
-		this.parse(Context,Page);
+	public GenericPageBlock(WebAppContext Context, JopElement Parent, Element DomElement) throws DomException {
+		super(Context,Parent,DomElement);
+		this.parse(Context,Parent);
 	}
 }

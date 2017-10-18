@@ -47,7 +47,7 @@ import com.nandox.jop.core.ErrorsDefine;
  * @author EE38938
  *
  */
-public abstract class PageBlock {
+public abstract class PageBlock implements JopElement {
 	private static final String JOP_BEAN_TAG = "jbean";
 	/** block DOM */
 	protected Element domEl;
@@ -62,6 +62,7 @@ public abstract class PageBlock {
 	
 	private static final String tmp_attr_id = "_jop_tmp_id";
 	private static final String form_selector = "[value^=java{]";
+	private JopElement parent;
 	private String pageId;	// parent page identifier
 	private int auto_id_index;	// auto incremental index of anonymous form input and for DOM attributes identifiers
 	private Parser parser;
@@ -85,15 +86,16 @@ public abstract class PageBlock {
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
-	 * @param	  PageId	page identificator
+	 * @param	  Parent	parent element
 	 * @param	  DomElement	HTML element of the block
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */	
-	public PageBlock(WebAppContext Context, PageApp Page, Element DomElement) throws DomException {
-		this.pageId = Page.id;
+	public PageBlock(WebAppContext Context, JopElement Parent, Element DomElement) throws DomException {
+		this.parent = Parent;
+		this.pageId = this.getPage().id;
 		this.domEl = DomElement;
 		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
 		
@@ -108,10 +110,18 @@ public abstract class PageBlock {
 		// Assign jop_id if not just defined
 		String id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
 		if ( id.isEmpty() ) {
-			id = Page.assignAutoId();
+			id = this.getPage().assignAutoId();
 			this.domEl.attr(JopAttribute.JOP_ATTR_ID,id);
 		}
 		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);		
+	}
+	
+	private PageApp getPage() {
+		JopElement p = this.parent;
+		while ( !(p instanceof PageApp) ) {
+			p = p;
+		}
+		return (PageApp)p;
 	}
 	/**
 	 * @return the id
@@ -134,7 +144,7 @@ public abstract class PageBlock {
 	 * @exception DomException for syntax error
 	 * @return	  
 	 */	
-	protected void parse(WebAppContext Context, PageApp Page) throws DomException {
+	protected void parse(WebAppContext Context, JopElement Parent) throws DomException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: (%s) %s",this.pageId,this.id);
 		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
 		
@@ -152,8 +162,8 @@ public abstract class PageBlock {
 					PageExpression exp = this.parser.expressionParser(Context, "java"+el.text().trim(), new JopId(this.pageId,this.id));
 					this.beans.put(exp.getId(),exp);
 					el.attr("id",exp.getId());
-				} else if ( Page.checkIfIsBlock(el) ) { // is child
-					PageBlock b = Page.createBlock(Context, el);
+				} else if ( this.getPage().checkIfIsBlock(el) ) { // is child
+					PageBlock b = this.getPage().createBlock(Context, this, el);
 					b.isChild = true;
 					this.child.add(b);
 				} else if ( el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // is form tag
@@ -568,8 +578,8 @@ public abstract class PageBlock {
 	// Comparator for jop attribute name
 	//
 	//
-	static private class AttributeComparator implements Comparator<Attribute> {
-		static private final String[] jop_attrs = JopAttribute.Factory.getNameList();
+	private class AttributeComparator implements Comparator<Attribute> {
+		private final String[] jop_attrs = JopAttribute.Factory.getNameList();
 		/* (non-Javadoc)
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
