@@ -81,6 +81,13 @@ public class PageApp implements JopElement {
 	public int getHash() {
 		return hash;
 	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.JopElement#getParent()
+	 */
+	@Override
+	public JopElement getParent() {
+		return null;
+	}
 	/**
 	 * Rendering the page: read every bean value and insert it into dom.<br>
 	 * This method render only first level block 

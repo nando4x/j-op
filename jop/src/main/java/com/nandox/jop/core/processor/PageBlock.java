@@ -105,6 +105,9 @@ public abstract class PageBlock implements JopElement {
 		this.html_attrs = new HashMap<String,AttributeExpr>();
 		this.attrs = new ArrayList<JopAttribute>();
 		this.vars_definition = new HashMap<String,Class<?>>();
+		// get parent variables
+		if ( Parent instanceof PageBlock )
+			this.vars_definition.putAll(((PageBlock)Parent).getVarsDefinition());
 		this.parser = new Parser(this.exprs,this.vars_definition);
 		this.child = new ArrayList<PageBlock>();
 		// Assign jop_id if not just defined
@@ -114,14 +117,6 @@ public abstract class PageBlock implements JopElement {
 			this.domEl.attr(JopAttribute.JOP_ATTR_ID,id);
 		}
 		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);		
-	}
-	
-	private PageApp getPage() {
-		JopElement p = this.parent;
-		while ( !(p instanceof PageApp) ) {
-			p = p;
-		}
-		return (PageApp)p;
 	}
 	/**
 	 * @return the id
@@ -134,6 +129,13 @@ public abstract class PageBlock implements JopElement {
 	 */
 	public Parser getParser() {
 		return this.parser;
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.JopElement#getParent()
+	 */
+	@Override
+	public JopElement getParent() {
+		return this.parent;
 	}
 	/**
 	 * Parse block.<br>
@@ -264,6 +266,16 @@ public abstract class PageBlock implements JopElement {
 	 */
 	public Map<String, Class<?>> getVarsDefinition() {
 		return vars_definition;
+	}
+	// Scan parents until PageApp
+	//
+	//
+	private PageApp getPage() {
+		JopElement p = this.parent;
+		while ( !(p instanceof PageApp) ) {
+			p = p.getParent();
+		}
+		return (PageApp)p;
 	}
 	//
 	//

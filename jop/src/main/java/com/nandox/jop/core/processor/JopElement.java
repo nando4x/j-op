@@ -16,4 +16,5 @@ package com.nandox.jop.core.processor;
 
 public interface JopElement {
 
+	public JopElement getParent();
 }
