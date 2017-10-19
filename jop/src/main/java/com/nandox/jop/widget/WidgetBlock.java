@@ -11,7 +11,6 @@ import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
 
 /**

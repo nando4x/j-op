@@ -191,7 +191,8 @@ Jop.core.services = Jop.core.services || {};
 	this.registForm = function(element) {
 		function _do(el) {
 			var act = el.getAttribute('action');
-			if ( act == null || act.length > 0 ) {
+			
+			if ( act == null || act.length <= 0 ) {
 				var id = el.getAttribute('jop_id');
 				// check if already present in queue otherwise add block id in queue and add event to block 
 				if ( queue.forms.indexOf(id) < 0 )

@@ -20,7 +20,6 @@ import com.nandox.jop.core.context.WebAppContext;
  */
 public class ExpressionInvoker {
 
-	@SuppressWarnings("rawtypes")
 	private Class<ExpressionExecutor> expClass;		// expression runtime compiled class
 	private String[] beans;	// bean referenced into expression
 	/**
@@ -31,7 +30,6 @@ public class ExpressionInvoker {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
-	@SuppressWarnings("rawtypes")
 	public ExpressionInvoker(Class<ExpressionExecutor> Clazz, String[] Beans) {
 		this.expClass = Clazz;
 		this.beans = Beans;

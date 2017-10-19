@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.nandox.jop.core.dispatcher.Dispatcher;
-import com.nandox.jop.core.processor.RenderException;
 import com.nandox.jop.core.processor.JopId;
 
 /**

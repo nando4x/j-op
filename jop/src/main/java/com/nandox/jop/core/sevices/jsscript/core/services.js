@@ -37,7 +37,7 @@
 		var block = Jop.core.getBlockElement(jopId);
 		// set spinner
 		Jop.core.turnBlockSpinner(jopId,"jop_spinner");
-		var list = Jop.core.querySelectorAll(block,'input[name]');
+		var list = Jop.core.querySelectorAll(block,'textare[name],input[name],select[name]');
 		var request = JOP_ID_PARAMETER+"="+jopId;
 		for ( var ix=0; list!=null&&ix<list.length; ix++ ) {
 			request += "&"+list[ix].name+"="+list[ix].value; 

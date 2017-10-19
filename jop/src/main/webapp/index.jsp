@@ -32,14 +32,14 @@
 					<jbean>{return $helloWorld.getArray()[1];}</jbean>
 				</option>
 			</select>
-		</div>
+		</div>		
 		<form jop_id="">
-		<!-- <div xjop_repeater='xjava{return $helloWorld.getArray();}' jop_var='varP'> -->
+		<div jop_repeater='java{return $helloWorld.getArray();}' jop_var='varP'>
 		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='var2' value='java{return "";}'
 				class="java{return $helloWorld.getCssClass();} xxxx">
-			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return "choice "+var2;}</jbean></option>
+			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return varP + "choice "+var2;}</jbean></option>
 		</select>
-		<!-- </div> -->
+		</div>
 		</form>
 		<div  jop_include="page.html">
 			<param name="aaa">ccc</param>
@@ -83,7 +83,7 @@
 		<textarea rows="4" cols="50" name="ddd">
 			At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 		</textarea>
-		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='var2' value='java{return "";}'
+		<select name="xx" jop_repeater='java{return $helloWorld.getArray();}' jop_var='var2' value='java{return "";}'
 				class="java{return $helloWorld.getCssClass();} xxxx">
 			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return "choice "+var2;}</jbean></option>
 		</select>

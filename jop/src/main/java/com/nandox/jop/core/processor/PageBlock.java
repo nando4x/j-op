@@ -14,7 +14,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-//import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
@@ -61,28 +60,29 @@ public abstract class PageBlock implements JopElement {
 	protected static final Logger LOG = Logger.Factory.getLogger(PageBlock.class);
 	
 	private static final String tmp_attr_id = "_jop_tmp_id";
-	private static final String form_selector = "[value^=java{]";
-	private JopElement parent;
-	private String pageId;	// parent page identifier
+	private static final String form_selector = "select, [value^=java{]:not(option)";
+	private JopElement parent;	// parent element
+	private String pageId;		// parent page identifier
 	private int auto_id_index;	// auto incremental index of anonymous form input and for DOM attributes identifiers
-	private Parser parser;
+	private Parser parser;		// own parser
 	
-	private Map<String,PageExpression> exprs;	// list of all expressions [id, expression created]
-	private Map<String,PageExpression> beans;	// list of all jbean	[bean id, expression reference in exprs list]
-	private Map<String,PageWriteExpression> forms;	// list of all form input expression [input name, expression reference in exprs list]
-
-	// class for DOM attribute expression 
-	private class AttributeExpr {
-		String name;		// DOM attribute name
-		PageExpression expr;	// expression
-		boolean isOwn;	// true if is an attribute of page block html element
+	// internal class for renderable element: all DOM elements that have one or more expression 
+	private class Renderable {
+		Element elem;
+		PageBlock block;
+		PageExpression beans;		// jbean
+		PageWriteExpression form;	// form input expression
+		Map<String,PageExpression> html_attrs;	// list of DOM attribute with an expression [attribute id, attribute expression]
+		Renderable() {
+			this.html_attrs = new HashMap<String,PageExpression>();
+		}
 	}
-	
-	private Map<String,AttributeExpr> html_attrs;	// list of DOM attribute with an expression [attribute id, attribute expression]
-	private List<JopAttribute> attrs;	// list of Jop Attribute of block
+	private List<Renderable> rends;	// list of renderable element
+	private List<Renderable> forms;	// list of renderable element with form
+	private Map<String,PageExpression> exprs;		// list of all expressions [id, expression created]
+	private List<JopAttribute> attrs;				// list of Jop Attribute of block
 	private Map<String,Class<?>> vars_definition;	// list of block variables [variable name, variable java class]
 	
-	private boolean isform;		// true if this block is a form child tag (es: input)
 	/**
 	 * Constructor: parse DOM element
 	 * @param	  Context	Application context
@@ -100,9 +100,8 @@ public abstract class PageBlock implements JopElement {
 		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
 		
 		this.exprs = new HashMap<String,PageExpression>();
-		this.beans = new HashMap<String,PageExpression>();
-		this.forms = new HashMap<String,PageWriteExpression>();
-		this.html_attrs = new HashMap<String,AttributeExpr>();
+		this.rends = new ArrayList<Renderable>();
+		this.forms = new ArrayList<Renderable>();
 		this.attrs = new ArrayList<JopAttribute>();
 		this.vars_definition = new HashMap<String,Class<?>>();
 		// get parent variables
@@ -116,7 +115,8 @@ public abstract class PageBlock implements JopElement {
 			id = this.getPage().assignAutoId();
 			this.domEl.attr(JopAttribute.JOP_ATTR_ID,id);
 		}
-		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);		
+		this.id = this.domEl.attr(JopAttribute.JOP_ATTR_ID);
+		
 	}
 	/**
 	 * @return the id
@@ -150,49 +150,42 @@ public abstract class PageBlock implements JopElement {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsing block id: (%s) %s",this.pageId,this.id);
 		BeanMonitoring mon = Context.getBeanMonitor(); // get bean monitor
 		
-		// Get and process attributes of this block
-		this.parseAttributes(Context, this.domEl,mon,true);
+		// Get and process own attributes
+		Renderable own = new Renderable();
+		own.elem = this.domEl;
+		this.parseAttributes(Context, own,mon,true, false);
+		this.rends.add(own);
 		
 		// Scan all element
 		Iterator<Element> elems = this.domEl.getAllElements().iterator();
 		while (elems.hasNext() ) {
 			Element el = elems.next();
+			Renderable rend = new Renderable(); // create renderable element
+			rend.elem = el;
 			if ( this.checkIfParentBlockIsThis(el, false)) {
-				// check if bean or child block or attributes element or form tag
-				if ( el.tag().getName().equalsIgnoreCase(JOP_BEAN_TAG) ) { // is bean
+				// check if bean or child block or form tag
+				if ( el.tagName().equalsIgnoreCase(JOP_BEAN_TAG) || el.tagName().equalsIgnoreCase("option") ) { // is bean (special case for option because
+																												// don't accept tag inside
 					// build expression and join the same
 					PageExpression exp = this.parser.expressionParser(Context, "java"+el.text().trim(), new JopId(this.pageId,this.id));
-					this.beans.put(exp.getId(),exp);
-					el.attr("id",exp.getId());
+					el.attr(tmp_attr_id,exp.getId());
+					rend.beans = exp;
 				} else if ( this.getPage().checkIfIsBlock(el) ) { // is child
 					PageBlock b = this.getPage().createBlock(Context, this, el);
 					b.isChild = true;
 					this.child.add(b);
-				} else if ( el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // is form tag
-					this.computeFormTag(Context, el, mon);
-				} else { // attribute
-					// Get and process attributes of children block
-					this.parseAttributes(Context, el,mon,false);
-				}
-			} else if ( el.tagName().equalsIgnoreCase("select") ) {
-				// special case for select tag: scan child option for value attribute expression and content expression
-				Iterator<Element> opt = el.select("option").iterator();
-				String base_name = el.attr("name");
-				int inx = 0;
-				while ( opt.hasNext() ) {
-					el = opt.next();
-					el.attr("name",base_name+"_"+inx);
-					this.computeFormTag(Context, el, mon);
-					PageExpression exp = this.parser.expressionParser(Context, "java"+el.text().trim(), new JopId(this.pageId,this.id));
-					this.beans.put(exp.getId(),exp);
-					el.text(exp.getId());
-					inx++;
-				}
-			} else if ( el == this.domEl && el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // the block is form tag
-				this.computeFormTag(Context, el, mon);
-				this.isform = true;
+					rend.block = b;
+				} else if ( el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // is form element
+					this.computeFormTag(Context, rend, mon);
+				} 
+				// compute attributes of child
+				this.parseAttributes(Context, rend,mon,false,el.tagName().equalsIgnoreCase("option"));
+				this.rends.add(rend);
+			} else if ( el == this.domEl && el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // this block is form tag
+				this.computeFormTag(Context, own, mon);
 			}
 		}
+		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("parsed block id: (%s) %s",this.pageId,this.id);
 	}
 	/**
 	 * Rendering block and return string of its contents.<br>
@@ -235,7 +228,7 @@ public abstract class PageBlock implements JopElement {
 		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("submitted block id: (%s) %s",this.pageId,this.id);
 	}
-		/* (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.RefreshableBlock#ResetToBeRefreshed(boolean)
 	 */
 	public void resetToBeRefreshed(boolean ResetChild) {
@@ -277,7 +270,7 @@ public abstract class PageBlock implements JopElement {
 		}
 		return (PageApp)p;
 	}
-	//
+	// instance all variables to null or parent value
 	//
 	//
 	private Map<String,Object> instanceVariables(Map<String,Object> parentVars) {
@@ -285,7 +278,7 @@ public abstract class PageBlock implements JopElement {
 		Iterator<String> v = this.vars_definition.keySet().iterator();
 		while (v.hasNext()) {
 			String key = v.next(); 
-			vars.put(key, parentVars.get(key));
+			vars.put(key, (parentVars!=null?parentVars.get(key):null));
 		}
 		return vars;
 	}
@@ -305,7 +298,7 @@ public abstract class PageBlock implements JopElement {
 			JopAttribute ja = attr.next();
 			if ( !(ja instanceof JopAttributeRendering) ) // skip if an action attribute
 				continue;
-			JopAttribute.Response r = ((JopAttributeRendering)ja).preRender(Context,clone,null); //TODO: what variables use?
+			JopAttribute.Response r = ((JopAttributeRendering)ja).preRender(Context,clone,parentVars);
 			switch (r.getAction()) {
 				case NOTRENDER:
 					if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("NOT rendered block id: (%s) %s",this.pageId,this.id);
@@ -333,104 +326,79 @@ public abstract class PageBlock implements JopElement {
 		clone.empty();
 		while (num<repeat) {
 			Element item = this.cloneElement(temp);
-			// ### Rendering all child in recursive mode
-			Iterator<PageBlock> cl = this.child.iterator();
-			while ( cl.hasNext() ) {
-				PageBlock c = cl.next();
-				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
-				e.replaceWith(c.renderAsNode(Context,num,vars));
-			}
-			// ### Start effective render
-			// set variables
+			// Set variables
 			Iterator<JopAttribute> attr = this.attrs.iterator();
 			while (attr.hasNext()) {
 				JopAttribute ja = attr.next();
 				ja.setVariables(Context,vars,num);
 			}
-			// ### Fire every own bean and insert into html
-			try {
-				Iterator<Entry<String,PageExpression>> beans = this.beans.entrySet().iterator();
-				while (beans.hasNext()) {
-					Entry<String,PageExpression> e = beans.next();
-					PageExpression b = e.getValue();
-					if ( repeat > 1 )	// reset value for each repetition 
-						b.resetValue(Context);
-					// execute expression and then replace original tag with result text
-					String v = (String)b.execute(Context, vars);	
-					Iterator<Element> elem = item.select(JOP_BEAN_TAG+"#"+e.getKey()).iterator();
-					while (elem.hasNext()) {
-						TextNode txt = new TextNode((v==null?"":v),"");
-						elem.next().replaceWith(txt);
-					}
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),this.domEl));
+			// Reset expression value for each repetition
+			Iterator<PageExpression> ie = this.exprs.values().iterator();
+			while (ie.hasNext() ) {
+				ie.next().resetValue(Context);
 			}
-
-			// ### Compute all html attributes of child
-			Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
-			while (attrs.hasNext()) {
-				Entry<String,AttributeExpr> en = attrs.next();
-				AttributeExpr b = en.getValue();
-				if ( !b.isOwn ) {
-					Element elem = item.getElementsByAttributeValue(tmp_attr_id, en.getKey()).first();
+			// Scan renderable element
+			Iterator<Renderable> rends = this.rends.iterator();
+			while ( rends.hasNext() ) {
+				Renderable rend = rends.next();
+				// check if a block child or dom element
+				if ( rend.block != null ) { // rendering child block
+					Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, rend.block.id).first();
+					e.replaceWith(rend.block.renderAsNode(Context,num,vars));
+				} else {
 					try {
-						if ( elem == null )
-							continue;
-						if ( repeat > 1 )
-							b.expr.resetValue(Context);
-						String a = elem.attr(b.name);
-						elem.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
-						elem.removeAttr(tmp_attr_id);
+						// fire own bean and insert into html searching by tmp jop id
+						if ( rend.beans != null ) {
+							String v = (String)rend.beans.execute(Context, vars);
+							Iterator<Element> elem = item.select(rend.elem.tagName()+"["+tmp_attr_id+"="+rend.elem.attr(tmp_attr_id)+"]").iterator(); 
+							while (elem.hasNext()) {
+								if ( rend.elem.tagName().equalsIgnoreCase("option") ) {
+									elem.next().html((v==null?"":v));
+								} else {
+									TextNode txt = new TextNode((v==null?"":v),"");
+									elem.next().replaceWith(txt);
+								}
+							}
+						}
+						// compute all html attributes
+						Iterator<Entry<String,PageExpression>> attrs = rend.html_attrs.entrySet().iterator();
+						if ( !rend.elem.attr(tmp_attr_id).isEmpty() && attrs.hasNext() ) {
+							Element ea = item.getElementsByAttributeValue(tmp_attr_id, rend.elem.attr(tmp_attr_id)).first();
+							while (attrs.hasNext()) {
+								Entry<String,PageExpression> en = attrs.next();
+								PageExpression b = en.getValue();
+								String a = ea.attr(en.getKey());
+								ea.attr(en.getKey(),a.replace("java"+b.getCode(), (String)b.execute(Context, vars)));
+							}
+							ea.removeAttr(tmp_attr_id);
+						}
+						
+						// compute form
+						if ( rend.form != null ) {
+							Object o = rend.form.execute(Context, vars);
+							String v = (converter!=null?converter.callOutputConverter(Context, o):(String)o);	
+							Element e = item.getElementsByAttributeValue("name", rend.elem.attr("name")).first();
+							if ( e != null ) {
+								// setting value attribute
+								String a = e.attr("value");
+								e.attr("value",a.replace("java"+rend.form.getCode(), (v!=null?v:"") ));
+								// add page id to name attribute
+								e.attr("name","["+this.pageId+"]."+e.attr("name"));
+							}
+						}
 					} catch (Exception e) {
-						throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),elem));
+						throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),rend.elem));
 					}
 				}
-			}
-			// ### Compute forms 
-			Iterator<Entry<String,PageWriteExpression>> f = this.forms.entrySet().iterator();
-			while ( f.hasNext() ) {
-				Entry<String,PageWriteExpression> b = f.next();
-				if ( repeat > 1 )
-					b.getValue().resetValue(Context);
-				// execute expression e convert if needed
-				Object o = b.getValue().execute(Context, vars);
-				String v = (converter!=null?converter.callOutputConverter(Context, o):(String)o);	
-				//String v = (String)b.getValue().execute(Context, vars);
-				Element e = item.getElementsByAttributeValue("name", b.getKey()).first();
-				if ( e == null )
-					continue;
-				// setting value attribute
-				String a = e.attr("value");
-				e.attr("value",a.replace("java"+b.getValue().getCode(), (v!=null?v:"") ));
-				// add page id to name attribute
-				e.attr("name","["+this.pageId+"]."+e.attr("name"));
-				// special case for select option: compute his content
-				if ( e.tagName().equalsIgnoreCase("option") ) {
-					if ( repeat > 1 )
-						this.beans.get(e.text()).resetValue(Context);
-					String c = (String)this.beans.get(e.text()).execute(Context, vars);
-					e.text(c);
-					e.removeAttr("name");
-				}
-			}
-			if ( this.isform ) { // if this block is a form tag substitute only attribute value and name
-				clone.attr("value",item.attr("value"));
-				clone.attr("name",item.attr("name"));
 			}
 			clone.append(item.html());
-			num++;
-		}
-		// ### Compute all own html attributes
-		Iterator<Entry<String,AttributeExpr>> attrs = this.html_attrs.entrySet().iterator();
-		while (attrs.hasNext()) {
-			Entry<String,AttributeExpr> en = attrs.next();
-			AttributeExpr b = en.getValue();
-			if ( b.isOwn ) {
-				String a = clone.attr(b.name);
-				clone.attr(b.name,a.replace("java"+b.expr.getCode(), (String)b.expr.execute(Context, vars)));
-				clone.removeAttr(tmp_attr_id);
+			// substitute all block attribute
+			Iterator<Attribute> attrs = item.attributes().iterator();
+			while (attrs.hasNext() ) {
+				Attribute a = attrs.next();
+				clone.attr(a.getKey(),item.attr(a.getKey()));
 			}
+			num++;
 		}
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		this.cleanDomFromAttribute(clone);
@@ -442,21 +410,21 @@ public abstract class PageBlock implements JopElement {
 	//
 	//
 	@SuppressWarnings("rawtypes")
-	private void parseAttributes(WebAppContext context, Element el, BeanMonitoring mon, boolean isOwn) throws DomException {
+	private void parseAttributes(WebAppContext context, Renderable rend, BeanMonitoring mon, boolean isOwn, boolean includeValue) throws DomException {
 		// scan all element's attributes excluding value and jop_id
-		List<Attribute> lst = new ArrayList<Attribute>(el.attributes().asList());
+		List<Attribute> lst = new ArrayList<Attribute>(rend.elem.attributes().asList());
 		Collections.sort(lst,new AttributeComparator());
 		Iterator<Attribute> attrs = lst.iterator();
 		while (attrs.hasNext() ) {
 			Attribute attr =  attrs.next();
-			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && !(attr.getKey().equalsIgnoreCase("value") && el.tag().isFormSubmittable()) ) {
+			if ( !attr.getKey().equalsIgnoreCase(JopAttribute.JOP_ATTR_ID) && (includeValue || !(attr.getKey().equalsIgnoreCase("value") && rend.elem.tag().isFormSubmittable())) ) {
 				String a = attr.getValue();
 				String bid = this.parser.parseJavaExpression(a); 
 				if ( bid != null || ( attr.getKey().toLowerCase().startsWith("jop_") && JopAttribute.Factory.isKnown(attr.getKey()) ) ) {
 					if ( attr.getKey().toLowerCase().startsWith("jop_") ) {
 						if ( isOwn && JopAttribute.Factory.isKnown(attr.getKey()) ) {
 							// block jop attribute
-							JopAttribute ja = JopAttribute.Factory.create(context,this,el,attr.getKey(),(bid!=null?bid:a));
+							JopAttribute ja = JopAttribute.Factory.create(context,this,rend.elem,attr.getKey(),(bid!=null?bid:a));
 							this.attrs.add(ja);
 							if ( ((AbstractJopAttribute)ja).getExpression() != null )
 								mon.registerRefreshable(((AbstractJopAttribute)ja).getExpression().getBeansList(), new JopId(this.pageId,this.id));
@@ -465,16 +433,30 @@ public abstract class PageBlock implements JopElement {
 						// html attribute: parse expression and verify if exist
 						PageExpression exp = this.parser.expressionParser(context, a, new JopId(this.pageId,this.id));
 						// add attribute to map and identify element with temp id
-						AttributeExpr ae = new AttributeExpr();
-						ae.expr = exp;
-						ae.name = attr.getKey();
-						ae.isOwn = isOwn;
 						String id = ""+this.auto_id_index++;
-						this.html_attrs.put(id, ae);
-						el.attr(tmp_attr_id,id);
+						rend.elem.attr(tmp_attr_id,id);
+						rend.html_attrs.put(attr.getKey(), exp);
 					}
 				}
 			}
+		}
+	}
+	// compute expression for form tag
+	//
+	//
+	private void computeFormTag(WebAppContext Context, Renderable rend, BeanMonitoring mon) throws DomException {
+		String a = rend.elem.attr("value");
+		String code = this.parser.parseJavaExpression(a); 
+		if ( code != null ) {
+			// create new expression and register this block to those to refresh 
+			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id));
+			// if name attributes don't exist add it with auto index
+			if ( !rend.elem.hasAttr("name") || rend.elem.attr("name").isEmpty() ) {
+				rend.elem.attr("name",""+this.auto_id_index);
+				auto_id_index++;
+			}
+			rend.form = exp;
+			this.forms.add(rend);
 		}
 	}
 	// real action submission
@@ -501,13 +483,14 @@ public abstract class PageBlock implements JopElement {
 		}
 
 		// Search each form tag with key (name) of the Data
-		Iterator<Entry<String,PageWriteExpression>> i = this.forms.entrySet().iterator();
+		Iterator<Renderable> i = this.forms.iterator();
 		while ( i.hasNext() ) {
-			Entry<String,PageWriteExpression> pe = i.next();
-			if ( Data != null && Data.containsKey(pe.getKey()) ) {
+			Renderable rend = i.next();
+			PageWriteExpression pe = rend.form;
+			if ( Data != null && Data.containsKey(rend.elem.attr("name")) ) {
 				// Invoke expression in write mode
-				String val = Data.get(pe.getKey())[0]; // get string data
-				pe.getValue().execute(Context, (conv!=null?conv.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
+				String val = Data.get(rend.elem.attr("name"))[0]; // get string data
+				pe.execute(Context, (conv!=null?conv.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
 			}
 		}
 		Iterator<PageBlock> c = this.child.iterator();
@@ -549,31 +532,14 @@ public abstract class PageBlock implements JopElement {
 			exp.next().resetValue(context);
 		}
 	}
-	// Erase all jop attribute from DOM
+	// Erase all jop attribute and tmp attribute from DOM
 	//
 	//
 	private void cleanDomFromAttribute(Element elem) {
 		String attrs[] = JopAttribute.Factory.getNameList();
 		for ( int ix=0; ix<attrs.length; ix++ )
 			elem.removeAttr(attrs[ix]);
-
-	}
-	// compute expression for form tag
-	//
-	//
-	private void computeFormTag(WebAppContext Context, Element el, BeanMonitoring mon) throws DomException {
-		String a = el.attr("value");
-		String code = this.parser.parseJavaExpression(a); 
-		if ( code != null ) {
-			// create new expression and register this block to those to refresh 
-			PageWriteExpression exp = (PageWriteExpression)this.parser.expressionParser(Context, a, new JopId(this.pageId,this.id));
-			// if name attributes don't exist add it with auto index
-			if ( !el.hasAttr("name") || el.attr("name").isEmpty() ) {
-				el.attr("name",""+this.auto_id_index);
-				auto_id_index++;
-			}
-			this.forms.put(el.attr("name"), exp);
-		}
+		elem.removeAttr(tmp_attr_id);
 	}
 	// clone element: use this instead jsoup clone to force the escaping html special chars
 	//

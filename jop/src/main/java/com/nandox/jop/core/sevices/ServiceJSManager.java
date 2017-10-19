@@ -3,7 +3,6 @@ package com.nandox.jop.core.sevices;
 import java.util.Map;
 
 import com.nandox.jop.core.dispatcher.Dispatcher;
-import com.nandox.jop.core.processor.RenderException;
 /**
  * Interface for all services javascript manager.<p>
  * Every service javascript is loaded from init ServiceJSServlet and have an identifier equal to base path service<br>

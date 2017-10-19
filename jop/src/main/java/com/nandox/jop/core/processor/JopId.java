@@ -1,7 +1,5 @@
 package com.nandox.jop.core.processor;
 
-import com.nandox.jop.core.ErrorsDefine;
-
 /**
  * Class that represents an Jop Identifier.<p> 
  * 
