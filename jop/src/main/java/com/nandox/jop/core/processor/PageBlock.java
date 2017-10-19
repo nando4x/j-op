@@ -217,7 +217,7 @@ public abstract class PageBlock implements JopElement {
 	 * @return	  
 	 */	
 	protected Node renderAsNode(WebAppContext Context) throws RenderException {
-		return this.renderAsNode(Context,0);
+		return this.renderAsNode(Context,0,null); //TODO: which parent variables get if renderer only child block?
 	}
 	/**
 	 * Perform action form submit
@@ -280,18 +280,19 @@ public abstract class PageBlock implements JopElement {
 	//
 	//
 	//
-	private Map<String,Object> instanceVariables() {
+	private Map<String,Object> instanceVariables(Map<String,Object> parentVars) {
 		Map<String,Object> vars = new HashMap<String,Object>();
 		Iterator<String> v = this.vars_definition.keySet().iterator();
 		while (v.hasNext()) {
-			vars.put(v.next(), null);
+			String key = v.next(); 
+			vars.put(key, parentVars.get(key));
 		}
 		return vars;
 	}
 	// Real render as node 
 	//
 	//
-	private Node renderAsNode(WebAppContext Context, int index) throws RenderException {
+	private Node renderAsNode(WebAppContext Context, int index, Map<String,Object> parentVars ) throws RenderException {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("rendering block id: (%s) %s",this.pageId,this.id);
 		// Reset all value expression
 		this.resetAllExprValue(Context);
@@ -318,16 +319,16 @@ public abstract class PageBlock implements JopElement {
 			}
 		}
 		// real render
-		this.renderer(Context,clone,num,index,conv);
+		this.renderer(Context,clone,num,index,conv,parentVars);
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("rendered block id: (%s) %s",this.pageId,this.id);
 		return clone;
 	}
 	// Real final render call 
 	//
 	//
-	private void renderer(WebAppContext Context, Element clone, int repeat, int index, ExpressionConverter converter) throws RenderException {
+	private void renderer(WebAppContext Context, Element clone, int repeat, int index, ExpressionConverter converter, Map<String,Object> parentVars) throws RenderException {
 		int num = 0;
-		Map<String,Object> vars = this.instanceVariables();
+		Map<String,Object> vars = this.instanceVariables(parentVars);
 		Element temp = this.cloneElement(clone);
 		clone.empty();
 		while (num<repeat) {
@@ -337,7 +338,7 @@ public abstract class PageBlock implements JopElement {
 			while ( cl.hasNext() ) {
 				PageBlock c = cl.next();
 				Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, c.id).first();
-				e.replaceWith(c.renderAsNode(Context,num));
+				e.replaceWith(c.renderAsNode(Context,num,vars));
 			}
 			// ### Start effective render
 			// set variables
@@ -431,7 +432,7 @@ public abstract class PageBlock implements JopElement {
 				clone.removeAttr(tmp_attr_id);
 			}
 		}
-		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id*/
+		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		this.cleanDomFromAttribute(clone);
 		// add page id into jop_id with index
 		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));

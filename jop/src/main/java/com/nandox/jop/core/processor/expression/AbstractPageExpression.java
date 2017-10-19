@@ -113,6 +113,8 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 * @return	  identifier
 	 */
 	static public String computeId(String Code) {
+		if ( Code == null )
+			return null;
 		int i = Code.hashCode(); // get hash code
 		return "Jbean_"+(i<0?i*-1:i); // avoid sign (char '-')
 	}

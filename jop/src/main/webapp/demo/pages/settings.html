@@ -66,11 +66,14 @@
 			</wdg_item>
 			<wdg_item>
 				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-				<jwdg type="combobox"  jop_repeater='java{return $helloWorld.getList();}' jop_var='(test.testbean$list)var'
-						value='java{return appContext.mngInput($helloWorld,"clist",value);}'
-						jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
-						>
-				    <wdg_item data-value='java{return var.code;}'><jbean>{return var.value;}</jbean></wdg_item>
+				<jwdg type="combobox"  
+					  jop_repeater='java{return $helloWorld.getList();}'
+					  jop_var='(test.testbean$list)var'
+					  jop_status="status"
+					  jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
+					  value='java{return appContext.mngInput($helloWorld,"clist",value);}'
+					>
+				    <wdg_item data-value='java{return var.code;}'><jbean>{return var.value+"-"+(status.getSize()-status.getIndex());}</jbean></wdg_item>
 				</jwdg>
 			</wdg_item>
 		</jwdg>

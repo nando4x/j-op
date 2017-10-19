@@ -24,10 +24,11 @@ import com.nandox.jop.core.processor.expression.CollectionPageExpression;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="repeater", priority=100, nested="var")
+@JopCoreAttribute(name="repeater", priority=100, nested="var,status")
 public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttributeRendering {
 	private String coll_name;
 	private String vname;
+	private String vstatus;
 	private String is_array;
 
 	/**
@@ -62,15 +63,20 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	 */
 	@Override
 	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
+		if ( Vars.get(this.vstatus) == null )
+			Vars.put(vstatus, new Status());
+		((Status)Vars.get(vstatus)).index = Index;
 		if ( Vars.get(this.coll_name) == null )
 			Vars.put(this.coll_name, this.getExpression().execute(Context, Vars));
 		if ( "Y".equals(this.is_array) ) {
 			Object v = ((Object[])Vars.get(this.coll_name))[Index];
 			Vars.put(this.vname,v);
+			((Status)Vars.get(vstatus)).size = ((Object[])Vars.get(this.coll_name)).length;
 		} else {
 			Collection<?> c = (Collection<?>)Vars.get(this.coll_name);
 			Object v = c.toArray(new Object[0])[Index];
 			Vars.put(this.vname,v);
+			((Status)Vars.get(vstatus)).size = c.size();
 		}
 	}
 	// Add variable to block context
@@ -101,6 +107,9 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 		Block.registerVariable(vname,cl);
 		this.coll_name = "_iterator_"+vname;
 		Block.registerVariable(this.coll_name,null);
+		
+		vstatus = Node.attr("jop_status").trim();
+		Block.registerVariable((vstatus!=null&&!vstatus.isEmpty()?vstatus:"status"),Status.class);
 	}
 	// Check if is an array or collection
 	//
@@ -115,5 +124,11 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 			} else
 				this.is_array = "N";
 		}
+	}
+	static public class Status {
+		protected int index;
+		protected int size;
+		public int getIndex() { return this.index; }
+		public int getSize() { return this.size; }
 	}
 }
