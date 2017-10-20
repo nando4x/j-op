@@ -29,8 +29,8 @@ public class RequestContext implements BeanAppContext {
 	private HttpServletRequest httpRequest;
 	private Session session;	// session
 	private Map<String,String[]> params;	// request parameters
-	private Map<String,ExpressionValue<?>> eval;	// expression values
-	private Map<String,RefreshableBlock> rblock;	// refreshable block
+	private Map<String,ExpressionValue<?>> eval;	// expression values [expression id, expression value]
+	private Map<String,RefreshableBlock> rblock;	// refreshable block [jop id, block]
 	/**
 	 * @param	  Request	standard http request
 	 * @param	  Params	standard http request parameters

@@ -220,7 +220,8 @@ public class Dispatcher {
 		}
 	}
 	/**
-	 * Render and return list of page block that changed and to be refresh
+	 * Render and return list of page block that changed and to be refresh.<p>
+	 * Optimize the list of block excluding a child block if its parent is to be refresh too
 	 * @param	  PageId page identifier
 	 * @date      10 feb 2017 - 10 feb 2017
 	 * @author    Fernando Costantino
@@ -241,8 +242,8 @@ public class Dispatcher {
 					boolean todo = true;
 					JopElement p = b.getParent(); 
 					while ( p instanceof PageBlock ) {
-						if ( ((RefreshableBlock)p).getToBeRefresh() ) {
-							// some parent is to be refresh and than exclude curent block
+						if ( rc.getRefreshableBlock(new JopId(PageId,((PageBlock)p).getId())).getToBeRefresh() ) {
+							// some parent is to be refresh and so exclude current block
 							todo = false;
 							break;
 						}
