@@ -17,6 +17,7 @@ import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.context.RequestContext;
 import com.nandox.jop.core.processor.PageApp;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.core.processor.JopId;
 import com.nandox.jop.core.processor.RefreshableBlock;
 import com.nandox.jop.core.processor.RenderException;
@@ -236,8 +237,21 @@ public class Dispatcher {
 			while ( blocks.hasNext() ) {
 				PageBlock b = blocks.next();
 				if ( rc.getRefreshableBlock(new JopId(PageId,b.getId())).getToBeRefresh() ) {
-					lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
-					b.resetToBeRefreshed(true); // reset to be refresh for child too
+					// scan parents to check if some is to be refreshed
+					boolean todo = true;
+					JopElement p = b.getParent(); 
+					while ( p instanceof PageBlock ) {
+						if ( ((RefreshableBlock)p).getToBeRefresh() ) {
+							// some parent is to be refresh and than exclude curent block
+							todo = false;
+							break;
+						}
+						p = p.getParent();
+					}
+					if ( todo ) { // rendering
+						lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
+						b.resetToBeRefreshed(true); // reset to be refresh for child too
+					}
 				}
 			}
 		}

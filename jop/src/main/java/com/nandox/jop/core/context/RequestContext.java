@@ -119,6 +119,7 @@ public class RequestContext implements BeanAppContext {
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.bean.BeanAppContext#mngInput(java.lang.Object, java.lang.String, java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public <E> E mngInput(Object Bean, String Property, E Value) {
 		String name = Property.substring(0, 1).toUpperCase() + Property.substring(1);
