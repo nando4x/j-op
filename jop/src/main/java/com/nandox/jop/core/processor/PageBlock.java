@@ -190,14 +190,16 @@ public abstract class PageBlock implements JopElement {
 	/**
 	 * Rendering block and return string of its contents.<br>
 	 * @param	  Context	Application context
+	 * @param	  Index		optional block index
 	 * @date      30 set 2016 - 30 set 2016
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 * @return	  html in string format
 	 */	
-	public String render(WebAppContext Context) throws RenderException {
-		return this.renderAsNode(Context,0,null).outerHtml();
+	public String render(WebAppContext Context, Integer Index) throws RenderException {
+		JopId id = new JopId(this.pageId,this.id,(Index!=null?""+Index:null));
+		return this.renderAsNode(Context,(Index!=null?Index:-1),Context.getfreezedBlockParentVariables(id.composite())).outerHtml();
 	}
 	/**
 	 * Rendering block.<br>
@@ -210,7 +212,7 @@ public abstract class PageBlock implements JopElement {
 	 * @return	  
 	 */	
 	protected Node renderAsNode(WebAppContext Context) throws RenderException {
-		return this.renderAsNode(Context,0,null); //TODO: which parent variables get if renderer only child block?
+		return this.renderAsNode(Context,-1,null); //TODO: which parent variables get if renderer only child block?
 	}
 	/**
 	 * Perform action form submit
@@ -347,7 +349,7 @@ public abstract class PageBlock implements JopElement {
 				// check if a block child or dom element
 				if ( rend.block != null ) { // rendering child block
 					Element e = item.getElementsByAttributeValue(JopAttribute.JOP_ATTR_ID, rend.block.id).first();
-					e.replaceWith(rend.block.renderAsNode(Context,num,vars));
+					e.replaceWith(rend.block.renderAsNode(Context,(repeat==1?num-1:num),vars));
 				} else {
 					try {
 						// fire own bean and insert into html searching by tmp jop id
@@ -406,9 +408,10 @@ public abstract class PageBlock implements JopElement {
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		this.cleanDomFromAttribute(clone);
 		// add page id into jop_id with index
-		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"#"+index:""));
+		String id = "["+this.pageId+"]."+this.id+(index>=0?"#"+index:"");
+		clone.attr(JopAttribute.JOP_ATTR_ID,id);
 		// freeze parent variables on session
-		Context.freezeBlockParentVariables("["+this.pageId+"]."+this.id+(index>0?"#"+index:""), parentVars);
+		Context.freezeBlockParentVariables(id, parentVars);
 		// TODO: gestire eccezzione esecuzione espressioni
 	}
 	// Parse attributes element to verify delimiter { }

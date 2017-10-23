@@ -251,7 +251,11 @@ public class Dispatcher {
 						p = p.getParent();
 					}
 					if ( todo ) { // rendering
-						lst.put(id, bl.getValue().getBlock().render(this.appCtx));
+						Integer inx = null;
+						try {
+							inx = Integer.valueOf(id.getIndex());
+						} catch (Exception e) {}
+						lst.put(id, bl.getValue().getBlock().render(this.appCtx,inx));
 						bl.getValue().getBlock().resetToBeRefreshed(true); // reset to be refresh for child too
 					}
 				}
