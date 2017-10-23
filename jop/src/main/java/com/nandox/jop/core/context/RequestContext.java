@@ -182,8 +182,7 @@ public class RequestContext implements BeanAppContext {
 	 */
 	public void addRefreshableBlock(JopId Id, RefreshableBlock block) {
 		this.rblock.put(Id.composite(), block);
-	}
-	
+	}	
 	/**
 	 * Return refreshable block
 	 * @param	  Id block Jop identifier
@@ -195,5 +194,17 @@ public class RequestContext implements BeanAppContext {
 	 */
 	public RefreshableBlock getRefreshableBlock(JopId Id) {
 		return this.rblock.get(Id.composite());
+	}
+	/**
+	 * Return refreshable block
+	 * @param	  Id block Jop identifier
+	 * @date      07 ott 2016 - 07 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  map with all blocks [composite id, block]
+	 */
+	public Map<String,RefreshableBlock> getAllRefreshableBlock() {
+		return this.rblock;
 	}
 }

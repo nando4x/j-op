@@ -36,6 +36,7 @@ import com.nandox.jop.widget.WidgetBlock;
  */
 public class WebAppContext {
 
+	protected static final String ATTR_BLOCKPVARS = "JopBlockPVars";
 	private ApplicationContext springCtx;	// spring application context
 	private HashMap<String,PageApp> pages;	// list of pages
 	private ExpressionCompiler bcmpl;		// Expression compiler
@@ -236,5 +237,18 @@ public class WebAppContext {
 	 */
 	public String getInitParameter(String Name) {
 		return this.initPar.get(Name);
+	}
+	public void freezeBlockParentVariables(String key, Map<String,Object> ParentVars) {
+		Map<String,Map<String,Object>> vars = (Map<String,Map<String,Object>>)getCurrentRequestContext().getSession().getHttpSession().getAttribute(ATTR_BLOCKPVARS);
+		if ( vars == null )
+			vars = (Map<String, Map<String,Object>>)new HashMap();
+		vars.put(key, ParentVars);
+		getCurrentRequestContext().getSession().getHttpSession().setAttribute(ATTR_BLOCKPVARS, vars);
+	}
+	public Map<String,Object> getfreezedBlockParentVariables(String key) {
+		Map<String,Map<String,Object>> vars = (Map<String,Map<String,Object>>)getCurrentRequestContext().getSession().getHttpSession().getAttribute(ATTR_BLOCKPVARS);
+		if ( vars != null )
+			return vars.get(key);
+		return null;
 	}
 }

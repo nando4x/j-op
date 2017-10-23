@@ -16,7 +16,19 @@ package com.nandox.jop.core.processor;
 
 public class RefreshableBlock {
 	private boolean toBeRefresh;	// flag to indicate that block is to refresh
+	private PageBlock block;		// reference to block
 
+	/**
+	 * Constructor: parse page content into DOM
+	 * @param	  Block		Reference to block
+	 * @date      02 feb 2017 - 02 feb 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception DomException if some syntax error
+	 */
+	public RefreshableBlock(PageBlock Block) {
+		this.block = Block;
+	}
 	/**
 	 * Set that block is to be refreshed
 	 * @date      02 feb 2017 - 02 feb 2017
@@ -49,5 +61,11 @@ public class RefreshableBlock {
 	 */
 	public boolean getToBeRefresh() {
 		return this.toBeRefresh;
+	}
+	/**
+	 * @return the block
+	 */
+	public PageBlock getBlock() {
+		return block;
 	}
 }

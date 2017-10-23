@@ -197,7 +197,7 @@ public abstract class PageBlock implements JopElement {
 	 * @return	  html in string format
 	 */	
 	public String render(WebAppContext Context) throws RenderException {
-		return this.renderAsNode(Context).outerHtml();
+		return this.renderAsNode(Context,0,null).outerHtml();
 	}
 	/**
 	 * Rendering block.<br>
@@ -215,17 +215,20 @@ public abstract class PageBlock implements JopElement {
 	/**
 	 * Perform action form submit
 	 * @param	  Context	Application context
-	 * @param	  Data	Form data Map [name of input,data]
+	 * @param	  Data		Form data Map [name of input,data]
+	 * @param	  Index 	optional index of block to submit
 	 * @date      24 gen 2017 - 24 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
 	 * @return
 	 */
-	public void action(WebAppContext Context, Map<String,String[]> Data) {
+	public void action(WebAppContext Context, Map<String,String[]> Data, String Index) {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("submitting block id: (%s) %s",this.pageId,this.id);
 		this.realAction(Context, Data);
-		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId())).setToBeRefreshed();
+		if ( WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId(), Index)) == null )
+			WebAppContext.getCurrentRequestContext().addRefreshableBlock(new JopId(this.pageId,this.getId(), Index),new RefreshableBlock(this));
+		WebAppContext.getCurrentRequestContext().getRefreshableBlock(new JopId(this.pageId,this.getId(), Index)).setToBeRefreshed();
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("submitted block id: (%s) %s",this.pageId,this.id);
 	}
 	/* (non-Javadoc)
@@ -403,7 +406,9 @@ public abstract class PageBlock implements JopElement {
 		// delete jop_ attribute (exclude jop_id) from dom and then add page id into jop_id
 		this.cleanDomFromAttribute(clone);
 		// add page id into jop_id with index
-		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"+"+index:""));
+		clone.attr(JopAttribute.JOP_ATTR_ID,"["+this.pageId+"]."+this.id+(index>0?"#"+index:""));
+		// freeze parent variables on session
+		Context.freezeBlockParentVariables("["+this.pageId+"]."+this.id+(index>0?"#"+index:""), parentVars);
 		// TODO: gestire eccezzione esecuzione espressioni
 	}
 	// Parse attributes element to verify delimiter { }

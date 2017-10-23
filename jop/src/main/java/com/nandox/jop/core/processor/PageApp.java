@@ -127,7 +127,7 @@ public class PageApp implements JopElement {
 		while (i.hasNext() ) {
 			PageBlock b = i.next();
 			if ( !b.isChild )
-				b.action(Context, Data);
+				b.action(Context, Data, null);
 		}
 	}
 	/**

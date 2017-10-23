@@ -84,6 +84,20 @@ public class JopId {
 	public String getId() {
 		return Id;
 	}
+	/**
+	 * @return the index
+	 */
+	public String getIndex() {
+		return index;
+	}
+	/**
+	 * Compute and return the composition identifier
+	 * @date      24 gen 2017 - 24 gen 2017
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return
+	 */
 	public String composite() {
 		return "["+this.page+"]."+this.Id +(this.index!=null&&!this.index.isEmpty()?"#"+this.index:"");
 	}

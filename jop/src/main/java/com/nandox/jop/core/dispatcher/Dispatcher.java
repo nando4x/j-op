@@ -20,7 +20,6 @@ import com.nandox.jop.core.processor.PageBlock;
 import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.core.processor.JopId;
 import com.nandox.jop.core.processor.RefreshableBlock;
-import com.nandox.jop.core.processor.RenderException;
 /**
  * Real Dispatcher to process page requested.<p>
  * Search the existing page or create it and than process it 
@@ -97,9 +96,13 @@ public class Dispatcher {
 		Iterator<Entry<String,PageApp>> i = this.appCtx.getPagesMap().entrySet().iterator();
 		while ( i.hasNext() ) {
 			Entry<String,PageApp> e = i.next();
-			Iterator<String> bid = e.getValue().getBlocks().keySet().iterator();
+			for ( Entry<String,PageBlock> b: e.getValue().getBlocks().entrySet() ) {
+				rc.addRefreshableBlock(new JopId(e.getKey(),b.getKey()), new RefreshableBlock(b.getValue()));
+			}
+			/*Iterator<String> bid = e.getValue().getBlocks()..keySet().iterator();
 			while ( bid.hasNext() )
 				rc.addRefreshableBlock(new JopId(e.getKey(),bid.next()), new RefreshableBlock());
+			*/
 		}
 	}
 	/**
@@ -209,7 +212,7 @@ public class Dispatcher {
 		if ( page != null ) {
 			PageBlock pb = page.getPageBlock(Id.getId());
 			if ( pb != null)
-				pb.action(this.appCtx, par);
+				pb.action(this.appCtx, par, Id.getIndex());
 			else {
 				if (LOG != null && LOG.isErrorEnabled() ) LOG.error("block not found:", Id.getId());
 				// TODO: block not exist
@@ -229,18 +232,16 @@ public class Dispatcher {
 	 * @exception 
 	 * @return
 	 */
-	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) throws RenderException {
+	public Map<JopId,String> renderPageBlockToBeRefresh(String PageId) throws Exception {
 		RequestContext rc = WebAppContext.getCurrentRequestContext();
 		PageApp page = this.getPageApp(PageId);
 		Map<JopId,String> lst = new HashMap<JopId,String>();
 		if ( page != null ) {
-			Iterator<PageBlock> blocks= page.getBlocks().values().iterator();
-			while ( blocks.hasNext() ) {
-				PageBlock b = blocks.next();
-				if ( rc.getRefreshableBlock(new JopId(PageId,b.getId())).getToBeRefresh() ) {
-					// scan parents to check if some is to be refreshed
+			for ( Entry<String,RefreshableBlock> bl: rc.getAllRefreshableBlock().entrySet() ) {
+				JopId id = new JopId(bl.getKey());
+				if ( bl.getValue().getToBeRefresh() && PageId.equals(id.getPage()) ) {
 					boolean todo = true;
-					JopElement p = b.getParent(); 
+					JopElement p = bl.getValue().getBlock().getParent(); 
 					while ( p instanceof PageBlock ) {
 						if ( rc.getRefreshableBlock(new JopId(PageId,((PageBlock)p).getId())).getToBeRefresh() ) {
 							// some parent is to be refresh and so exclude current block
@@ -250,8 +251,8 @@ public class Dispatcher {
 						p = p.getParent();
 					}
 					if ( todo ) { // rendering
-						lst.put(new JopId(PageId,b.getId()), b.render(this.appCtx));
-						b.resetToBeRefreshed(true); // reset to be refresh for child too
+						lst.put(id, bl.getValue().getBlock().render(this.appCtx));
+						bl.getValue().getBlock().resetToBeRefreshed(true); // reset to be refresh for child too
 					}
 				}
 			}
