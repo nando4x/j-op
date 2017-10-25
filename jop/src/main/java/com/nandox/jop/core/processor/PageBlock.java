@@ -175,6 +175,8 @@ public abstract class PageBlock implements JopElement {
 					b.isChild = true;
 					this.child.add(b);
 					rend.block = b;
+					this.rends.add(rend);
+					continue; // skip the rest of parsing because is a block
 				} else if ( el.select(form_selector).first() == el && el.tag().isFormSubmittable() ) { // is form element
 					this.computeFormTag(Context, rend, mon);
 				} 

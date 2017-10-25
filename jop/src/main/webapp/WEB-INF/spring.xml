@@ -9,6 +9,9 @@
    <bean id="helloWorld" class="test.testbean" scope="session">
        <property name="message" value="Hello World!"/>
    </bean>
+   <bean id="helloWorld2" class="test.testbean" scope="session">
+       <property name="message" value="2Hello World!"/>
+   </bean>
 
    <bean id="serviceDispatcher" class="demo.integration_services.stub.DispatcherImpl"/>
    <bean id="localizationTextBean" class="demo.bean.LocalizationTextBean" scope="session">

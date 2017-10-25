@@ -35,8 +35,8 @@
 		</div>		
 		<form jop_id="">
 		<div jop_repeater='java{return $helloWorld.getArray();}' jop_var='varP'>
-		<select jop_repeater='java{return $helloWorld.getArray();}' jop_var='var2' value='java{return "";}'
-				class="java{return $helloWorld.getCssClass();} xxxx">
+		<select jop_repeater='java{return $helloWorld2.getArray();}' jop_var='var2' value='java{return "";}'
+				class="java{return $helloWorld2.getCssClass();} xxxx">
 			<option class="java{return var2;}" value="java{return var2;}"><jbean>{return varP + "choice "+var2;}</jbean></option>
 		</select>
 		</div>
@@ -76,7 +76,7 @@
 		}
 	</script>
 	<form jop_id='' xonsubmit="xxx(this);"  xaction="index.jsp" method="post">
-		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld.setMessage((String)value); } return $helloWorld.getMessage();}">
+		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld2.setMessage((String)value); } return $helloWorld2.getMessage();}">
 			ssasssasa
 		</input>
 		<input  value='xjava{return JopHelper.manageInput($helloWorld,"Message",value);}'>
