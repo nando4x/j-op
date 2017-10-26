@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.List;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
@@ -16,6 +18,7 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.dispatcher.Dispatcher;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.jop.core.processor.PageApp;
+import com.nandox.jop.core.processor.JopId;
 import com.nandox.jop.core.processor.JopElement;
 import com.nandox.jop.core.processor.expression.ExpressionCompiler;
 import com.nandox.jop.widget.WidgetBlock;
@@ -238,17 +241,61 @@ public class WebAppContext {
 	public String getInitParameter(String Name) {
 		return this.initPar.get(Name);
 	}
-	public void freezeBlockParentVariables(String key, Map<String,Object> ParentVars) {
+	/**
+	 * Save variables for specific block (identify by jopid) into session.<p>
+	 * @param	  JopId composite Jopid
+	 * @param	  ParentVars	parent variables to freeze 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public void freezeBlockParentVariables(String JopId, Map<String,Object> ParentVars) {
 		Map<String,Map<String,Object>> vars = (Map<String,Map<String,Object>>)getCurrentRequestContext().getSession().getHttpSession().getAttribute(ATTR_BLOCKPVARS);
 		if ( vars == null )
-			vars = (Map<String, Map<String,Object>>)new HashMap();
-		vars.put(key, ParentVars);
+			vars = new TreeMap<String, Map<String,Object>>();
+		vars.put(JopId, ParentVars);
 		getCurrentRequestContext().getSession().getHttpSession().setAttribute(ATTR_BLOCKPVARS, vars);
 	}
-	public Map<String,Object> getfreezedBlockParentVariables(String key) {
+	/**
+	 * Get saved variables for specific block (identify by jopid) from session.<p>
+	 * @param	  JopId composite Jopid
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  Variables map [name,value]
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String,Object> getfreezedBlockParentVariables(String JopId) {
 		Map<String,Map<String,Object>> vars = (Map<String,Map<String,Object>>)getCurrentRequestContext().getSession().getHttpSession().getAttribute(ATTR_BLOCKPVARS);
 		if ( vars != null )
-			return vars.get(key);
+			return vars.get(JopId);
 		return null;
+	}
+	/**
+	 * Get saved variables for specific all indexed/replicated block (identify by jopid) from session.<p>
+	 * @param	  JopId composite Jopid
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 * @return	  Order list of map [name,value]
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String,Object>> getfreezedBlockIndexedParentVariables(String JopId) {
+		Map<String,Map<String,Object>> vars = (Map<String,Map<String,Object>>)getCurrentRequestContext().getSession().getHttpSession().getAttribute(ATTR_BLOCKPVARS);
+		List<Map<String,Object>> ret = null;
+		try {
+			JopId id = new JopId(JopId);
+			for (String i: vars.keySet()) {
+				JopId vid = new JopId(i);
+				if ( vid.getPage().equals(id.getPage()) && vid.getId().equals(id.getId()) ) {
+						
+				}
+			}
+		} catch(Exception e) {}
+		return ret;
 	}
 }
