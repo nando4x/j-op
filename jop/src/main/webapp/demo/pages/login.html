@@ -4,7 +4,7 @@
 
 <form jop_id='' 
 	  class="login"
-	  jop_onaction="java{$loginBean.submit(); return null;}"
+	  jop_onaction="java{$loginBean.submit(); return false;}"
 	  >	  
 	<div jop_rendered="java{return !$loginBean.isAuthenticated();}">	  			
 	<div class="title">ACCESSO</div>
