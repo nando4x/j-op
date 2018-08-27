@@ -22,7 +22,7 @@ import com.nandox.jop.core.processor.expression.SimplePageExpression;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="onaction")
+@JopCoreAttribute(name="onaction", priority=100)
 public class OnAction extends AbstractJopAttribute<SimplePageExpression> implements JopAttributeAction {
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String, java.lang.String>)

@@ -25,7 +25,7 @@ import com.nandox.jop.core.processor.expression.SimplePageExpression;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="include")
+@JopCoreAttribute(name="include", priority=100)
 public class Include extends AbstractJopAttribute<SimplePageExpression> implements JopAttributeRendering {
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String>)

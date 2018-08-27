@@ -41,7 +41,9 @@
 		</select>
 		</div>
 		</form>
-		<div  jop_include="page.html">
+		<div  jop_include="page.html" jop_rendered="java{
+					return (1==1);
+				}">
 			<param name="aaa">ccc</param>
 			<param name="bbb">ccc1</param>
 			<param name="ccc"></param>
