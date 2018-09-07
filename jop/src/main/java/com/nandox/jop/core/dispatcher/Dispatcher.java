@@ -143,13 +143,13 @@ public class Dispatcher {
 	}
 	/**
 	 * Return Map of query data per page id.<p>
-	 *For general parameter page id is set to null
+	 * For general parameter page id is set to null
 	 * @param	  QueryData array of data like javax.servlet.http.HttpServletRequest.getParametersMap 
 	 * @date      23 gen 2017 - 23 gen 2017
 	 * @author    Fernando Costantino
 	 * @revisor   Fernando Costantino
 	 * @exception 
-	 * @return
+	 * @return	  map with this data: pageId,(param name, param value)
 	 */
 	protected Map<String,Map<String,String[]>> getQueryDataByPage(Map<String,String[]> QueryData) throws Exception {
 		Map<String,Map<String,String[]>> map = new HashMap<String,Map<String,String[]>>();
@@ -157,15 +157,15 @@ public class Dispatcher {
 		while (i.hasNext()) {
 			String key = i.next();
 			JopId id = new JopId(key);
-				Map<String,String[]> val = map.get(id.getPage());
-				if ( val == null ) {
-					val = new HashMap<String,String[]>();
-				}
-				if ( id.getId() != null )
-					val.put(id.getId(), QueryData.get(key));
-				else // general parameter created with key null
-					val.put(key, QueryData.get(key));
-				map.put(id.getPage(), val);
+			Map<String,String[]> val = map.get(id.getPage());
+			if ( val == null ) {
+				val = new HashMap<String,String[]>();
+			}
+			if ( id.getId() != null )
+				val.put(id.getId(), QueryData.get(key));
+			else // general parameter created with key null
+				val.put(key, QueryData.get(key));
+			map.put(id.getPage(), val);
 		}
 		return map;
 	}
