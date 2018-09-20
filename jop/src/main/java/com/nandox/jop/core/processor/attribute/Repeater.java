@@ -24,7 +24,7 @@ import com.nandox.jop.core.processor.expression.CollectionPageExpression;
  * 
  * @revisor   Fernando Costantino
  */
-@JopCoreAttribute(name="repeater", priority=100, nested="var,status")
+@JopCoreAttribute(name="repeater", priority=100, nested="status")
 public class Repeater extends AbstractJopAttribute<CollectionPageExpression> implements JopAttributeRendering {
 	private String coll_name;
 	private String vname;
@@ -83,8 +83,23 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 	//
 	//
 	private void registerVariable(WebAppContext Context, PageBlock Block, Element Node) {
-		Class<?> cl = null;
-		vname = Node.attr("jop_var").trim();//Block.getAttributeDefinition("jop_var").trim();
+		Map<String,Class<?>> vars = Block.getParser().parseVariables(Node);
+		vname = vars.keySet().iterator().next();
+		Class<?> cl = vars.get(vname);
+		if ( cl != null )  {
+			this.setArrayFlag(Context, null);
+		} else {
+			Object o = this.getExpression().execute(Context, null);
+			if ( o != null ) {
+				cl = o.getClass();
+				if ( cl.isArray() )
+					cl = cl.getComponentType();
+				else if ( Collection.class.isAssignableFrom(cl) )
+					cl = ((Collection<?>)o).iterator().next().getClass();
+				this.setArrayFlag(Context, o);
+			}
+		}
+/*		vname = Node.attr("jop_var").trim();//Block.getAttributeDefinition("jop_var").trim();
 		if ( vname.trim().startsWith("(") && vname.indexOf(")") > 0 ) {
 			try {
 				cl = this.getClass().getClassLoader().loadClass(vname.substring(vname.indexOf("(")+1, vname.indexOf(")")).trim());
@@ -103,7 +118,7 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 					cl = ((Collection<?>)o).iterator().next().getClass();
 				this.setArrayFlag(Context, o);
 			}
-		}
+		}*/
 		Block.registerVariable(vname,cl);
 		this.coll_name = "_iterator_"+vname;
 		Block.registerVariable(this.coll_name,null);

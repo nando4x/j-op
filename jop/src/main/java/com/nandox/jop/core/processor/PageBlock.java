@@ -580,7 +580,7 @@ public abstract class PageBlock implements JopElement {
 				if ( jop_attrs[ix].equalsIgnoreCase(a2.getKey()))
 					i2 = ix;
 			}
-			return i1>i2?-1:(i1==i2?0:1);
+			return i1<i2?-1:(i1==i2?0:1);
 		}
 
 		
