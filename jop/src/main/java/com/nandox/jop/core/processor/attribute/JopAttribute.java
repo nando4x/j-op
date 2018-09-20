@@ -21,7 +21,7 @@ import com.nandox.libraries.utils.Reflection;
  * There is also a subclass Factory to instance an attribute.<br>
  * <br>
  * To implement an attribute have to create a Class that implements JopAttributeRendering or JopAttributeAction and extend AbstractJopAttribute.<br>
- * !!IMPORTANT!! on the class define annotation JopCoreAttribute with attribute name without prefix (jop_) 
+ * <b>!!IMPORTANT!! on the class define annotation JopCoreAttribute with attribute name without prefix (jop_)</b> 
  * 
  * @project   Jop (Java One Page)
  * 

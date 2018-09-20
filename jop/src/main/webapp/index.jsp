@@ -23,7 +23,9 @@
 				</tr>
 			</tbody>
 		</table>-->
-		<div jop_id>
+		<div jop_id
+			jop_var="(java.lang.String)var1;(java.lang.String)var2"
+			>
 			<select>
 				<option value='java{return $helloWorld.getArray()[0];}'>
 					<jbean>{return $helloWorld.getArray()[0];}</jbean>
