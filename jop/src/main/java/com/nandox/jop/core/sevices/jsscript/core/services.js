@@ -22,6 +22,7 @@
 	});
 	// private variable and constant
 	var JOP_ID_PARAMETER = "Jop.jopId";
+	var JOP_VARS_PARAMETER = "Jop.variables";
 	/**
 	 * Post form data of one block: use service inject/postBlock that return XML list 
 	 * @param	  jopId block identify
@@ -43,11 +44,12 @@
 			request += "&"+list[ix].name+"="+list[ix].value; 
 		}
 		// add optional parameters
-		if ( typeof params == 'object' && Object.keys(params).length > 0 ) {
+		if ( typeof params === 'object' && Object.keys(params).length > 0 ) {
 			var arr = Object.keys(params);
 			for ( var ix=0; ix<arr.length; ix++ ) {
 				request +="&"+arr[ix]+"="+params[arr[ix]];
 			}
+			request +="&"+JOP_VARS_PARAMETER+"="+JSON.stringify(params);
 		}
 		// define ajax callback to read XML response and block to refresh
 		callback = function(response,xhrRef) {
