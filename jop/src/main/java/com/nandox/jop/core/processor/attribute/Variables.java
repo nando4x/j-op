@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.attribute.Repeater.Status;
 import com.nandox.jop.core.processor.expression.SimplePageExpression;
 
 /**
@@ -32,6 +33,25 @@ public class Variables extends AbstractJopAttribute<SimplePageExpression> {
 	public Variables(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
 		super(Context, Block, Node, Value);
 		this.registerVariable(Context, Block, Node);
+	}
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute#setVariables(com.nandox.jop.core.context.WebAppContext, java.util.Map, int)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
+		if ( Index == 0 ) {
+			String par = Context.getCurrentRequestContext().getParameterAsString("Jop.variables");
+			com.google.gson.Gson json = new com.google.gson.Gson();
+			Map<String,Object> lst = (Map<String,Object>)json.fromJson(par, Map.class);
+			Iterator<String> i = lst.keySet().iterator();
+			while ( i.hasNext() ) {
+				String k = i.next();
+				if ( Vars.containsKey("") ) {
+					Vars.put(k, lst.get(k));
+				}
+			}
+		}
 	}
 	// Add variable to block context
 	//
