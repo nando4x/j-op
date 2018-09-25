@@ -3,15 +3,15 @@
 		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
 	}
 </script>
-<div jop_id
-	 class='jop_accordion java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"st_open":"st_close");}'	 
+<div jop_var="(java.lang.String)jop_accordion"
+	 class='jop_accordion java{return ("1".equals(jop_accordion)?"st_open":"st_close");}'	 
 >	
 	<div class="wdg_header" $value
-		 onclick='accordion_toggle(this.parentElement,java{return ("1".equals(appContext.getParameterAsString("jop_accordion"))?"0":"1");})'><!--
+		 onclick='accordion_toggle(this.parentElement,"java{return ("1".equals(jop_accordion)?"0":"1");}")'><!--
 		--><span class='wdg_arrow'></span><!--
 		--><span class='wdg_title'><wdg_title></wdg_title></span>
 	</div>
-	<div class="wdg_content" jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_accordion"));}'>
+	<div class="wdg_content" jop_rendered='java{return "1".equals(jop_accordion);}'>
 	<wdg_content></wdg_content>
 	</div>
 </div>

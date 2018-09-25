@@ -29,13 +29,13 @@
 		});
 	}
 </script>
-<div jop_id
-	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
-	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
+<div jop_var="(java.lang.String)jop_selection"
+	 class='jop_combobox java{return ("1".equals(jop_selection)?"st_open":"st_close");}'
+	 onclick='selection_toggle(this,java{return ("1".equals(jop_selection)?"0":"1");})'
    >
     <input class="wdg_input" disabled=disabled $value $jop_converter $jop_support_data></input>
     <span class="wdg_arrow"/>
-    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
+    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(jop_selection);}'>
 	    <ul $jop_repeater $jop_var $jop_status>
 	    	<wdg_item><li $data-value>$wdg_item</li></wdg_item>
 	    </ul>

@@ -44,11 +44,13 @@ public class Variables extends AbstractJopAttribute<SimplePageExpression> {
 			String par = Context.getCurrentRequestContext().getParameterAsString("Jop.variables");
 			com.google.gson.Gson json = new com.google.gson.Gson();
 			Map<String,Object> lst = (Map<String,Object>)json.fromJson(par, Map.class);
-			Iterator<String> i = lst.keySet().iterator();
-			while ( i.hasNext() ) {
-				String k = i.next();
-				if ( Vars.containsKey("") ) {
-					Vars.put(k, lst.get(k));
+			if ( lst != null ) {
+				Iterator<String> i = lst.keySet().iterator();
+				while ( i.hasNext() ) {
+					String k = i.next();
+					if ( Vars.containsKey(k) ) {
+						Vars.put(k, lst.get(k));
+					}
 				}
 			}
 		}
