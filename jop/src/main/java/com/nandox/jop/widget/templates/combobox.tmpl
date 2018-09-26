@@ -16,26 +16,26 @@
 				}
 				li[ix].onclick = function(e) {
 					e.stopPropagation();
-					var block = e.target.parentElement.parentElement.parentElement;
+					var block = e.target.parentElement.parentElement.parentElement.parentElement;
 					var i = Jop.core.querySelector(block,".wdg_input");
 					var val = e.target.getAttribute('data-value');
 					if ( val != null )
 						i.value = val;
 					else
 						i.value = e.target.textContent;
-					selection_toggle(block,0);
+					selection_toggle(block,false);
 				}
 			}
 		});
 	}
 </script>
-<div jop_id jop_var="(java.lang.String)jop_selection">
-	<div class='jop_combobox java{return ("1".equals(jop_selection)?"st_open":"st_close");}'
-	 onclick='selection_toggle(this.parentElement,"java{return ("1".equals(jop_selection)?"0":"1");}")'
+<div jop_id jop_var="(java.lang.Boolean)jop_selection">
+	<div class='jop_combobox java{return (jop_selection!=null&&jop_selection?"st_open":"st_close");}'
+	 onclick='selection_toggle(this.parentElement,java{return jop_selection!=null&&jop_selection?"false":"true";})'
      >
 	    <input class="wdg_input" disabled=disabled $value $jop_converter $jop_support_data></input>
 	    <span class="wdg_arrow"/>
-	    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(jop_selection);}'>
+	    <div class="wdg_list" jop_id  jop_rendered='java{return jop_selection!=null&&jop_selection;}'>
 		    <ul $jop_repeater $jop_var $jop_status>
 		    	<wdg_item><li $data-value>$wdg_item</li></wdg_item>
 		    </ul>
