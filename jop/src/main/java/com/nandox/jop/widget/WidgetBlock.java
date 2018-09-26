@@ -44,8 +44,12 @@ public class WidgetBlock extends PageBlock {
 	 */	
 	public WidgetBlock(WebAppContext Context, JopElement Parent, Element DomElement) throws DomException {
 		super(Context, Parent, DomElement);
+		try {
 		this.buildFromTemplate(BASE_TMPL_PATH);
 		this.parse(Context,Parent);
+		} catch (Exception e) {
+			throw (DomException)e;
+		}
 	}
 
 	/**
