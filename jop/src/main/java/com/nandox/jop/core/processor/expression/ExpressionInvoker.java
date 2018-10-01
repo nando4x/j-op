@@ -52,7 +52,7 @@ public class ExpressionInvoker {
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,null,null,Vars);
 		} catch (Exception e) {
-			throw new RuntimeException(e.toString() + ": " + e.getMessage());
+			throw new ExecutionException(e.toString() + ": " + e.getMessage());
 		}
 		return ret;
 	}
@@ -65,7 +65,7 @@ public class ExpressionInvoker {
 				beans[ix] = Context.getBeanInstance(this.beans[ix]);
 			ret = o.invoke(WebAppContext.getCurrentRequestContext().getBeanAppContext(),beans,Value,NativeValue,Vars);
 		} catch (Exception e) {
-			throw new RuntimeException(e.toString() + ": " + e.getMessage());
+			throw new ExecutionException(e.toString() + ": " + e.getMessage());
 		}
 		return ret;
 	}

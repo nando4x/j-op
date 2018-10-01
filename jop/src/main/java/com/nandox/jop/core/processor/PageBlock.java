@@ -24,6 +24,7 @@ import com.nandox.jop.core.processor.attribute.JopAttributeAction;
 import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.expression.PageWriteExpression;
 import com.nandox.jop.core.processor.expression.ExpressionConverter;
+import com.nandox.jop.core.processor.expression.ExecutionException;
 import com.nandox.jop.core.processor.attribute.AbstractJopAttribute;
 import com.nandox.jop.core.ErrorsDefine;
 
@@ -393,6 +394,8 @@ public abstract class PageBlock implements JopElement {
 								e.attr("name","["+this.pageId+"]."+e.attr("name"));
 							}
 						}
+					} catch (ExecutionException e) {
+						throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),rend.elem,e.getExpressionCode()));
 					} catch (Exception e) {
 						throw new RuntimeException(ErrorsDefine.formatDOM(e.getMessage(),rend.elem));
 					}

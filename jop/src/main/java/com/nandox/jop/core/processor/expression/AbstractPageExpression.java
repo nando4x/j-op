@@ -86,16 +86,26 @@ public abstract class AbstractPageExpression<E extends Object> implements PageEx
 	 */
 	@SuppressWarnings("unchecked")
 	protected Object invoke(WebAppContext Context, Map<String,Object> Vars) {
-		ExpressionValue<E> ev = this.initExpValue(Context); 
-		if ( ev.getValue() == null )
-			ev.setValue((E)this.invoker.invoke(Context, Vars));
-		return ev.getValue();
+		try {
+			ExpressionValue<E> ev = this.initExpValue(Context); 
+			if ( ev.getValue() == null )
+				ev.setValue((E)this.invoker.invoke(Context, Vars));
+			return ev.getValue();
+		} catch (ExecutionException e) {
+			e.setExpressionCode(this.code);
+			throw e;
+		}
 	}
 	@SuppressWarnings("unchecked")
 	protected Object invoke(WebAppContext Context, Object Value, String NativeValue, Map<String,Object> Vars) {
-		ExpressionValue<E> ev = this.initExpValue(Context); 
-		ev.setValue((E)this.invoker.invoke(Context,Value,NativeValue,Vars));
-		return ev.getValue();
+		try {
+			ExpressionValue<E> ev = this.initExpValue(Context); 
+			ev.setValue((E)this.invoker.invoke(Context,Value,NativeValue,Vars));
+			return ev.getValue();
+		} catch (ExecutionException e) {
+			e.setExpressionCode(this.code);
+			throw e;
+		}
 	}
 	/* (non-Javadoc)
 	 * @see com.nandox.jop.core.processor.PageExpression#GetBeansList()

@@ -42,4 +42,9 @@ public class ErrorsDefine {
 	public static String formatDOM(String Msg, Element Elem) {
 		return Msg+"\r\n\t\t*********************************************************\r\n"+Elem.outerHtml();
 	}
+	public static String formatDOM(String Msg, Element Elem, String code) {
+		String msg = "\r\n\t\t**********************  Code executed *******************\r\n"+code;
+		msg += "\r\n\t\t*********************************************************\r\n";
+		return Msg+msg+Elem.outerHtml();
+	}
 }
