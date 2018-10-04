@@ -12,8 +12,8 @@
  * @revisor   Fernando Costantino
  */
 
-function libNxModule_Dom(libroot) { 
-	var Dom = {};
+function libNxModule_Services(libroot) { 
+	var Services = {};
 	(function () {
 		// Constant definition
 		var i = 0;
@@ -37,10 +37,10 @@ function libNxModule_Dom(libroot) {
 		 */
 		this.postBlock = function (jopId, params) {
 			// get block and its child input
-			var block = Jop.core.getBlockElement(jopId);
+			var block = libroot.getBlockElement(jopId);
 			// set spinner
-			Jop.core.turnBlockSpinner(jopId,"jop_spinner");
-			var list = Jop.core.querySelectorAll(block,'textare[name],input[name],select[name]');
+			libroot.turnBlockSpinner(jopId,"jop_spinner");
+			var list = libroot.Dom.querySelectorAll(block,'textare[name],input[name],select[name]');
 			var request = JOP_ID_PARAMETER+"="+jopId;
 			for ( var ix=0; list!=null&&ix<list.length; ix++ ) {
 				request += "&"+list[ix].name+"="+list[ix].value; 
@@ -60,11 +60,11 @@ function libNxModule_Dom(libroot) {
 					for (var ix=0; ix<num; ix++) {
 						var data = response.getElementsByTagName('block')[ix].lastChild.data;
 						var id = response.getElementsByTagName('block')[ix].getAttribute('id');
-						Jop.core.injectBlockElement(id, data, true);
+						libroot.injectBlockElement(id, data, true);
 					}
 					if ( typeof xhrRef == 'object' && typeof xhrRef.done == 'function' )
 						xhrRef.done(jopId);
-					Jop.core.trigger(Jop.core.EVENT.DOMLOADED);
+					libroot.Event.trigger(libroot.EVENT.DOMLOADED);
 				} catch (e) {
 					// TODO: manage response error
 					console.log(e);
@@ -73,7 +73,7 @@ function libNxModule_Dom(libroot) {
 			// define ajax error callback
 			errorCallback = function(status,statusMessage,response,xhrRef) {
 				var id = jopId;
-				Jop.core.showAlert("EXCEPTION ERROR",response);
+				libroot.showAlert("EXCEPTION ERROR",response);
 			}
 			xhr = {
 					done: function(func) {
@@ -110,7 +110,7 @@ function libNxModule_Dom(libroot) {
 										break;
 								}
 							} else
-								Jop.core.debugger("ajax success callback undefined")
+								libroot.debugger("ajax success callback undefined")
 							end = true;
 						}
 						break;
@@ -120,7 +120,7 @@ function libNxModule_Dom(libroot) {
 							if ( errorCallback != 'undefined' && errorCallback != null )
 								errorCallback(xhr.status,xhr.statusText,xhr.responseText,xhrRef);
 							else
-								Jop.core.debugger("ajax error callback undefined")
+								libroot.debugger("ajax error callback undefined")
 						}
 						break;
 				}
@@ -136,7 +136,7 @@ function libNxModule_Dom(libroot) {
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				} catch (e) {
 					//TODO: manage error set header
-					throw new Jop.core.exception()
+					throw new libroot.exception()
 				}
 				try {
 					// send data and manage response, immediately if sync
@@ -155,6 +155,7 @@ function libNxModule_Dom(libroot) {
 			} catch (e) { //TODO: manage error open	
 			}
 		}
-	}).apply( Jop.core.services );  
+	}).apply( Services );
+	libroot.Services = Services;
 }
 

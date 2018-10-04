@@ -1,6 +1,10 @@
 <html>
 <head>
- <script jop_head="true"/>
+ <script xxjop_head="true"/>
+ <script type="text/javascript" src="/jop/jopscript/core/Dom.js"></script>
+ <script type="text/javascript" src="/jop/jopscript/core/Event.js"></script>
+ <script type="text/javascript" src="/jop/jopscript/services.js"></script>
+ <script type="text/javascript" src="/jop/jopscript/Jop.js"></script>
  <script type="text/javascript" src="jquery-1.12.2.js"/>
 </head>
 <body>
@@ -80,7 +84,7 @@
 		}
 	</script>
 	<form jop_id='' xonsubmit="xxx(this);"  xaction="index.jsp" method="post">
-		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld2.setMessage((String)value); } return $helloWorld2.getMessage();}">
+		<input jop_submiton="change" name="male" value="java{if(value!=null) { $helloWorld.setMessage((String)value); } return $helloWorld.getMessage();}">
 			ssasssasa
 		</input>
 		<input  value='xjava{return JopHelper.manageInput($helloWorld,"Message",value);}'>

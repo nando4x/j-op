@@ -3,8 +3,11 @@ package com.nandox.jop.core.sevices;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +93,15 @@ public class ServiceJSServlet extends AbstractServletDispatcher {
 			System.out.println("query:"+req.getQueryString());
 			this.test(req,resp);
 		}
+	}
+	public static List<String> getResourceList(String extension) {
+		File folder = new File(ServiceJSServlet.class.getResource("jsscript/").getFile());
+		List<String> lst = new ArrayList<String>();
+        for (File file : folder.listFiles()) {
+            if (file.getName().endsWith("."+extension))
+                lst.add(file.getName());
+        }
+        return lst;
 	}
 	// Manage services searching them from req path and then execute
 	//

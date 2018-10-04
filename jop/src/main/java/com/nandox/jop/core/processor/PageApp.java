@@ -3,6 +3,7 @@ package com.nandox.jop.core.processor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Entities;
@@ -238,6 +239,8 @@ public class PageApp implements JopElement {
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
 		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
 		el.remove();
+		List lst =  com.nandox.jop.core.sevices.ServiceJSServlet.getResourceList("js");
+		lst =  com.nandox.jop.core.sevices.ServiceJSServlet.getResourceList("css");
 	}
 	// Generate css selector with all possible jop attributes
 	//

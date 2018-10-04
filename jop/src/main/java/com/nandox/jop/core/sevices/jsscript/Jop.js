@@ -1,6 +1,7 @@
 var Jop = Jop || {};
 
 (function () {
+	var _lib = this;
 	// Constant definition
 	var i = 0;
 	this.CONST = Object.freeze({
@@ -119,8 +120,8 @@ var Jop = Jop || {};
 	this.registForm = function(element) {
 		function formSubmitHandler(event) {
 			event.preventDefault();
-			if ( typeof this.Services.postBlock == 'function' )
-				this.Services.postBlock(this.getAttribute('jop_id'));
+			if ( typeof _lib.Services.postBlock == 'function' )
+				_lib.Services.postBlock(this.getAttribute('jop_id'));
 		}
 		function _do(el) {
 			var act = el.getAttribute('action');
@@ -201,7 +202,6 @@ var Jop = Jop || {};
 	window.libNxModuleInit(this);
 	
 	// attach event for document ready
-	var _lib = this;
 	this.Event.ready(function(){
 		_lib.registForm(null);
 	});
