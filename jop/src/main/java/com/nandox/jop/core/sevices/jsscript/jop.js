@@ -6,7 +6,7 @@ var Jop = Jop || {};
 	var i = 0;
 	this.CONST = Object.freeze({
 		"DEBUG": true,
-		"SPINNERENABLE": ''//${initpar:jop.browser.spinnerenable}		
+		"SPINNERENABLE": ${initpar:jop.browser.spinnerenable}		
 	});
 	this.EVENT = Object.freeze({
 		"DOMLOADED": 'jop_domloaded'

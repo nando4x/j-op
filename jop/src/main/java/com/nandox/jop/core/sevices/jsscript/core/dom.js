@@ -1,6 +1,18 @@
 function libNxModule_Dom(libroot) { 
 	var Dom = {};
 	(function () {
+		this.parentSelector = function(element,query) {
+			if ( element != null ) {
+				return element.closest(query);
+				/*var p = element;
+				while ( p != null ) {
+					if ( p.parentElement.querySelector(query) != null )
+						return p;
+					p = p.parentElement;
+				}*/
+			}
+			return null;
+		}
 		this.querySelector = function(element,query) {
 			if ( element != null )
 				return element.querySelector(query);

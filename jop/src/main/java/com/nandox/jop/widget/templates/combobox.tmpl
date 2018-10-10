@@ -1,23 +1,23 @@
 <script>
 	function selection_toggle(el,flg) {
-		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
-			var block = Jop.core.getBlockElement(jopId);
-			var li = Jop.core.querySelectorAll(block,"li");
-			var c = Jop.core.querySelector(block,".wdg_list");
+		Jop.Services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
+			var block = Jop.getBlockElement(jopId);
+			var li = Jop.Dom.querySelectorAll(block,"li");
+			var c = Jop.Dom.querySelector(block,".wdg_list");
 			if ( c != null ) {
 				c.style.minWidth = block.offsetWidth-2;
 			}
 			for ( var ix=0; ix<li.length; ix++ ) {
 				li[ix].onmouseover = function(e) {
-					Jop.core.dom.addClass(e.target,"st_active");
+					Jop.Dom.addClass(e.target,"st_active");
 				}
 				li[ix].onmouseout = function(e) {
-					Jop.core.dom.removeClass(e.target,"st_active");
+					Jop.Dom.removeClass(e.target,"st_active");
 				}
 				li[ix].onclick = function(e) {
 					e.stopPropagation();
-					var block = e.target.parentElement.parentElement.parentElement.parentElement;
-					var i = Jop.core.querySelector(block,".wdg_input");
+					var block = Jop.Dom.parentSelector(e.target,'.wdg_wrapper');
+					var i = Jop.Dom.querySelector(block,".wdg_input");
 					var val = e.target.getAttribute('data-value');
 					if ( val != null )
 						i.value = val;
@@ -29,13 +29,13 @@
 		});
 	}
 </script>
-<div jop_id jop_var="(java.lang.Boolean)jop_selection">
-	<div class='jop_combobox java{return (jop_selection!=null&&jop_selection?"st_open":"st_close");}'
-	 onclick='selection_toggle(this.parentElement,java{return jop_selection!=null&&jop_selection?"false":"true";})'
+<div jop_id jop_var="(java.lang.Boolean)open_flag" class="wdg_wrapper">
+	<div class='jop_combobox java{return (open_flag!=null&&open_flag?"st_open":"st_close");}'
+	 onclick='Jop.Widget.combobox.toggle(this,java{return open_flag!=null&&open_flag?"false":"true";})'
      >
 	    <input class="wdg_input" disabled=disabled $value $jop_converter $jop_support_data></input>
 	    <span class="wdg_arrow"/>
-	    <div class="wdg_list" jop_id  jop_rendered='java{return jop_selection!=null&&jop_selection;}'>
+	    <div class="wdg_list" jop_id  jop_rendered='java{return open_flag!=null&&open_flag;}'>
 		    <ul $jop_repeater $jop_var $jop_status>
 		    	<wdg_item><li $data-value>$wdg_item</li></wdg_item>
 		    </ul>

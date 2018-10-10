@@ -1,17 +1,11 @@
-<script>
-	function accordion_toggle(el,flg) {
-		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_accordion: flg});
-	}
-</script>
-
-<div jop_id jop_var="(java.lang.String)jop_accordion">
-	<div class='jop_accordion java{return ("1".equals(jop_accordion)?"st_open":"st_close");}'>	
-		<div class="wdg_header" $value
-			 onclick='accordion_toggle(this.parentElement.parentElement,"java{return ("1".equals(jop_accordion)?"0":"1");}")'><!--
+<div jop_id jop_var="(java.lang.Boolean)open_flag" class="wdg_wrapper">
+	<div class='jop_accordion java{return (open_flag!=null&&open_flag?"st_open":"st_close");}'>	
+		<div class="wdg_header"
+			 onclick='Jop.Widget.accordion.toggle(this,java{return (open_flag!=null&&open_flag?"false":"true");})'><!--
 			--><span class='wdg_arrow'></span><!--
 			--><span class='wdg_title'><wdg_title></wdg_title></span>
 		</div>
-		<div class="wdg_content" jop_rendered='java{return "1".equals(jop_accordion);}'>
+		<div class="wdg_content" jop_rendered='java{return open_flag!=null&&open_flag;}'>
 		<wdg_content></wdg_content>
 		</div>
 	</div>

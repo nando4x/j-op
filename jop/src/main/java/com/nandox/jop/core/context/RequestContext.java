@@ -49,6 +49,8 @@ public class RequestContext implements BeanAppContext {
 			this.session = new Session(sess);
 		else {
 			this.session = (Session)sess.getAttribute("jopsession");
+			if ( this.session == null )
+				this.session = new Session(sess);
 		}
 	}
 	/**

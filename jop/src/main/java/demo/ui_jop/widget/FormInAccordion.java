@@ -29,10 +29,10 @@ public class FormInAccordion extends WidgetBlock {
 			if ( ix > 0 ) { // first item every substitute others append
 				if ( e.hasAttr("newrow") ) {
 					item = tmp.select(".row:has(.cell)").get(0);
-					Tmpl.select(".row:has(.cell):last-of-type").get(0).after(item.outerHtml());
+					Tmpl.select(".row:has(.cell):last-of-type").last().after(item.outerHtml());
 				} else {
 					item = tmp.select(".cell").get(0);
-					Tmpl.select(".cell:last-of-type").get(0).after(item.outerHtml());
+					Tmpl.select(".cell:last-of-type").last().after(item.outerHtml());
 				}
 			}
 			Tmpl.getElementsByTag(e.tagName()).get(0).tagName(e.tagName()+ix);

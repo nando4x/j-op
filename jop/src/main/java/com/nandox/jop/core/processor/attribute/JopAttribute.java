@@ -11,6 +11,7 @@ import java.util.Comparator;
 import org.jsoup.nodes.Element;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
+import com.nandox.jop.core.processor.expression.PageExpression;
 import com.nandox.jop.core.processor.DomException;
 import com.nandox.libraries.utils.Reflection;
 
@@ -45,6 +46,14 @@ public interface JopAttribute {
 		/** action value converted */
 		CONVERTER
 	}
+	/**
+	 * Return expression 
+	 * @date      04 ott 2016 - 04 ott 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception 
+	 */
+	public PageExpression getExpression();
 	/**
 	 * Setting variables used into page expression and defined with attribute
 	 * @param	  Context	Application context

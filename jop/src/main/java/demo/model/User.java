@@ -5,7 +5,7 @@ import java.util.Date;
 public class User implements IntegrationServiceData {
 	private String name;
 	private String surname;
-	private String email;
+	private String CF;
 	private Date birthdate;
 	/**
 	 * @return the name
@@ -30,18 +30,6 @@ public class User implements IntegrationServiceData {
 	 */
 	public void setSurname(String surname) {
 		this.surname = surname;
-	}
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	/**
 	 * @return the birthdate

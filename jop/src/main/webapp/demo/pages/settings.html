@@ -2,103 +2,69 @@
 	<div jop_id='' style="display: none">
 		<jbean>{$settingsBean.load(); return null;}</jbean>
 	</div>
-<!-- <script>
-	function selection_toggle(el,flg) {
-		Jop.core.services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
-			var block = Jop.core.getBlockElement(jopId);
-			var li = Jop.core.querySelectorAll(block,"li");
-			var c = Jop.core.querySelector(block,".wdg_list");
-			if ( c != null ) {
-				c.style.minWidth = block.offsetWidth-2;
-			}
-			for ( var ix=0; ix<li.length; ix++ ) {
-				li[ix].onmouseover = function(e) {
-					Jop.core.dom.addClass(e.target,"st_active");
-				}
-				li[ix].onmouseout = function(e) {
-					Jop.core.dom.removeClass(e.target,"st_active");
-				}
-				li[ix].onclick = function(e) {
-					e.stopPropagation();
-					var block = e.target.parentElement.parentElement.parentElement;
-					var i = Jop.core.querySelector(block,".wdg_input");
-					var val = e.target.getAttribute('data-value');
-					if ( val != null )
-						i.value = val;
-					else
-						i.value = e.target.textContent;
-					selection_toggle(block,0);
-				}
-			}
-		});
-	}
-</script>
-<div jop_id
-	 class='jop_combobox java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"st_open":"st_close");}'
-	 onclick='selection_toggle(this,java{return ("1".equals(appContext.getParameterAsString("jop_selection"))?"0":"1");})'
-   >
-    <input class="wdg_input" value='java{ System.out.println("xxz");   java.lang.Object o = appContext.mngInput($helloWorld,"clist",value); return (o!=null?o:null);}'
-    		jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
-    ></input>
-    <span class="wdg_arrow"/>
-    <div class="wdg_list" jop_id  jop_rendered='java{return "1".equals(appContext.getParameterAsString("jop_selection"));}'>
-	    <ul jop_repeater='java{return $helloWorld.getList();}' jop_var=(test.testbean$list)var>
-	    	<li data-value='java{return var.code;}'><jbean>{return var.value;}</jbean></li>
-	    </ul>
-    </div>
-</div> -->
-	 <!--  
-				<jwdg type="combobox"  jop_repeater='java{return $helloWorld.getList();}' jop_var='(test.testbean$list)var'
-						value='java{return appContext.mngInput($helloWorld,"clist",value);}'
-						jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
-						>
-				    <wdg_item data-value='java{return var.code;}'><jbean>{return var.value;}</jbean></wdg_item>
-				</jwdg>
- 	  	--> 	 
 	<jwdg type="accordion">
 		<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.security");}</jbean></wdg_title>
 	 	<wdg_content>
-		<jwdg class="" type="FormInAccordion">
-			<wdg_item>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-				<input class="cell data" name="security.username" type="text"
-					   value='java{return appContext.mngInput($loginBean,"username",value);}'>
-			</wdg_item>
-			<wdg_item>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
-				<jwdg type="combobox"  
-					  jop_repeater='java{return $helloWorld.getList();}'
-					  jop_var='(test.testbean$list)var'
-					  jop_status="status"
-					  jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
-					  value='java{return appContext.mngInput($helloWorld,"clist",value);}'
-					>
-				    <wdg_item data-value='java{return var.code;}'><jbean>{return var.value+"-"+(status.getSize()-status.getIndex());}</jbean></wdg_item>
-				</jwdg>
-			</wdg_item>
-		</jwdg>
+			<jwdg class="" type="FormInAccordion">
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
+					<input class="cell data" name="security.username" type="text"
+						   value='java{return appContext.mngInput($settingsBean.getSecurity(),"username",value);}'>
+				</wdg_item>
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.password");}</jbean></label>
+					<input class="cell data" name="security.password" type="password"
+						   value='java{return appContext.mngInput($settingsBean.getSecurity(),"password",value);}'>
+				</wdg_item>
+				<wdg_item newrow>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.email");}</jbean></label>
+					<input class="cell data" name="security.email" type="text"
+						   value='java{return appContext.mngInput($settingsBean.getSecurity(),"email",value);}'>
+				</wdg_item>
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.mobile");}</jbean></label>
+					<input class="cell data" name="security.mobile" type="text"
+						   value='java{return appContext.mngInput($settingsBean.getSecurity(),"mobile",value);}'>
+				</wdg_item>
+				<wdg_item newrow>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.security.username");}</jbean></label>
+					<jwdg type="combobox"  
+						  jop_repeater='java{return $helloWorld.getList();}'
+						  jop_var='(test.testbean$list)var'
+						  jop_status="status"
+						  jop_converter='test.testbean$Converter' jop_support_data='java{return $helloWorld.getList();}'
+						  value='java{return appContext.mngInput($helloWorld,"clist",value);}'
+						>
+					    <wdg_item data-value='java{return var.code;}'><jbean>{return var.value+"-"+(status.getSize()-status.getIndex());}</jbean></wdg_item>
+					</jwdg>
+				</wdg_item>
+			</jwdg>
 	 	</wdg_content>
 	</jwdg>
 	 
 	<jwdg type="accordion">
 	   	<wdg_title><jbean>{return $localizationTextBean.getText("label.settings.personal");}</jbean></wdg_title>
 		<wdg_content>
-		<jwdg type="FormInAccordion"  jop_onaction="java{$settingsBean.save(); return null;}">
-			<wdg_item>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
-				<input class="cell data" name="personal.name" type="text"
-					   value='java{return appContext.mngInput($settingsBean.getUser(),"name",value);}'>
-			</wdg_item>
-			<wdg_item>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
-				<input class="cell data" name="personal.surname" type="text"
-					   value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
-			</wdg_item>
-			<wdg_item newrow>
-				<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>
-				<input class="cell data" name="cccc" type="date">
-			</wdg_item>
-		</jwdg>
+			<jwdg type="FormInAccordion"  jop_onaction="java{$settingsBean.save(); return null;}">
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.name");}</jbean></label>
+					<input class="cell data" name="personal.name" type="text"
+						   value='java{return appContext.mngInput($settingsBean.getUser(),"name",value);}'>
+				</wdg_item>
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.surname");}</jbean></label>
+					<input class="cell data" name="personal.surname" type="text"
+						   value='java{return appContext.mngInput($settingsBean.getUser(),"surname",value);}'>
+				</wdg_item>
+				<wdg_item newrow>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.CF");}</jbean></label>
+					<input class="cell data" name="cccc1">
+				</wdg_item>
+				<wdg_item>
+					<label class="cell label"><jbean>{return $localizationTextBean.getText("label.settings.personal.birthdate");}</jbean></label>
+					<input class="cell data x" name="cccc" type="date">
+				</wdg_item>
+			</jwdg>
 	 	</wdg_content>
 	</jwdg>
  </div>

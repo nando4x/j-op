@@ -306,6 +306,8 @@ public abstract class PageBlock implements JopElement {
 			JopAttribute ja = attr.next();
 			if ( !(ja instanceof JopAttributeRendering) ) // skip if an action attribute
 				continue;
+			if ( ja.getExpression() != null )
+				ja.getExpression().resetValue(Context);
 			JopAttribute.Response r = ((JopAttributeRendering)ja).preRender(Context,clone,parentVars);
 			switch (r.getAction()) {
 				case NOTRENDER:

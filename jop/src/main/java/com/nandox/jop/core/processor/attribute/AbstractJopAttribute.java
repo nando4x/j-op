@@ -46,13 +46,10 @@ public abstract class AbstractJopAttribute<E extends AbstractPageExpression<?>> 
 		if ( Value != null && Block.getParser().parseJavaExpression("java"+Value) != null )
 			this.computeExpression(Context, Value, Block.getVarsDefinition());
 	}
-	/**
-	 * Return expression 
-	 * @date      04 ott 2016 - 04 ott 2016
-	 * @author    Fernando Costantino
-	 * @revisor   Fernando Costantino
-	 * @exception 
+	/* (non-Javadoc)
+	 * @see com.nandox.jop.core.processor.attribute.JopAttribute#getExpression
 	 */
+	@Override
 	public PageExpression getExpression() {
 		return expression;
 	}

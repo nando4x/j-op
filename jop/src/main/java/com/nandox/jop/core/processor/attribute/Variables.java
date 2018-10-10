@@ -1,6 +1,6 @@
 package com.nandox.jop.core.processor.attribute;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Iterator;
 
@@ -8,7 +8,7 @@ import org.jsoup.nodes.Element;
 
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.processor.PageBlock;
-import com.nandox.jop.core.processor.attribute.Repeater.Status;
+import com.nandox.jop.core.processor.JopId;
 import com.nandox.jop.core.processor.expression.SimplePageExpression;
 
 /**
@@ -27,11 +27,14 @@ import com.nandox.jop.core.processor.expression.SimplePageExpression;
  */
 @JopCoreAttribute(name="var")
 public class Variables extends AbstractJopAttribute<SimplePageExpression> {
+	private ArrayList<String> vars_name;
+	String jopId;
 	/**
 	 * @see com.nandox.jop.core.processor.attribute.AbstractJopAttribute(com.nandox.jop.core.context.WebAppContext, com.nandox.jop.core.processor.PageBlock, org.jsoup.nodes.Element, java.lang.String>)
 	 */
 	public Variables(WebAppContext Context, PageBlock Block, Element Node, String Value) throws Exception {
 		super(Context, Block, Node, Value);
+		this.jopId = Block.getId();
 		this.registerVariable(Context, Block, Node);
 	}
 	/* (non-Javadoc)
@@ -41,17 +44,26 @@ public class Variables extends AbstractJopAttribute<SimplePageExpression> {
 	@Override
 	public void setVariables(WebAppContext Context, Map<String, Object> Vars, int Index) {
 		if ( Index == 0 ) {
-			String par = Context.getCurrentRequestContext().getParameterAsString("Jop.variables");
+			String par = WebAppContext.getCurrentRequestContext().getParameterAsString("Jop.variables");
 			com.google.gson.Gson json = new com.google.gson.Gson();
 			Map<String,Object> lst = (Map<String,Object>)json.fromJson(par, Map.class);
 			if ( lst != null ) {
 				Iterator<String> i = lst.keySet().iterator();
 				while ( i.hasNext() ) {
 					String k = i.next();
-					if ( Vars.containsKey(k) ) {
+					if ( Vars.containsKey(k) && this.vars_name.contains(k) ) {
 						Vars.put(k, lst.get(k));
 					}
 				}
+			}
+			try {
+				JopId jopId = new JopId(WebAppContext.getCurrentRequestContext().getParameterAsString("Jop.jopId"));
+				if ( !this.jopId.equals(jopId.getId()) ) {
+					for ( String key : this.vars_name )
+						Vars.put(key, null);
+				}
+			} catch ( Exception e ) {
+				// TODO: gestire eccezzione JopId
 			}
 		}
 	}
@@ -60,6 +72,7 @@ public class Variables extends AbstractJopAttribute<SimplePageExpression> {
 	//
 	private void registerVariable(WebAppContext Context, PageBlock Block, Element Node) {
 		Map<String,Class<?>> vars = Block.getParser().parseVariables(Node);
+		this.vars_name = new ArrayList<String>(vars.keySet());
 		Iterator<String> lst = vars.keySet().iterator();
 		while ( lst.hasNext() ) {
 			String var = lst.next();

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.util.jar.JarFile;
+
+import com.nandox.jop.core.sevices.ServiceJSServlet;
+
 import java.util.jar.JarEntry;
 import java.io.IOException;
 import java.net.URL;
@@ -115,5 +118,32 @@ public class Reflection {
 	        }
 	    }
 	    return classes;
+	}
+	/**
+	 * Return list with resources file of a specific extension under a class package in recursive mode 
+	 * @param	  Cls	class reference
+	 * @param	  Extension	file extension to search
+	 * @date      30 set 2016 - 30 set 2016
+	 * @author    Fernando Costantino
+	 * @revisor   Fernando Costantino
+	 * @exception
+	 * @return	  Resources list with file name relative to class package 
+	 */	
+	public static List<String> getResourceList(Class<?> Cls, String Extension) {
+		List<String> lst = new ArrayList<String>();
+		return scanDirectory(Cls.getResource("").getFile(),Extension,"");
+	}
+	//
+	//
+	private static List<String> scanDirectory(String path, String extension, String refPath) {
+		List<String> lst = new ArrayList<String>();
+		File folder = new File(path);
+        for (File file : folder.listFiles()) {
+        	if ( file.isDirectory() ) {
+        		lst.addAll(scanDirectory(file.getAbsolutePath(),extension,refPath+(refPath.isEmpty()?"":"/")+file.getName()));
+        	} else if (file.getName().endsWith("."+extension))
+                lst.add(refPath+"/"+file.getName());
+        }
+		return lst;
 	}
 }

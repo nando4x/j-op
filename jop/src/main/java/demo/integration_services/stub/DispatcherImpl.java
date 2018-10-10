@@ -19,6 +19,11 @@ public class DispatcherImpl implements IntegrationServiceDispatcher {
 				dt.readEntity("security.test", (E)Request.getData());
 				return Request;
 			}
+			if ( Request.getData() instanceof demo.model.SecurityContact ) {
+				DataInPropertyFile<E> dt = new DataInPropertyFile<E>("user");
+				dt.readEntity("security.test", (E)Request.getData());
+				return Request;
+			}
 			if ( Request.getData() instanceof demo.model.User ) {
 				DataInPropertyFile<E> dt = new DataInPropertyFile<E>("user");
 				dt.readEntity("user.test", (E)Request.getData());
@@ -33,6 +38,11 @@ public class DispatcherImpl implements IntegrationServiceDispatcher {
 			IntegrationServiceDataContainer<E, K> Request) {
 		if ( Request != null ) {
 			if ( Request.getData() instanceof demo.model.UserSecurity ) {
+				DataInPropertyFile<E> dt = new DataInPropertyFile<E>("user");
+				dt.writeEntity("security.test", (E)Request.getData());
+				return Request;
+			}
+			if ( Request.getData() instanceof demo.model.SecurityContact ) {
 				DataInPropertyFile<E> dt = new DataInPropertyFile<E>("user");
 				dt.writeEntity("security.test", (E)Request.getData());
 				return Request;

@@ -15,6 +15,8 @@ import com.nandox.jop.core.ErrorsDefine;
 import com.nandox.jop.core.context.WebAppContext;
 import com.nandox.jop.core.logging.Logger;
 import com.nandox.jop.core.processor.attribute.JopAttribute;
+import com.nandox.jop.core.sevices.ServiceJSServlet;
+import com.nandox.libraries.utils.Reflection;
 
 /**
  * Class of Page application.<p>
@@ -235,12 +237,23 @@ public class PageApp implements JopElement {
 	private void buildHeadScript (Element el) {
 		if (LOG != null && LOG.isDebugEnabled() ) LOG.debug("build head scripts for page: %s", this.id);
 		String pth = WebAppContext.getCurrentRequestContext().getHttpRequest().getContextPath();
-		el.before("<link type=\"text/css\" rel=\"stylesheet\" href=\""+pth+"/jopscript/base.css\"/>");
-		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
-		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
+		//el.before("<link type=\"text/css\" rel=\"stylesheet\" href=\""+pth+"/jopscript/base.css\"/>");
+		//el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/baselibs.js\"/>");
+		//el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/core/services.js\"/>");
+		//el.remove();
+		List<String> lst =  Reflection.getResourceList(ServiceJSServlet.class, "css");
+		for ( String item : lst ) {
+			item = item.replace("jsscript/", "/jopscript/");
+			el.before("<link type=\"text/css\" rel=\"stylesheet\" href=\""+pth+item+"\"/>");
+		}
+		lst =  Reflection.getResourceList(ServiceJSServlet.class, "js");
+		for ( String item : lst ) {
+			item = item.replace("jsscript/", "/jopscript/");
+			if ( item.indexOf("/jop.js") < 0 ) 
+				el.before("<script type=\"text/javascript\" src=\""+pth+item+"\"/>");
+		}
+		el.before("<script type=\"text/javascript\" src=\""+pth+"/jopscript/jop.js\"/>");
 		el.remove();
-		List lst =  com.nandox.jop.core.sevices.ServiceJSServlet.getResourceList("js");
-		lst =  com.nandox.jop.core.sevices.ServiceJSServlet.getResourceList("css");
 	}
 	// Generate css selector with all possible jop attributes
 	//
