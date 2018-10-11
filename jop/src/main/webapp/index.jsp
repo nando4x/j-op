@@ -101,7 +101,8 @@
     Email: <input type="text"><br>
     Date of birth: <input type="text">
   	</fieldset>
-  	<label for="male">Male</label>	
+		<input jop_converter="test.testbean$XConverter" 
+		jop_support_data="java{return 100;}" value='java{return appContext.mngInput($helloWorld,"value",value);}'/>  	<label for="male">Male</label>	
 		 <button type="button">Click Me!</button>
 		<input  type="submit">
 	<script jop_before="true">

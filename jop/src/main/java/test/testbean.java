@@ -6,6 +6,21 @@ import com.nandox.jop.core.context.WebAppContext;
 public class testbean {
 	private String message;
 	private list clist;
+	private int value;
+
+	/**
+	 * @return the value
+	 */
+	public int getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(Integer value) {
+		this.value = value;
+	}
 
 	@JopMonitoring
    public void setMessage(String message){
@@ -83,5 +98,17 @@ public class testbean {
 			return null;
 		}
 		
+	}
+	public static class XConverter implements com.nandox.jop.core.Converter {
+		@Override
+		public Object asObject(WebAppContext Context, Object Data, String Value) {
+			return Integer.valueOf(Value) * ((Integer)Data);
+		}
+		@Override
+		public String asString(WebAppContext Context, Object Data, Object Value) {
+			if ( Value != null )
+				return ""+Value;
+			return null;
+		}
 	}
 }
