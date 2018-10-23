@@ -6,8 +6,6 @@ import java.util.List;
 import java.io.File;
 import java.util.jar.JarFile;
 
-import com.nandox.jop.core.sevices.ServiceJSServlet;
-
 import java.util.jar.JarEntry;
 import java.io.IOException;
 import java.net.URL;
@@ -130,7 +128,6 @@ public class Reflection {
 	 * @return	  Resources list with file name relative to class package 
 	 */	
 	public static List<String> getResourceList(Class<?> Cls, String Extension) {
-		List<String> lst = new ArrayList<String>();
 		return scanDirectory(Cls.getResource("").getFile(),Extension,"");
 	}
 	//

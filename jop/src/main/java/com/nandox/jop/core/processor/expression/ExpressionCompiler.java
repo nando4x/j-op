@@ -38,7 +38,6 @@ import java.util.Arrays;
  * @revisor   Fernando Costantino
  */
 
-@SuppressWarnings("restriction")
 public class ExpressionCompiler {
 	
 	/** package of expression class */
@@ -83,6 +82,7 @@ public class ExpressionCompiler {
 	 * @revisor   Fernando Costantino
 	 * @exception
 	 */
+	@SuppressWarnings("unchecked")
 	public ExpressionInvoker createInvoker (WebAppContext Context, String BeanName, String BeanCode, String ReturnClass, Map<String,Class<?>> Vars) throws Exception {
 		// Check if invoker already exist
 		if ( !this.invokers.containsKey(BeanName) ) {
@@ -113,7 +113,6 @@ public class ExpressionCompiler {
 		    if ( success ) {
 		    	// Create invoker with the class just compiled
 			    try {
-			    	@SuppressWarnings({ "rawtypes", "unchecked" })
 					Class<ExpressionExecutor> c = (Class<ExpressionExecutor>)classLoader.loadClass(package_pfx+BeanName);
 			    	ExpressionInvoker i = new ExpressionInvoker(c,beans);
 			    	this.invokers.put(BeanName, i);
