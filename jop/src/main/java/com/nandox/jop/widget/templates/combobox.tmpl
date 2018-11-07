@@ -1,4 +1,4 @@
-<script>
+<!--script>
 	function selection_toggle(el,flg) {
 		Jop.Services.postBlock(el.getAttribute('jop_id'),{jop_selection: flg}).done(function(jopId){
 			var block = Jop.getBlockElement(jopId);
@@ -28,7 +28,8 @@
 			}
 		});
 	}
-</script>
+	
+</script-->
 <div jop_id jop_var="(java.lang.Boolean)open_flag" class="wdg_wrapper">
 	<div class='jop_combobox java{return (open_flag!=null&&open_flag?"st_open":"st_close");}'
 	 onclick='Jop.Widget.combobox.toggle(this,java{return open_flag!=null&&open_flag?"false":"true";})'
