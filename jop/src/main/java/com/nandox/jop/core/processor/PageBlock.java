@@ -490,6 +490,11 @@ public abstract class PageBlock implements JopElement {
 						case CONVERTER:
 							conv = (ExpressionConverter)r.getResult();
 							break;
+						/*
+						  case VALIDATOR:
+							valid = (ExpressionValidator)r.getResult();
+							break;
+						*/
 						default:
 							break;
 					}
@@ -503,9 +508,16 @@ public abstract class PageBlock implements JopElement {
 			Renderable rend = i.next();
 			PageWriteExpression pe = rend.form;
 			if ( Data != null && Data.containsKey(rend.elem.attr("name")) ) {
+				/*try {
+				if ( valid!=null )
+					valid.callValidator(Context, val);
+				 */
 				// Invoke expression in write mode
 				String val = Data.get(rend.elem.attr("name"))[0]; // get string data
 				pe.execute(Context, (conv!=null?conv.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
+				/*catch ( ValidationException e ) {
+					this.isInvalidate = true;
+				}*/
 			}
 		}
 		Iterator<PageBlock> c = this.child.iterator();
