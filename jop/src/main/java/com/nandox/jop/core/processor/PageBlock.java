@@ -480,7 +480,7 @@ public abstract class PageBlock implements JopElement {
 	private void realAction(WebAppContext Context, Map<String,String[]> Data) {
 		Iterator<JopAttribute> attr = this.attrs.iterator();
 		// check pre action attribute
-		ExpressionConverter conv = null;
+		ExpressionConverter converter = null;
 		while (attr.hasNext()) {
 			JopAttribute ja = attr.next();
 			if ( ja instanceof JopAttributeAction ) {
@@ -488,11 +488,11 @@ public abstract class PageBlock implements JopElement {
 				if ( r != null ) {
 					switch (r.getAction()) {
 						case CONVERTER:
-							conv = (ExpressionConverter)r.getResult();
+							converter = (ExpressionConverter)r.getResult();
 							break;
 						/*
 						  case VALIDATOR:
-							valid = (ExpressionValidator)r.getResult();
+							validator = (ExpressionValidator)r.getResult();
 							break;
 						*/
 						default:
@@ -508,14 +508,17 @@ public abstract class PageBlock implements JopElement {
 			Renderable rend = i.next();
 			PageWriteExpression pe = rend.form;
 			if ( Data != null && Data.containsKey(rend.elem.attr("name")) ) {
-				/*try {
-				if ( valid!=null )
-					valid.callValidator(Context, val);
-				 */
 				// Invoke expression in write mode
 				String val = Data.get(rend.elem.attr("name"))[0]; // get string data
-				pe.execute(Context, (conv!=null?conv.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
-				/*catch ( ValidationException e ) {
+				pe.execute(Context, (converter!=null?converter.callInputConverter(Context, val):val), val, null); //TODO: what variables use?
+				/*try {
+					String name = rend.elem.attr("name");
+					String native_val = Data.get(name)[0]; // get string data
+					Object val = (converter!=null?converter.callInputConverter(Context, name, native_val):native_val); 
+					if ( validator!=null )
+						validator.callValidator(Context, name, val);
+					pe.execute(Context, val, native_val, null); //TODO: what variables use?
+				}catch ( ValidationException e ) {
 					this.isInvalidate = true;
 				}*/
 			}
