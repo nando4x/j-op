@@ -1,5 +1,6 @@
 package com.nandox.jop.core.processor.attribute;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -140,7 +141,8 @@ public class Repeater extends AbstractJopAttribute<CollectionPageExpression> imp
 				this.is_array = "N";
 		}
 	}
-	static public class Status {
+	static public class Status implements Serializable {
+		private static final long serialVersionUID = 7337697015921709101L;
 		protected int index;
 		protected int size;
 		public int getIndex() { return this.index; }
